@@ -1,0 +1,211 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>wrp_hdrs</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:rurban@x-ray.at" />
+</head>
+
+<body style="background-color: white">
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;wrp_hdrs</span></strong></big>
+</td></tr>
+</table>
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#arguments">ARGUMENTS</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+	<li><a href="#acknowledgements">ACKNOWLEDGEMENTS</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>wrp_hdrs - print the header information in Beyonwiz .wrp firmware update files</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+    wrp_hdrs firmware_files...</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>Prints the header information in Beyonwiz .wrp firmware update files.</p>
+<p>
+</p>
+<hr />
+<h1><a name="arguments">ARGUMENTS</a></h1>
+<p>Prints the contents of the header block in Beyonwiz <strong>.wrp</strong>
+firmware update files.</p>
+<pre>
+    ./wrp_hdrs.pl DPS1_Firmware_28Dec2007_ver_01.05.197.wrp 
+    DPS1_Firmware_28Dec2007_ver_01.05.197.wrp:
+        fileSize: 7768064
+          offset: 0
+           magic: WizFwPkgl
+       machMagic: [0x0e20be3e, 0x08080000]
+         version: 01.05.197__Official.Version__
+         md5file: [cb, 92, 7d, 43, fa, 16, 48, 59, 08, 35, ef, 97, 9d, 44, 9e, fd]
+           count: 1
+        imageTag: [108, 32]
+       imageType: 2
+     imageOffset: 512
+     imageLength: 7767040
+        md5image: [24, 81, 0c, f0, 35, 53, ce, 2a, 56, 17, 8d, b4, 45, 90, 2c, 67]
+          fsType: -rom1fs-
+          fsSize: 7766032
+           fsVol: mambo</pre>
+<p>The example is for firmware release 1.05.197.</p>
+<p>The output fields are:</p>
+<dl>
+<dt><strong><a name="item_filesize">fileSize</a></strong>
+
+<dd>
+<p>Size of the .wrp file.</p>
+</dd>
+</li>
+<dt><strong><a name="item_offset">offset</a></strong>
+
+<dd>
+<p>Offset of the start of the header in the file.</p>
+</dd>
+</li>
+<dt><strong><a name="item_magic">magic</a></strong>
+
+<dd>
+<p>The magic string that indicates that the file is a Beyonwiz firmware update.
+Should always be <code>WizFwPkgl</code>.</p>
+</dd>
+</li>
+<dt><strong><a name="item_machmagic">machMagic</a></strong>
+
+<dd>
+<p>The magic number that corresponds to the Beyonwiz System ID for the device.
+Used to ensure that the firmware is for the correct type of device.</p>
+</dd>
+</li>
+<dt><strong><a name="item_version">version</a></strong>
+
+<dd>
+<p>The version string that is printed in the verification popup window on the
+beyonwiz when the firmware is uploaded for verification.</p>
+</dd>
+</li>
+<dt><strong><a name="item_md5file">md5file</a></strong>
+
+<dd>
+<p>Checksum over the file, with this field set to zeros.</p>
+</dd>
+</li>
+<dt><strong><a name="item_count">count</a></strong>
+
+<dd>
+<p>Count of the remaining payloads to process.
+This interpretation is uncertain.
+The value has only ever been observed to be 1.</p>
+</dd>
+</li>
+<dt><strong><a name="item_imagetag">imageTag</a></strong>
+
+<dd>
+<p>Uncertain interpretation.
+Has always been observed to be [108, 32].</p>
+</dd>
+</li>
+<dt><strong><a name="item_imagetype">imageType</a></strong>
+
+<dd>
+<p>Type of firmware payload.</p>
+</dd>
+<dd>
+<pre>
+  0 - None
+  1 - Boot loader
+  2 - ROMFS
+  3 - Splash Screen
+  4 - Release Note</pre>
+</dd>
+<dd>
+<p>Has only been observed to have value 2.</p>
+</dd>
+</li>
+<dt><strong><a name="item_imageoffset">imageOffset</a></strong>
+
+<dd>
+<p>Offset of the start of the payload for this header.</p>
+</dd>
+</li>
+<dt><strong><a name="item_imagelength">imageLength</a></strong>
+
+<dd>
+<p>Length of the payload.
+The actual file alloction for the
+payload appears to be rounded up to an even multiple of 1024 bytes,
+as <em>floor</em>((imageLength + 1023) / 1024 ) * 1024.
+A zero-filled header block follows this allocated space as an empty header
+to indicate the end of the package.</p>
+</dd>
+</li>
+<dt><strong><a name="item_md5image">md5image</a></strong>
+
+<dd>
+<p>MD5 checksum of the payload (over exactly the given length).</p>
+</dd>
+</li>
+<dt><strong><a name="item_fstype">fsType</a></strong>
+
+<dd>
+<p>Payload file system type.
+Only <strong>-rom1fs-</strong> for a Linux ROMFS file system has been observed.</p>
+</dd>
+</li>
+<dt><strong><a name="item_fssize">fsSize</a></strong>
+
+<dd>
+<p>File system size.
+For ROMFS file systems always an integer multiple of 16.</p>
+</dd>
+</li>
+<dt><strong><a name="item_fsvol">fsVol</a></strong>
+
+<dd>
+<p>File system volume label.</p>
+</dd>
+</li>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>The interpretation of some parts of the header is uncertain.</p>
+<p>The roundup for the allocation of the payload is uncertain.</p>
+<p>
+</p>
+<hr />
+<h1><a name="acknowledgements">ACKNOWLEDGEMENTS</a></h1>
+<p>Most of the header interpretation was done by efry (Eric)
+on the Australian 
+Beyonwiz Forum (<a href="http://www.beyonwiz.com.au/phpbb2/index.php">http://www.beyonwiz.com.au/phpbb2/index.php</a>).</p>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;wrp_hdrs</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>

@@ -1,0 +1,19 @@
+NAME
+
+    gunzip_bflt - convert gzip-compressed bFLT executable files into
+    uncompressed bFLT
+
+SYNOPSIS
+
+        gunzip_bflt zipped_blflt_files...
+
+DESCRIPTION
+
+    Convert gzipped bFLT files into an uncompressed bFLT files. The unzipped
+    bFLT files have .unz added to their file names. If the file is already
+    ungzipped bFLT, it isn't converted, but a warning is printed.
+
+PREREQUSITES
+
+    Uses packages "IO::Uncompress::Gunzip" and "POSIX".
+

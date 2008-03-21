@@ -1,0 +1,116 @@
+NAME
+
+    wrp_hdrs - print the header information in Beyonwiz .wrp firmware update
+    files
+
+SYNOPSIS
+
+        wrp_hdrs firmware_files...
+
+DESCRIPTION
+
+    Prints the header information in Beyonwiz .wrp firmware update files.
+
+ARGUMENTS
+
+    Prints the contents of the header block in Beyonwiz .wrp firmware update
+    files.
+
+        ./wrp_hdrs.pl DPS1_Firmware_28Dec2007_ver_01.05.197.wrp 
+        DPS1_Firmware_28Dec2007_ver_01.05.197.wrp:
+            fileSize: 7768064
+              offset: 0
+               magic: WizFwPkgl
+           machMagic: [0x0e20be3e, 0x08080000]
+             version: 01.05.197__Official.Version__
+             md5file: [cb, 92, 7d, 43, fa, 16, 48, 59, 08, 35, ef, 97, 9d, 44, 9e, fd]
+               count: 1
+            imageTag: [108, 32]
+           imageType: 2
+         imageOffset: 512
+         imageLength: 7767040
+            md5image: [24, 81, 0c, f0, 35, 53, ce, 2a, 56, 17, 8d, b4, 45, 90, 2c, 67]
+              fsType: -rom1fs-
+              fsSize: 7766032
+               fsVol: mambo
+
+        The example is for firmware release 1.05.197.
+
+        The output fields are:
+
+    fileSize
+        Size of the .wrp file.
+
+    offset
+        Offset of the start of the header in the file.
+
+    magic
+        The magic string that indicates that the file is a Beyonwiz firmware
+        update. Should always be "WizFwPkgl".
+
+    machMagic
+        The magic number that corresponds to the Beyonwiz System ID for the
+        device. Used to ensure that the firmware is for the correct type of
+        device.
+
+    version
+        The version string that is printed in the verification popup window
+        on the beyonwiz when the firmware is uploaded for verification.
+
+    md5file
+        Checksum over the file, with this field set to zeros.
+
+    count
+        Count of the remaining payloads to process. This interpretation is
+        uncertain. The value has only ever been observed to be 1.
+
+    imageTag
+        Uncertain interpretation. Has always been observed to be [108, 32].
+
+    imageType
+        Type of firmware payload.
+
+          0 - None
+          1 - Boot loader
+          2 - ROMFS
+          3 - Splash Screen
+          4 - Release Note
+
+        Has only been observed to have value 2.
+
+    imageOffset
+        Offset of the start of the payload for this header.
+
+    imageLength
+        Length of the payload. The actual file alloction for the payload
+        appears to be rounded up to an even multiple of 1024 bytes, as
+        *floor*((imageLength + 1023) / 1024 ) * 1024. A zero-filled header
+        block follows this allocated space as an empty header to indicate
+        the end of the package.
+
+    md5image
+        MD5 checksum of the payload (over exactly the given length).
+
+    fsType
+        Payload file system type. Only -rom1fs- for a Linux ROMFS file
+        system has been observed.
+
+    fsSize
+        File system size. For ROMFS file systems always an integer multiple
+        of 16.
+
+    fsVol
+        File system volume label.
+
+BUGS
+
+    The interpretation of some parts of the header is uncertain.
+
+    The roundup for the allocation of the payload is uncertain.
+
+ACKNOWLEDGEMENTS
+
+    Most of the header interpretation was done by efry (Eric) on the
+    Australian Beyonwiz Forum
+    (<http://www.beyonwiz.com.au/phpbb2/index.php>).
+

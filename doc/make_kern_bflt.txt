@@ -1,0 +1,73 @@
+NAME
+
+    make_kernel_bflt - convert a Beyonwiz kernel image into a bFLT
+    executable
+
+SYNOPSIS
+
+        make_kernel_bflt --reloc=<value> -r=<value> kernel_image
+
+DESCRIPTION
+
+    Takes a single file name argument, the name of a Beyonwiz DP series
+    kernal, and produces a copy of that file with a bFLT header, and with
+    the contents of the kernel moved in the file so that the file addresses
+    for the bFLT file are the same as the actual memory addresses. The
+    output file name is the input file name with the extension .bflt added.
+
+    Prints a table of the kernel segment locations, with mem addr for the
+    kernel memory address, file addr for the image file location, and reloc
+    addr for the location in the bFLT file.
+
+    When the kernel start address is the default 0x90090000, the output file
+    will look to be about 2GB, but most of its blocks won't have been
+    written to; on NTFS and Linux file systems, the physical representation
+    of a file like that is much smaller than 2GB.
+
+ARGUMENTS
+
+    Make_kernel_bflt takes the following arguments:
+
+    reloc
+          --reloc=value
+          -r=value
+
+        Locates the kernel image to start at the location given by <value>.
+        If the relocation location isn't given, the kernel image is moved to
+        start at the value of the "_stext" symbol, 0x90090000.
+
+        The value may be written, equivalently, in the forms 64, 0x40, 0100
+        or 0b1000000.
+
+        This was intended to allow the arm2html disassembler to carry out
+        disassembly giving all the correct memory locations. Unfortunately,
+        arm2html crashes with a start address as large as 0x90090000. A
+        reasonable compromise is to specify -r 0x90000, which makes for
+        addresses that are easy to convert to the correct value.
+
+        The first 64 bytes of the relocated file are the bFLT header, and so
+        code can't be written into the first 64 bytes. make_kernel_bflt
+        allows the relocation value to be less than 64 (-r 0, for example),
+        but the header effectively over-writes the first 64 bytes of the
+        code.
+
+PREREQUSITES
+
+    Uses package "Getopt::Long", "POSIX" and "BWFW".
+
+BUGS
+
+    Tries to use some contextual information to ensure that the correct
+    values for the location of the symbol table and the segment boundaries
+    have been found. These hueristics may fail and the program may produce
+    garbage.
+
+    The fact that arm2html doesn't work with the code start set to the
+    default 0x90090000 prevents make_kernel_bflt from being used as it was
+    intended to be used for that disassembler.
+
+    Arm2html crashes if the relocation segment of the bFLT file is empty.
+    Make_kernel_bflt creates a single fake entry to relocate its first word
+    to stop arm2html crashing. This is more a workaround for a bug in
+    arm2html than a bug in make_kernel_bflt
+

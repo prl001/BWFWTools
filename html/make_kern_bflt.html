@@ -1,0 +1,126 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>make_kern_bflt</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:rurban@x-ray.at" />
+</head>
+
+<body style="background-color: white">
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;make_kern_bflt</span></strong></big>
+</td></tr>
+</table>
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#arguments">ARGUMENTS</a></li>
+	<li><a href="#prerequsites">PREREQUSITES</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>make_kernel_bflt - convert a Beyonwiz kernel image into a bFLT executable</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+    make_kernel_bflt --reloc=&lt;value&gt; -r=&lt;value&gt; kernel_image</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>Takes a single file name argument, the name of a Beyonwiz DP series kernal,
+and produces a copy of that file with a bFLT header, and with the
+contents of the kernel moved in the file so that the file addresses
+for the bFLT file are the same as the actual memory addresses.
+The output file name is the input file name with the extension
+<strong>.bflt</strong> added.</p>
+<p>Prints a table of the kernel segment locations, with <strong>mem addr</strong>
+for the kernel memory address, <strong>file addr</strong> for the image file
+location, and <strong>reloc addr</strong> for the location in the bFLT file.</p>
+<p>When the kernel start address is the default 0x90090000,
+the output file will look to be about 2GB, but most of its blocks
+won't have been written to; on NTFS and Linux file systems,
+the physical representation of a file like that is much smaller than 2GB.</p>
+<p>
+</p>
+<hr />
+<h1><a name="arguments">ARGUMENTS</a></h1>
+<p><strong>Make_kernel_bflt</strong> takes the following arguments:</p>
+<dl>
+<dt><strong><a name="item_reloc">reloc</a></strong>
+
+<dd>
+<pre>
+  --reloc=value
+  -r=value</pre>
+</dd>
+<dd>
+<p>Locates the kernel image to start at the location given by &lt;value&gt;.
+If the relocation location isn't given, the kernel image is moved
+to start at the value of the <code>_stext</code> symbol, 0x90090000.</p>
+</dd>
+<dd>
+<p>The value may be written, equivalently, in the forms 64, 0x40, 0100
+or 0b1000000.</p>
+</dd>
+<dd>
+<p>This was intended to allow the <strong>arm2html</strong> disassembler to carry out
+disassembly giving all the correct memory locations.
+Unfortunately, arm2html crashes with a start address as large as 0x90090000.
+A reasonable compromise is to specify <strong>-r 0x90000</strong>,
+which makes for  addresses that are easy to convert to the correct value.</p>
+</dd>
+<dd>
+<p>The first 64 bytes of the relocated file are the bFLT header,
+and so code can't be written into the first 64 bytes.
+<strong>make_kernel_bflt</strong> allows the relocation value to be less than 64
+(<strong>-r 0</strong>, for example), but the header effectively over-writes the
+first 64 bytes of the code.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="prerequsites">PREREQUSITES</a></h1>
+<p>Uses package <code>Getopt::Long</code>, <code>POSIX</code> and <a href="././html/BWFW.html#name"> <code>BWFW</code></a>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>Tries to use some contextual information to ensure that
+the correct values for the location of the symbol table
+and the segment boundaries have been found. These hueristics may fail
+and the program may produce garbage.</p>
+<p>The fact that <strong>arm2html</strong> doesn't work with the code start set to
+the default 0x90090000 prevents <strong>make_kernel_bflt</strong>
+from being used as it was intended to be used for that disassembler.</p>
+<p><strong>Arm2html</strong> crashes if the relocation segment of the bFLT file is empty.
+<strong>Make_kernel_bflt</strong> creates a single fake entry to relocate its first word
+to stop <strong>arm2html</strong> crashing.
+This is more a workaround for a bug in <strong>arm2html</strong> than a bug
+in <strong>make_kernel_bflt</strong></p>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;make_kern_bflt</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>

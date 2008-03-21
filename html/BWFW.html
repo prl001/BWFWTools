@@ -1,0 +1,218 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>BWFW</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:rurban@x-ray.at" />
+</head>
+
+<body style="background-color: white">
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;BWFW</span></strong></big>
+</td></tr>
+</table>
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#constants">CONSTANTS</a></li>
+	<li><a href="#functions">FUNCTIONS</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>BWFW - Perl package of support routines for uncompressed Beyonwiz kernel images.</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+    use BWFW;
+    
+or</pre>
+<pre>
+    use BWFW qw(
+                    BASE
+                    sym_val
+                    check_magics
+                    read_or_die
+                    write_or_die
+                    get_words
+                    get_words_sym
+                    get_str
+                );</pre>
+<p>
+</p>
+<hr />
+<h1><a name="constants">CONSTANTS</a></h1>
+<dl>
+<dt><strong><a name="item_base"><code>BASE</code></a></strong>
+
+<dd>
+<p>The memory address corresponding to the start of the kernel image file.
+For Beyonwiz DP series PVRs, 0x90090000.
+This is 64kB higher than the start of memory at 0x90080000.</p>
+</dd>
+</li>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="functions">FUNCTIONS</a></h1>
+<dl>
+<dt><strong><a name="item_sym_val"><code>sym_val($sym)</code></a></strong>
+
+<dd>
+<p>Looks up <code>$sym</code> in an internal table, and returns the address of a word
+in the kernel that contains the symbol value.
+Fatal error if the symbol is not defined.</p>
+</dd>
+<dd>
+<p>Recognised symbols are:</p>
+</dd>
+<dd>
+<pre>
+    DRAM_BASE         Start of RAM (0x90080000)
+    _stext            Start of kernel code, or text segment (same as BASE)
+    _text             Start of main kernel code after initialisation code
+    _etext            End of kernel code, or text segment
+    _edata            Start of initialised data segment
+    __bss_start       Start of uninitialised data, or bss, segment
+    _end              End of uninitialised data, or bss, segment, and end of kernel
+    __start___ksymtab Start of the kernel module symbol table
+    __stop___ksymtab  End of the kernel module symbol table
+    rootROMFS         Start of the embedded ROMFS root file system (in initialised data segment)</pre>
+</dd>
+</li>
+<dt><strong><a name="item_get_words"><code>get_words($fh, $addr, $n)</code></a></strong>
+
+<dd>
+<p>In an array context, returns an array of <code>$n</code> words (32-bit integers)
+commencing at Beyonwiz memory address <code>$addr</code> in the uncompressed
+Beyonwiz kernel image referenced by the file handle reference <code>$fh</code>.
+In a scalar context, returns the first element of the array, so</p>
+</dd>
+<dd>
+<pre>
+    $val = get_words($fh, $addr, 1);</pre>
+</dd>
+<dd>
+<p>will work as expected.</p>
+</dd>
+<dd>
+<p>The words will be translated from the kernel image's little-endian order
+to the native order of the machine running the perl script.</p>
+</dd>
+</li>
+<dt><strong><a name="item_get_words_sym"><code>get_words_sym($fh, $sym, $n)</code></a></strong>
+
+<dd>
+<p>Looks up <code>$sym</code> in an internal table, and uses the symbol's location
+as the <code>$addr</code> and returns the result of <a href="#item_get_words"><code>get_words($fh, $addr, $n)</code></a>.</p>
+</dd>
+<dd>
+<p>Equivalent to (and implemented as)</p>
+</dd>
+<dd>
+<pre>
+    get_words($fh, sym_val($sym), $n);</pre>
+</dd>
+<dd>
+<p>Typical use is as</p>
+</dd>
+<dd>
+<pre>
+    get_words_sym($fh, 'symname', 1)</pre>
+</dd>
+<dd>
+<p>to return the value of the symbol.</p>
+</dd>
+</li>
+<dt><strong><a name="item_get_str"><code>get_str($fh, $addr)</code></a></strong>
+
+<dd>
+<p>Returns a a null-terminated ASCII string starting ar 
+commencing at Beyonwiz memory address <code>$addr</code> in the uncompressed
+Beyonwiz kernel image referenced by the file handle reference <code>$fh</code>.</p>
+</dd>
+<dd>
+<p>The maximum string length that can be returned is 1024 bytes.
+This probably should be a parameter, or made unlimited.</p>
+</dd>
+</li>
+<dt><strong><a name="item_read_or_die"><code>read_or_die($fn, $fh, $loc, $buf, $n, $die)</code></a></strong>
+
+<dd>
+<p>Seek to <code>$loc</code> in file handle reference <code>$fh</code>, and read <code>$n</code>
+bytes into the reference <code>$buf</code>. <code>$fn</code> is the file name associated with
+<code>$fh</code>, and is only used for error messages.</p>
+</dd>
+<dd>
+<p>Fatal error on I/O error, short read or end-of-file if <code>$die</code> is true,
+otherwise returns false on these conditions.</p>
+</dd>
+<dd>
+<p>Returns true on success.</p>
+</dd>
+</li>
+<dt><strong><a name="item_write_or_die"><code>write_or_die($fn, $fh, $loc, $buf, $n, $die)</code></a></strong>
+
+<dd>
+<p>Seek to <code>$loc</code> in file handle reference <code>$fh</code>, and write <code>$n</code>
+bytes into the file from reference <code>$buf</code>.
+<code>$fn</code> is the file name associated with <code>$fh</code>,
+and is only used for error messages.</p>
+</dd>
+<dd>
+<p>Fatal error on I/O error or short write if <code>$die</code> is true,
+otherwise returns false on these conditions.</p>
+</dd>
+<dd>
+<p>Returns true on success.</p>
+</dd>
+</li>
+<dt><strong><a name="item_check_magics"><code>check_magics($kern_fn, $kern_fh)</code></a></strong>
+
+<dd>
+<p>Checks context information in the internal symbol location table
+(mostly the instructions that reference the pointers in the kernel that
+contain the symbol values) to verify that the symbol locations
+in the table are correct.</p>
+</dd>
+<dd>
+<p>The kernel is  referenced by the file handle reference <code>$fh</code>.
+<code>$fn</code> is the kernel file name, used only for error messages.</p>
+</dd>
+<dd>
+<p>Also checks that</p>
+</dd>
+<dd>
+<pre>
+    get_words_sym($kern_fh, '_stext', 1) == BASE</pre>
+</dd>
+<dd>
+<p>To ensure that the kernel commences at the expected location.</p>
+</dd>
+<dd>
+<p>Fatal error if the checks fail.</p>
+</dd>
+</li>
+</dl>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;BWFW</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>

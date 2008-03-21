@@ -1,0 +1,82 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>getksyms</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:rurban@x-ray.at" />
+</head>
+
+<body style="background-color: white">
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;getksyms</span></strong></big>
+</td></tr>
+</table>
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#arguments">ARGUMENTS</a></li>
+	<li><a href="#prerequsites">PREREQUSITES</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>getksyms - extract the kernel module symbol table from an uncompressed Beyonwiz kernel</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+    getksyms [-n|--numeric] beyonwiz_uncompressed_kernel</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>Extract the kernel module symbol table from an uncompressed Beyonwiz kernel.</p>
+<p>The Beyonwiz kernel contains a symbol table for all the functions and data
+in the kernel module interface (used, for example, for runtime loadable
+device drivers). This tool extracts and prints the symbol table
+from a gunzipped Beyonwiz kernel image.</p>
+<p>The symbols are flagged by <strong>t</strong>, <strong>d</strong> and <strong>b</strong> for the
+text (executable code), initialised data and bss (unitialised data)
+segments respectively.</p>
+<p>
+</p>
+<hr />
+<h1><a name="arguments">ARGUMENTS</a></h1>
+<p>The default is to print the symbols sorted by name.
+The <strong>-n</strong> (or <strong>--numeric</strong>) sorts by symbol value.</p>
+<p>
+</p>
+<hr />
+<h1><a name="prerequsites">PREREQUSITES</a></h1>
+<p>Uses packages <code>Getopt::Long</code> and <a href="././html/BWFW.html#name"> <code>BWFW</code></a>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>Tries to use some contextual information to ensure that
+the correct values for the location of the symbol table
+and the segment boundaries have been found. These heuristics may fail
+and the program may produce garbage.</p>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;getksyms</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>

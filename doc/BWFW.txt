@@ -1,0 +1,121 @@
+NAME
+
+    BWFW - Perl package of support routines for uncompressed Beyonwiz kernel
+    images.
+
+SYNOPSIS
+
+        use BWFW;
+    
+    or
+
+        use BWFW qw(
+                        BASE
+                        sym_val
+                        check_magics
+                        read_or_die
+                        write_or_die
+                        get_words
+                        get_words_sym
+                        get_str
+                    );
+
+CONSTANTS
+
+    "BASE"
+        The memory address corresponding to the start of the kernel image
+        file. For Beyonwiz DP series PVRs, 0x90090000. This is 64kB higher
+        than the start of memory at 0x90080000.
+
+FUNCTIONS
+
+    "sym_val($sym)"
+        Looks up $sym in an internal table, and returns the address of a
+        word in the kernel that contains the symbol value. Fatal error if
+        the symbol is not defined.
+
+        Recognised symbols are:
+
+            DRAM_BASE         Start of RAM (0x90080000)
+            _stext            Start of kernel code, or text segment (same as BASE)
+            _text             Start of main kernel code after initialisation code
+            _etext            End of kernel code, or text segment
+            _edata            Start of initialised data segment
+            __bss_start       Start of uninitialised data, or bss, segment
+            _end              End of uninitialised data, or bss, segment, and end of kernel
+            __start___ksymtab Start of the kernel module symbol table
+            __stop___ksymtab  End of the kernel module symbol table
+            rootROMFS         Start of the embedded ROMFS root file system (in initialised data segment)
+
+    "get_words($fh, $addr, $n)"
+        In an array context, returns an array of $n words (32-bit integers)
+        commencing at Beyonwiz memory address $addr in the uncompressed
+        Beyonwiz kernel image referenced by the file handle reference $fh.
+        In a scalar context, returns the first element of the array, so
+
+            $val = get_words($fh, $addr, 1);
+
+        will work as expected.
+
+        The words will be translated from the kernel image's little-endian
+        order to the native order of the machine running the perl script.
+
+    "get_words_sym($fh, $sym, $n)"
+        Looks up $sym in an internal table, and uses the symbol's location
+        as the $addr and returns the result of "get_words($fh, $addr, $n)".
+
+        Equivalent to (and implemented as)
+
+            get_words($fh, sym_val($sym), $n);
+
+        Typical use is as
+
+            get_words_sym($fh, 'symname', 1)
+
+        to return the value of the symbol.
+
+    "get_str($fh, $addr)"
+        Returns a a null-terminated ASCII string starting ar commencing at
+        Beyonwiz memory address $addr in the uncompressed Beyonwiz kernel
+        image referenced by the file handle reference $fh.
+
+        The maximum string length that can be returned is 1024 bytes. This
+        probably should be a parameter, or made unlimited.
+
+    "read_or_die($fn, $fh, $loc, $buf, $n, $die)"
+        Seek to $loc in file handle reference $fh, and read $n bytes into
+        the reference $buf. $fn is the file name associated with $fh, and is
+        only used for error messages.
+
+        Fatal error on I/O error, short read or end-of-file if $die is true,
+        otherwise returns false on these conditions.
+
+        Returns true on success.
+
+    "write_or_die($fn, $fh, $loc, $buf, $n, $die)"
+        Seek to $loc in file handle reference $fh, and write $n bytes into
+        the file from reference $buf. $fn is the file name associated with
+        $fh, and is only used for error messages.
+
+        Fatal error on I/O error or short write if $die is true, otherwise
+        returns false on these conditions.
+
+        Returns true on success.
+
+    "check_magics($kern_fn, $kern_fh)"
+        Checks context information in the internal symbol location table
+        (mostly the instructions that reference the pointers in the kernel
+        that contain the symbol values) to verify that the symbol locations
+        in the table are correct.
+
+        The kernel is referenced by the file handle reference $fh. $fn is
+        the kernel file name, used only for error messages.
+
+        Also checks that
+
+            get_words_sym($kern_fh, '_stext', 1) == BASE
+
+        To ensure that the kernel commences at the expected location.
+
+        Fatal error if the checks fail.
+

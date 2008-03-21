@@ -1,0 +1,110 @@
+NAME
+
+    bw_rootfs - extract or update the root filesystem romfs image in an
+    uncompressed Beyonwiz kernel.
+
+SYNOPSIS
+
+        bw_rootfs [-u|--update] [-c|--checkonly] [-f|--force] beyonwiz_uncompressed_kernel [romfs_name]
+
+DESCRIPTION
+
+    Either extract the ROMFS root file system embedded in an uncompressed
+    Beyonwiz kernel to *romfs_name*, or update (-u or --update) the existing
+    root file system from *romfs_name*.
+
+    The size of the update file is limited. The ROMFS image start in the
+    kernel is aligned to a 4096-byte boundary, and its size is padded out to
+    an integral number of 4096-byte pages. Since the size of the ROMFS image
+    itself is an integral number of 16-byte blocks, there is never more than
+    4080 (4096 - 16) bytes of spare space in the kernel to accept a larger
+    ROMFS image, and there is typically less.
+
+    bw_rootfs prints the location, size, amount of spare space available for
+    an update and the maximum size update that -u will accept. It also
+    checks that the padding from the end of the ROMFS image to the next page
+    boundary is all zero bytes, and prints a warning if it isn't.
+
+    On an update, bw_rootfs will not update the file if the padding check
+    fails or if the size of the update is larger than the space available.
+    Both these checks can be over-ridden with the -f flag.
+
+    If the -c flag is used, only the checking and information printout is
+    performed, the ROMFS image is not extracted, and the kernel is not
+    updated. If -c is specified, but -u us not, then the *romfs_name* must
+    not be specified; in all other cases it must be present.
+
+ARGUMENTS
+
+    bw_rootfs takes the following arguments:
+
+    update
+          -u
+          --update
+
+        Normally the ROMFS image contained in *beyonwiz_uncompressed_kernel*
+        is extracted into *romfs_name*. When -u is set, the ROMFS image in
+        *beyonwiz_uncompressed_kernel* is updated from *romfs_name*, subject
+        to the checks described above.
+
+    checkonly
+          -c
+          --checkonly
+
+        Only print information about the ROMFS image, and perform checks.
+        May be used with -u to check whether an update will fit in the
+        available space in the kernel.
+
+    force
+          -f
+          --force
+
+        Ignore the checks for zero-padding and the size of the update and
+        perform the operation anyway.
+
+PREREQUSITES
+
+    Uses packages "Getopt::Long" and "BWFW".
+
+BUGS
+
+    Not tested by the author to do an update on a firmware module that has
+    actually been run in a Beyonwiz PVR.
+
+    Heuristics to find the embedded ROMFS root filesystem may fail, and
+    cause the update or extraction to fail, extract the wrong data or insert
+    the update in the wrong location.
+
+    The presumption of 4096-byte page alignment and round-up may be
+    incorrect.
+
+    The amount of space available for an update may be small. This isn't
+    actually a bug in bw_rootfs, but it is an important limitation.
+
+    Using the -f option may cause the resulting kernel to crash when run in
+    a Beyonwiz, requiring the use of the
+
+    Beyonwiz emergency firmware update procedure
+    (http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298)
+
+    which is only supported on a Windows PC.
+
+    If a kernel is updated with a *smaller* ROMFS image than the original,
+    that may lose the record of the orignal amount of space allocated to the
+    image in the kernel, and may prevent (without the use of -f) a larger
+    (but safe) sized ROMFS image from being inserted in the kernel to
+    overwrite the smaller one. This is because the only information about
+    the allocated space for the ROMFS image is derived from the length field
+    in the ROMFS image itself. It is recommended that the -u option only be
+    applied to Beyonwiz kernels that have not already been updated using
+    bw_rootfs.
+
+    Changing the Beyonwiz root file system may itself result in a firmware
+    package that will fail to run correctly, and need the
+
+    Beyonwiz emergency firmware update procedure
+    (http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298)
+
+    to restore it, but then if you're doing this I hope you knew that
+    already.
+

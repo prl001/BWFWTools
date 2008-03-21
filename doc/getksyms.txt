@@ -1,0 +1,38 @@
+NAME
+
+    getksyms - extract the kernel module symbol table from an uncompressed
+    Beyonwiz kernel
+
+SYNOPSIS
+
+        getksyms [-n|--numeric] beyonwiz_uncompressed_kernel
+
+DESCRIPTION
+
+    Extract the kernel module symbol table from an uncompressed Beyonwiz
+    kernel.
+
+    The Beyonwiz kernel contains a symbol table for all the functions and
+    data in the kernel module interface (used, for example, for runtime
+    loadable device drivers). This tool extracts and prints the symbol table
+    from a gunzipped Beyonwiz kernel image.
+
+    The symbols are flagged by t, d and b for the text (executable code),
+    initialised data and bss (unitialised data) segments respectively.
+
+ARGUMENTS
+
+    The default is to print the symbols sorted by name. The -n (or
+    --numeric) sorts by symbol value.
+
+PREREQUSITES
+
+    Uses packages "Getopt::Long" and "BWFW".
+
+BUGS
+
+    Tries to use some contextual information to ensure that the correct
+    values for the location of the symbol table and the segment boundaries
+    have been found. These heuristics may fail and the program may produce
+    garbage.
+

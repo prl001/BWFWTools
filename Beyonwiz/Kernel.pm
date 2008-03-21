@@ -1,16 +1,16 @@
-package BWFW;
+package Beyonwiz::Kernel;
 
 =head1 NAME
 
-BWFW - Perl package of support routines for uncompressed Beyonwiz kernel images.
+Beyonwiz::Kernel - Perl package of support routines for uncompressed Beyonwiz kernel images.
 
 =head1 SYNOPSIS
 
-    use BWFW;
+    use Beyonwiz::Kernel;
     
 or
 
-    use BWFW qw(
+    use Beyonwiz::Kernel qw(
 		    BASE
 		    sym_val
 		    check_magics
@@ -25,8 +25,8 @@ or
 
 use strict;
 
-@BWFW::ISA = qw(Exporter);
-@BWFW::EXPORT_OK = qw(
+@Beyonwiz::Kernel::ISA = qw(Exporter);
+@Beyonwiz::Kernel::EXPORT_OK = qw(
 		    BASE
 		    sym_val
 		    check_magics
@@ -154,11 +154,11 @@ my %kern_locs = (
 	     ]
 	},
     ],
-    rootROMFS => [
+    arena => [
 	{
-	    loc => 0x91435c84,
+	    loc => 0x90097e58,
 	    magics => [
-		[ 0x91435c88, 0xffffffff ],
+		[ 0x90097bd4, 0xe59f927c ],
 	     ]
 	},
     ],

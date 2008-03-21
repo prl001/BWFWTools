@@ -82,7 +82,8 @@ and perform the operation anyway.
 
 =head1 PREREQUSITES
 
-Uses packages C<Getopt::Long> and L< C<BWFW>|BWFW/NAME >.
+Uses packages C<Getopt::Long>
+and L<C<Beyonwiz::Kernel>|Kernel>.
 
 =head1 BUGS
 
@@ -100,13 +101,8 @@ actually a bug in B<bw_rootfs>, but it is an important limitation.
 
 Using the B<-f> option may cause the resulting kernel to crash when
 run in a Beyonwiz, requiring the use of the
-
-=for html <a href="http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298">
-Beyonwiz emergency firmware update procedure</a>
-
-=for text Beyonwiz emergency firmware update procedure
-(http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298)
-
+Beyonwiz emergency firmware update procedure
+(L<http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>)
 which is only supported on a Windows PC.
 
 If a kernel is updated with a I<smaller> ROMFS image than the original,
@@ -121,13 +117,8 @@ kernels that have not already been updated using B<bw_rootfs>.
 
 Changing the Beyonwiz root file system may itself result in a firmware
 package that will fail to run correctly, and need the 
-
-=for html <a href="http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298">
-Beyonwiz emergency firmware update procedure</a>
-
-=for text Beyonwiz emergency firmware update procedure
-(http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298)
-
+Beyonwiz emergency firmware update procedure
+(L<http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>)
 to restore it, but then if you're doing this
 I hope you knew that already.
 
@@ -155,7 +146,8 @@ use constant ROMFSPADDING => '\0' x ROMFSBLKSZ;
 
 use Getopt::Long;
 
-use BWFW qw(BASE check_magics read_or_die write_or_die get_words_sym);
+use Beyonwiz::Kernel
+	qw(BASE check_magics read_or_die write_or_die get_words get_words_sym);
 
 Getopt::Long::Configure qw/no_ignore_case bundling/;
 
@@ -184,8 +176,17 @@ sub roundup($$) {
 
 sub find_rootfs($$) {
     my ($fn, $fh) = @_;
-    my $root_fs = get_words_sym($fh, 'rootROMFS', 1);
+    my $arena_p = get_words_sym($fh, 'arena', 1);
     my $buf;
+    my @ctx = (0x0000000, 0xffffffff);
+
+    my @arena = get_words($fh, $arena_p, 3);
+    die sprintf("Can't find expected context [ 0x%08x, 0x%08x ] around root"
+		. " ROMFS pointer: got [ 0x%08x, 0x%08x ] around 0x%08x\n",
+		$ctx[0], $ctx[1], $arena[0], $arena[2], $arena_p)
+	if($arena[0] != $ctx[0] || $arena[2] != $ctx[1]);
+
+    my $root_fs = $arena[1];
 
     if(read_or_die($fn, $fh, $root_fs - BASE, \$buf, BLOCKSZ, 0)
     and unpack('a8', $buf) eq ROMFSMAGIC) {
@@ -210,7 +211,7 @@ sub check_lastfs_block($$$$) {
     my ($kern_fn, $kern_fh, $kpos, $size) = @_;
     my $buf;
     my $sum = 0;
-    $kpos = $kpos + roundup($size, BLOCKSZ);
+    $kpos = $kpos + roundup($size, BLOCKSZ) - BLOCKSZ;
     read_or_die($kern_fn, $kern_fh, $kpos, \$buf, BLOCKSZ, 1);
     if($size % BLOCKSZ != 0) {
 	my $off = $size % BLOCKSZ;

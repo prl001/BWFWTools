@@ -1,0 +1,193 @@
+NAME
+
+    pack_wrp - pack a Beyonwiz firmware update file
+
+SYNOPSIS
+
+        pack_wrp [-t type|--machtype=type] [-T code|--machcode=code] [-i|--insens]
+                 [-f|--force] [-k|--keep] [-V volume|--volname=volume]
+                 [-v version|--version=version] [-s suffix|--versionsuffix=suffix]
+                 [-p|-perlgzip] [-g|-gzip]
+                 firmware_file flash_directory [root_directory]
+
+DESCRIPTION
+
+    Packs the files in *flash_directory*, and optionally in *root_directory*
+    into *firmware_file* (Beyonwiz ".wrp" file).
+
+    If the *root_directory* file is given, "linux.bin.gz" in
+    *flash_directory* is unzipped and the ROMFS root filesystem constructed
+    from *root_directory* is patched into the kernel. See "bw_rootfs" for
+    more details.
+
+    The root file system can only be updated if there is enough spare space
+    for it in the kernel. There will never be more than 4080 bytes spare,
+    usually less. See "bw_rootfs" for more details.
+
+ARGUMENTS
+
+    Make_kernel_bflt takes the following arguments:
+
+    insens
+          --insens
+          -i
+
+        Packs in a mode that strips a prefix added to file and directory
+        names so that files that only differ by the case of the characters
+        in their name (eg. "Abc" vs "abc") are guaranteed to remain as
+        distinct files. If *flash_directory* and *root_directory* haven't
+        been constructed using the case-insensitive modes of "unpack_wrp",
+        using this option is likely to result in badly mangled filenames and
+        a ".wrp" file that will cause a Beyonwiz to be unbootable.
+
+        This mode is automatically invoked on systems that normally have
+        case-insensitive filenames, like Windows, Cygwin and Mac OS X.
+
+    machtype
+          --machtype=type
+          -t type
+
+        Set the machine type in the ".wrp" firmware file header. *type* must
+        be one of s, p or h for the DP-S1, DP-P1 and DP-H1 Beyonwiz models
+        respectively.
+
+        If neither *machtype* nor *machcode* is specified, the name of the
+        file in *flashdir*"/version" is checked for the machine type, and
+        *machtype* is set from that.
+
+        If both *machtype* and *machcode* are set, both corresponding
+        options are passed "wiz_pack", and it determines their precedence.
+
+        Setting the wrong type or code for firmware is likely to make the
+        Beyonwiz unbootable if the firmware is installed. With this
+        interface, you shouldn't have to use *machtype* or *machcode* unless
+        the machine type can't be detected automatically.
+
+    machcode
+          --machcode=code
+          -T code
+
+        Set the 16-digit hexadecimal System ID code
+        (<http://www.openwiz.org/wiki/Hardware#System_IDs>) for the
+        firmware. Don't use the spaces that appear in the codes on the Web
+        page in the argument.
+
+        One of either *machtype* or *machcode* must be specified.
+
+        Setting the wrong type or code for firmware is likely to make the
+        Beyonwiz unbootable if the firmware is installed.
+
+        See *machtype* above about the automatic detection of the machine
+        type.
+
+    force
+          --force
+          -f
+
+        Passed through to "bw_rootfs". Forces update of the root file system
+        in some cases where it would otherwise fail.
+
+    keep
+          --keep
+          -k
+
+        When the root file system is constructed, keep the temporary file
+        "flash*nnn*" (in "/tmp" on Unix-like systems and "C:\Windows\Temp"
+        on Windows).
+
+        "linux.bin" and "root.romfs" in *flash_directory* are deleted
+        anyway, so that they aren't packaged into the firmware.
+
+    volname
+          --volname=volume
+          -V volume
+
+        Set the volume name of the ROMFS file systems. Both the flash and
+        the root file systems are given the same name. Defaults to mambo,
+        the same as Beyonwiz original firmware.
+
+    version
+          --version=version
+          -v version
+
+        Set the firmware version string displayed in the firmware
+        verification popup on the Beyonwiz when the firmware is downloaded.
+        Should be set to something that indicates that the firmware is
+        patched!
+
+        Defaults to *xxx.yyy.zzz**suffix* where *xxx.yyy.zzz* is the
+        Beyonwiz base version number embedded in the name of the file in
+        *flashdir*"/version", if it can be extracted, and *suffix* is a
+        suffix to indicate the nature of the repacked firmware. Suffix is
+        set by --versionsuffix.
+
+        If no version number can be extracted from *flashdir*"/version", no
+        version option is passed to "wiz_pack" and "wiz_pack"'s default
+        version number is used.
+
+    versionsuffix
+          --versionsuffix=suffix
+          -v suffix
+
+        Set the suffix denoting the nature of the repacked firmware to be
+        added to an automatically extracted version number, as described
+        above in version.
+
+        Defaults to '__wiz_pack'.
+
+    compress
+          --compress=level
+          -c level
+
+        Set the *gzip* compression level to *level* when the kernel binary
+        is recompressed after an update. The default is to use the *gzip*
+        default compression level. *Level* must be in the range 1..9; 9 for
+        best compression.
+
+        Beyonwiz kernels appear to be compressed at level 8. The *gzip*
+        default is level 6.
+
+        *Gzip* is only invoked if *root_directory* is specified, otherwise
+        the kernel binary is not modified.
+
+    perlgzip, gzip
+          --perlgzip
+          -p
+          --gzip
+          -g
+
+        Normally, "pack_wrp" tries to compress the kernel with the GNU
+        "gzip" program, then if that fails, by using the Perl
+        "IO::Compress::Gzip" library.
+
+        These options force the use of only one of the two compression
+        mechanisms.
+
+PREREQUSITES
+
+    Uses packages "Getopt::Long", "IO::Compress::Gzip",
+    "IO::Uncompress::Gunzip" and "POSIX".
+
+    Uses "bw_rootfs".
+
+    Uses Eric Fry's wizfwtools programs "wiz_pack" and "wiz_genromfs".
+
+    Tries GNU "gzip", "IO::Compress::Gzip" to compress the kernel image
+    unless one of --perlgzip or --gzip is used.
+
+BUGS
+
+    Tries to use some contextual information to find the root filesystem.
+    They may fail and the updating of the root file system will fail.
+
+    Because of the way the root file system is patched into the kernel, if
+    you want to make *other* patches to the kernel and update the root
+    filesystem, you have to ungzip "linux.bin.gz", make the patches, and
+    then regzip the kernel. If you patch "linux.bin" and don't gzip it back
+    into "linux.bin.gz" those changes will be lost in the three-argument
+    form of "pack_wrp".
+
+    Using high compression levels for the kernel file is not yet tested.
+
+    Has too many options.
+

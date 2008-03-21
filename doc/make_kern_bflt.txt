@@ -53,7 +53,7 @@ ARGUMENTS
 
 PREREQUSITES
 
-    Uses package "Getopt::Long", "POSIX" and "BWFW".
+    Uses package "Getopt::Long", "POSIX" and "Beyonwiz::Kernel".
 
 BUGS
 

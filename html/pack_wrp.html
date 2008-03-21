@@ -1,0 +1,288 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>pack_wrp</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:rurban@x-ray.at" />
+</head>
+
+<body style="background-color: white">
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;pack_wrp</span></strong></big>
+</td></tr>
+</table>
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#arguments">ARGUMENTS</a></li>
+	<li><a href="#prerequsites">PREREQUSITES</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>pack_wrp - pack a Beyonwiz firmware update file</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+    pack_wrp [-t type|--machtype=type] [-T code|--machcode=code] [-i|--insens]
+             [-f|--force] [-k|--keep] [-V volume|--volname=volume]
+             [-v version|--version=version] [-s suffix|--versionsuffix=suffix]
+             [-p|-perlgzip] [-g|-gzip]
+             firmware_file flash_directory [root_directory]</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>Packs the files in <em>flash_directory</em>, and optionally in <em>root_directory</em>
+into <em>firmware_file</em> (Beyonwiz <code>.wrp</code> file).</p>
+<p>If the <em>root_directory</em> file is given, <code>linux.bin.gz</code> in
+<em>flash_directory</em> is unzipped and the ROMFS root filesystem constructed
+from <em>root_directory</em> is patched into the kernel.
+See <a href=".././html/bw_rootfs.html"> <code>bw_rootfs</code></a> for more details.</p>
+<p>The root file system can only be updated if there is enough spare space for
+it in the kernel.
+There will never be more than 4080 bytes spare, usually less.
+See <a href=".././html/bw_rootfs.html"> <code>bw_rootfs</code></a> for more details.</p>
+<p>
+</p>
+<hr />
+<h1><a name="arguments">ARGUMENTS</a></h1>
+<p><strong>Make_kernel_bflt</strong> takes the following arguments:</p>
+<dl>
+<dt><strong><a name="item_insens">insens</a></strong>
+
+<dd>
+<pre>
+  --insens
+  -i</pre>
+</dd>
+<dd>
+<p>Packs in a mode that strips a prefix added to file and directory names
+so that files that only differ by the case of the characters in their name
+(eg. <code>Abc</code> vs <code>abc</code>) are guaranteed to remain as distinct files.
+If <em>flash_directory</em> and <em>root_directory</em> haven't been constructed using
+the case-insensitive modes of <a href=".././html/unpack_wrp.html"> <code>unpack_wrp</code></a>, using
+this option is likely to result in badly mangled filenames and
+a <code>.wrp</code> file that will cause a Beyonwiz to be unbootable.</p>
+</dd>
+<dd>
+<p>This mode is automatically invoked on systems that normally have case-insensitive filenames, like Windows, Cygwin and Mac OS X.</p>
+</dd>
+<dt><strong><a name="item_machtype">machtype</a></strong>
+
+<dd>
+<pre>
+  --machtype=type
+  -t type</pre>
+</dd>
+<dd>
+<p>Set the machine type in the <code>.wrp</code> firmware file header.
+<em>type</em> must be one of <strong>s</strong>, <strong>p</strong> or <strong>h</strong> for the DP-S1, DP-P1
+and DP-H1 Beyonwiz models respectively.</p>
+</dd>
+<dd>
+<p>If neither <em>machtype</em> nor <em>machcode</em> is specified, the name of the file
+in <em>flashdir</em><code>/version</code> is checked for the machine type, and <em>machtype</em>
+is set from that.</p>
+</dd>
+<dd>
+<p>If both <em>machtype</em> and <em>machcode</em> are set, both corresponding options
+are passed <code>wiz_pack</code>, and it determines their precedence.</p>
+</dd>
+<dd>
+<p>Setting the wrong type or code for firmware is likely to make the
+Beyonwiz unbootable if the firmware is installed.
+With this interface, you shouldn't have to use <em>machtype</em> or <em>machcode</em>
+unless the machine type can't be detected automatically.</p>
+</dd>
+<dt><strong><a name="item_machcode">machcode</a></strong>
+
+<dd>
+<pre>
+  --machcode=code
+  -T code</pre>
+</dd>
+<dd>
+<p>Set the 16-digit hexadecimal System ID code
+(<a href="http://www.openwiz.org/wiki/Hardware#System_IDs">http://www.openwiz.org/wiki/Hardware#System_IDs</a>)
+for the firmware.
+Don't use the spaces that appear in the codes on the Web page in the argument.</p>
+</dd>
+<dd>
+<p>One of either <em>machtype</em> or <em>machcode</em> must be specified.</p>
+</dd>
+<dd>
+<p>Setting the wrong type or code for firmware is likely to make the
+Beyonwiz unbootable if the firmware is installed.</p>
+</dd>
+<dd>
+<p>See <em>machtype</em> above about the automatic detection of the machine type.</p>
+</dd>
+<dt><strong><a name="item_force">force</a></strong>
+
+<dd>
+<pre>
+  --force
+  -f</pre>
+</dd>
+<dd>
+<p>Passed through to <a href=".././html/bw_rootfs.html"> <code>bw_rootfs</code></a>.
+Forces update of the root file system in some cases where it
+would otherwise fail.</p>
+</dd>
+<dt><strong><a name="item_keep">keep</a></strong>
+
+<dd>
+<pre>
+  --keep
+  -k</pre>
+</dd>
+<dd>
+<p>When the root file system is constructed, keep the
+temporary file <code>flashnnn</code> (in <code>/tmp</code> on Unix-like systems
+and <code>C:\Windows\Temp</code> on Windows).</p>
+</dd>
+<dd>
+<p><code>linux.bin</code> and <code>root.romfs</code> in <em>flash_directory</em> are deleted anyway,
+so that they aren't packaged into the firmware.</p>
+</dd>
+<dt><strong><a name="item_volname">volname</a></strong>
+
+<dd>
+<pre>
+  --volname=volume
+  -V volume</pre>
+</dd>
+<dd>
+<p>Set the volume name of the ROMFS file systems. Both the flash and the root
+file systems are given the same name. Defaults to <strong>mambo</strong>,
+the same as Beyonwiz original firmware.</p>
+</dd>
+<dt><strong><a name="item_version">version</a></strong>
+
+<dd>
+<pre>
+  --version=version
+  -v version</pre>
+</dd>
+<dd>
+<p>Set the firmware version string displayed in the firmware verification
+popup on the Beyonwiz when the firmware is downloaded.
+Should be set to something that indicates that the firmware is patched!</p>
+</dd>
+<dd>
+<p>Defaults to <em>xxx.yyy.zzz</em><em>suffix</em> where <em>xxx.yyy.zzz</em> is
+the Beyonwiz base version number embedded in the name of the file
+in <em>flashdir</em><code>/version</code>, if it can be extracted, and <em>suffix</em>
+is a suffix to indicate the nature of the repacked firmware.
+Suffix is set by <strong>--versionsuffix</strong>.</p>
+</dd>
+<dd>
+<p>If no version number can be extracted from <em>flashdir</em><code>/version</code>,
+no version option is passed to <code>wiz_pack</code> and <code>wiz_pack</code>'s default
+version number is used.</p>
+</dd>
+<dt><strong><a name="item_versionsuffix">versionsuffix</a></strong>
+
+<dd>
+<pre>
+  --versionsuffix=suffix
+  -v suffix</pre>
+</dd>
+<dd>
+<p>Set the suffix denoting the nature of the repacked firmware to be added
+to an automatically extracted version number,
+as described above in <strong>version</strong>.</p>
+</dd>
+<dd>
+<p>Defaults to '__wiz_pack'.</p>
+</dd>
+<dt><strong><a name="item_compress">compress</a></strong>
+
+<dd>
+<pre>
+  --compress=level
+  -c level</pre>
+</dd>
+<dd>
+<p>Set the <em>gzip</em> compression level to <em>level</em> when the kernel binary
+is recompressed after an update.
+The default is to use the <em>gzip</em> default compression level.
+<em>Level</em> must be in the range 1..9; 9 for best compression.</p>
+</dd>
+<dd>
+<p>Beyonwiz kernels appear to be compressed at level 8.
+The <em>gzip</em> default is level 6.</p>
+</dd>
+<dd>
+<p><em>Gzip</em> is only invoked if <em>root_directory</em> is specified,
+otherwise the kernel binary is not modified.</p>
+</dd>
+<dt><strong><a name="item_perlgzip_2c_gzip">perlgzip, gzip</a></strong>
+
+<dd>
+<pre>
+  --perlgzip
+  -p
+  --gzip
+  -g</pre>
+</dd>
+<dd>
+<p>Normally, <code>pack_wrp</code> tries to compress the kernel with the
+GNU <code>gzip</code> program, then if that fails, by using the Perl
+<code>IO::Compress::Gzip</code> library.</p>
+</dd>
+<dd>
+<p>These options force the use of only one of the two compression mechanisms.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="prerequsites">PREREQUSITES</a></h1>
+<p>Uses packages <code>Getopt::Long</code>,
+<code>IO::Compress::Gzip</code>, <code>IO::Uncompress::Gunzip</code> and <code>POSIX</code>.</p>
+<p>Uses <a href=".././html/bw_rootfs.html"> <code>bw_rootfs</code></a>.</p>
+<p>Uses Eric Fry's wizfwtools programs <code>wiz_pack</code>
+and <code>wiz_genromfs</code>.</p>
+<p>Tries GNU <code>gzip</code>, <code>IO::Compress::Gzip</code> to compress the kernel
+image unless one of <strong>--perlgzip</strong> or <strong>--gzip</strong> is used.</p>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>Tries to use some contextual information to find the root filesystem.
+They may fail and the updating of the root file system will fail.</p>
+<p>Because of the way the root file system is patched into the kernel,
+if you want to make <em>other</em> patches to the kernel and update the
+root filesystem, you have to ungzip <code>linux.bin.gz</code>, make
+the patches, and then regzip the kernel.
+If you patch <code>linux.bin</code> and don't gzip it back into
+<code>linux.bin.gz</code> those changes will be lost in the three-argument
+form of <code>pack_wrp</code>.</p>
+<p>Using high compression levels for the kernel file is not yet tested.</p>
+<p>Has too many options.</p>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;pack_wrp</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>

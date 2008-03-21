@@ -1,0 +1,121 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>unpack_wrp</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:rurban@x-ray.at" />
+</head>
+
+<body style="background-color: white">
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;unpack_wrp</span></strong></big>
+</td></tr>
+</table>
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#arguments">ARGUMENTS</a></li>
+	<li><a href="#prerequsites">PREREQUSITES</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>unpack_wrp - unpack a Beyonwiz firmware update file</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+    unpack_wrp [-i|--insens] [-f|--force] [-k|--keep] firmware_file flash_directory [root_directory]</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>Extracts the files in <em>firmware_file</em> (Beyonwiz <code>.wrp</code> file) into
+the directory <em>flash_directory</em> as they would appear in the Beyonwiz's
+<code>/flash</code> directory.
+If the <em>root_directory</em> argument is also given, the Beyonwix root
+file system is extracted from the kernel image in <code>/flash</code>
+into that directory.</p>
+<p>The two-argument form does not hve any more functionality than
+Eric Fry's <code>wiz_unpack</code>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="arguments">ARGUMENTS</a></h1>
+<p><strong>Make_kernel_bflt</strong> takes the following arguments:</p>
+<dl>
+<dt><strong><a name="item_insens">insens</a></strong>
+
+<dd>
+<pre>
+  --insens
+  -i</pre>
+</dd>
+<dd>
+<p>Extracts in a mode that adds a prefix to file and directory names
+so that files that only differ by the case of the characters in their name
+(eg. <code>Abc</code> vs <code>abc</code>) are kept as distinct files.</p>
+</dd>
+<dd>
+<p>This mode is automatically invoked on systems that normally have case-insensitive filenames, like Windows, Cygwin and Mac OS X.</p>
+</dd>
+<dt><strong><a name="item_force">force</a></strong>
+
+<dd>
+<pre>
+  --force
+  -f</pre>
+</dd>
+<dd>
+<p>Passed through to <a href=".././html/bw_rootfs.html"> <code>bw_rootfs</code></a> &gt;.
+Forces extraction in some cases where it would otherwise fail.</p>
+</dd>
+<dt><strong><a name="item_keep">keep</a></strong>
+
+<dd>
+<pre>
+  --keep
+  -k</pre>
+</dd>
+<dd>
+<p>When the root file system is extracted, keep the files
+<code>linux.bin</code> and <code>root.romfs</code>, which are otherwise deleted.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="prerequsites">PREREQUSITES</a></h1>
+<p>Uses packages <code>Getopt::Long</code>,
+<code>IO::Uncompress::Gunzip</code> and <code>POSIX</code>.</p>
+<p>Uses <a href=".././html/bw_rootfs.html"> <code>bw_rootfs</code></a> &gt;.</p>
+<p>Uses Eric Fry's wizfwtools program wiz_unpack.</p>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>Tries to use some contextual information to find the root filesystem.
+They may fail and the extraction of the root file system will fail.</p>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;unpack_wrp</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>

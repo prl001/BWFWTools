@@ -1,15 +1,15 @@
 NAME
 
-    BWFW - Perl package of support routines for uncompressed Beyonwiz kernel
-    images.
+    Beyonwiz::Kernel - Perl package of support routines for uncompressed
+    Beyonwiz kernel images.
 
 SYNOPSIS
 
-        use BWFW;
-
+        use Beyonwiz::Kernel;
+    
     or
 
-        use BWFW qw(
+        use Beyonwiz::Kernel qw(
                         BASE
                         sym_val
                         check_magics

@@ -63,7 +63,8 @@ first 64 bytes of the code.
 
 =head1 PREREQUSITES
 
-Uses package C<Getopt::Long>, C<POSIX> and L< C<BWFW>|BWFW/NAME >.
+Uses package C<Getopt::Long>, C<POSIX>
+and L<C<Beyonwiz::Kernel>|Kernel>.
 
 =head1 BUGS
 
@@ -89,7 +90,8 @@ use strict;
 use POSIX;
 use Getopt::Long;
 
-use BWFW qw(check_magics get_words_sym);
+use Beyonwiz::Kernel
+	qw(check_magics get_words_sym);
 
 Getopt::Long::Configure qw/no_ignore_case bundling/;
 
@@ -101,7 +103,7 @@ sub usage() {
     die "Usage: $0 [--reloc=relocval] [-r=relocval] BW-kernel-file\n";
 }
 
-GetOptions("reloc|r=s" => \$reloc) or usage;
+GetOptions('reloc|r=s' => \$reloc) or usage;
 
 die "The relocation address must be a decimal, hex, octal or binary number\n"
     if(defined($reloc) && $reloc !~ /^([0-9]+|0x[0-9a-fA-F]+|0[0-7]*|0b[01]+)/);

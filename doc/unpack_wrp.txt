@@ -1,0 +1,61 @@
+NAME
+
+    unpack_wrp - unpack a Beyonwiz firmware update file
+
+SYNOPSIS
+
+        unpack_wrp [-i|--insens] [-f|--force] [-k|--keep] firmware_file flash_directory [root_directory]
+
+DESCRIPTION
+
+    Extracts the files in *firmware_file* (Beyonwiz ".wrp" file) into the
+    directory *flash_directory* as they would appear in the Beyonwiz's
+    "/flash" directory. If the *root_directory* argument is also given, the
+    Beyonwix root file system is extracted from the kernel image in "/flash"
+    into that directory.
+
+    The two-argument form does not hve any more functionality than Eric
+    Fry's "wiz_unpack".
+
+ARGUMENTS
+
+    Make_kernel_bflt takes the following arguments:
+
+    insens
+          --insens
+          -i
+
+        Extracts in a mode that adds a prefix to file and directory names so
+        that files that only differ by the case of the characters in their
+        name (eg. "Abc" vs "abc") are kept as distinct files.
+
+        This mode is automatically invoked on systems that normally have
+        case-insensitive filenames, like Windows, Cygwin and Mac OS X.
+
+    force
+          --force
+          -f
+
+        Passed through to "bw_rootfs" >. Forces extraction in some cases
+        where it would otherwise fail.
+
+    keep
+          --keep
+          -k
+
+        When the root file system is extracted, keep the files "linux.bin"
+        and "root.romfs", which are otherwise deleted.
+
+PREREQUSITES
+
+    Uses packages "Getopt::Long", "IO::Uncompress::Gunzip" and "POSIX".
+
+    Uses "bw_rootfs" >.
+
+    Uses Eric Fry's wizfwtools program wiz_unpack.
+
+BUGS
+
+    Tries to use some contextual information to find the root filesystem.
+    They may fail and the extraction of the root file system will fail.
+

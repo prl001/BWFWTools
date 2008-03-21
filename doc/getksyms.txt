@@ -27,7 +27,7 @@ ARGUMENTS
 
 PREREQUSITES
 
-    Uses packages "Getopt::Long" and "BWFW".
+    Uses packages "Getopt::Long" and "Beyonwiz::Kernel".
 
 BUGS
 

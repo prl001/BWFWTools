@@ -31,7 +31,8 @@ The B<-n> (or B<--numeric>) sorts by symbol value.
 
 =head1 PREREQUSITES
 
-Uses packages C<Getopt::Long> and L< C<BWFW>|BWFW/NAME >.
+Uses packages C<Getopt::Long>
+and L<C<Beyonwiz::Kernel>|Kernel>.
 
 =head1 BUGS
 
@@ -44,7 +45,8 @@ and the program may produce garbage.
 
 use strict;
 
-use BWFW qw(BASE check_magics get_words get_words_sym get_str);
+use Beyonwiz::Kernel
+	qw(BASE check_magics get_words get_words_sym get_str);
 
 # Extract the symbols published by the kernel for the module interface.
 
@@ -68,7 +70,7 @@ sub where_sym($$$) {
 
 my $nflag;
 
-GetOptions("n|numeric" => \$nflag) or usage;
+GetOptions('n|numeric' => \$nflag) or usage;
 
 @ARGV == 1 or usage;
 

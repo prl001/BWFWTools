@@ -70,7 +70,7 @@ ARGUMENTS
 
 PREREQUSITES
 
-    Uses packages "Getopt::Long" and "BWFW".
+    Uses packages "Getopt::Long" and "Beyonwiz::Kernel".
 
 BUGS
 
@@ -88,10 +88,8 @@ BUGS
     actually a bug in bw_rootfs, but it is an important limitation.
 
     Using the -f option may cause the resulting kernel to crash when run in
-    a Beyonwiz, requiring the use of the
-
-Beyonwiz emergency firmware update procedure
-(http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298)
+    a Beyonwiz, requiring the use of the Beyonwiz emergency firmware update
+    procedure (<http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>)
     which is only supported on a Windows PC.
 
     If a kernel is updated with a *smaller* ROMFS image than the original,
@@ -105,10 +103,8 @@ Beyonwiz emergency firmware update procedure
     bw_rootfs.
 
     Changing the Beyonwiz root file system may itself result in a firmware
-    package that will fail to run correctly, and need the
-
-Beyonwiz emergency firmware update procedure
-(http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298)
-    to restore it, but then if you're doing this I hope you knew that
-    already.
+    package that will fail to run correctly, and need the Beyonwiz emergency
+    firmware update procedure
+    (<http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>) to restore
+    it, but then if you're doing this I hope you knew that already.
 

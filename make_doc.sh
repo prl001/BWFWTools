@@ -5,6 +5,14 @@
 
 index=html/index.html
 
+podpath=--podpath=.:Beyonwiz
+
+if [ `uname` = Darwin ]; then
+    echo "On Mac OS X, using html2pod's --podpath causes ihtml2pod to hang" 1>&2
+    echo "Unsetting --podpath; expect some 'cannot resolve' errors" 1>&2
+    podpath=
+fi
+
 # Header for index.html
 
 cat > $index << '_EOF'
@@ -19,13 +27,16 @@ cat > $index << '_EOF'
   <dir>
 _EOF
 
-for i in *.p[ml]; do
+for i in "$@"; do
 
     # Get the basename, whether it's a .pl or .pm file
 
     j=`basename $i .pl`
     j=`basename $j .pm`
     echo $j;
+
+    d=`dirname $i`
+    [ -d html/$d ] || mkdir -p html/$d
 
     # Extract the synopsis line for index.html
 
@@ -36,14 +47,15 @@ for i in *.p[ml]; do
 	    $i`
 
     # Convert the Perl POD markup to HTML
-    pod2html --htmlroot=. --podpath=. --htmldir=. \
+    pod2html --htmlroot=.. --podroot=. $podpath --htmldir=. \
              --header --title=$j \
-             --infile=$i --outfile=html/$j.html
+             --infile=$i --outfile=html/$d/$j.html
     # Add a line to index.html
     echo "<li><a href=\"$j.html\">$synopsis</li>" >> $index
 
     # Convert the Perl POD markup to plain text with DOS line separators
     pod2text --loose $i | perl -ape 's/\n/\r\n/ if(!/\r\n$/)' > doc/$j.txt
+
 done
 
 # Header for index.html

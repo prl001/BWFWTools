@@ -4,7 +4,7 @@
 <head>
 <title>bw_rootfs</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:root@omen.apple.com" />
+<link rev="made" href="mailto:rurban@x-ray.at" />
 </head>
 
 <body style="background-color: white">
@@ -116,7 +116,8 @@ and perform the operation anyway.</p>
 </p>
 <hr />
 <h1><a name="prerequsites">PREREQUSITES</a></h1>
-<p>Uses packages <code>Getopt::Long</code> and <a href="././html/BWFW.html#name"> <code>BWFW</code></a>.</p>
+<p>Uses packages <code>Getopt::Long</code>
+and <a href=".././html/Beyonwiz/Kernel.html"><code>Beyonwiz::Kernel</code></a>.</p>
 <p>
 </p>
 <hr />
@@ -130,9 +131,10 @@ insert the update in the wrong location.</p>
 <p>The amount of space available for an update may be small.  This isn't
 actually a bug in <strong>bw_rootfs</strong>, but it is an important limitation.</p>
 <p>Using the <strong>-f</strong> option may cause the resulting kernel to crash when
-run in a Beyonwiz, requiring the use of the</p>
-<a href="http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298">
-Beyonwiz emergency firmware update procedure</a><p>which is only supported on a Windows PC.</p>
+run in a Beyonwiz, requiring the use of the
+Beyonwiz emergency firmware update procedure
+(<a href="http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298">http://www.beyonwiz.com.au/phpbb2/viewtopic.php</a>)
+which is only supported on a Windows PC.</p>
 <p>If a kernel is updated with a <em>smaller</em> ROMFS image than the original,
 that may lose the record of the orignal amount of space allocated to
 the image in the kernel, and may prevent (without the use of <strong>-f</strong>) a
@@ -143,9 +145,10 @@ in the ROMFS image itself.
 It is recommended that the <strong>-u</strong> option only be applied to Beyonwiz
 kernels that have not already been updated using <strong>bw_rootfs</strong>.</p>
 <p>Changing the Beyonwiz root file system may itself result in a firmware
-package that will fail to run correctly, and need the</p>
-<a href="http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298">
-Beyonwiz emergency firmware update procedure</a><p>to restore it, but then if you're doing this
+package that will fail to run correctly, and need the 
+Beyonwiz emergency firmware update procedure
+(<a href="http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298">http://www.beyonwiz.com.au/phpbb2/viewtopic.php</a>)
+to restore it, but then if you're doing this
 I hope you knew that already.</p>
 <table border="0" width="100%" cellspacing="0" cellpadding="3">
 <tr><td class="block" style="background-color: #cccccc" valign="middle">

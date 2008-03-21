@@ -134,7 +134,7 @@ my %kern_locs = (
 	{
 	    loc => 0x90092104,
 	    magics => [
-		[ 0x900905d8, 0xe59f30b0 ], # Actual reference instruction
+		[ 0x9009206c, 0xe59f2090 ], # Actual reference instruction
 	     ]
 	},
     ],

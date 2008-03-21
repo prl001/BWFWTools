@@ -38,36 +38,45 @@ ARGUMENTS
 
         The output fields are:
 
-    fileSize
+        fileSize
+
         Size of the .wrp file.
 
-    offset
+        offset
+
         Offset of the start of the header in the file.
 
-    magic
+        magic
+
         The magic string that indicates that the file is a Beyonwiz firmware
         update. Should always be "WizFwPkgl".
 
-    machMagic
+        machMagic
+
         The magic number that corresponds to the Beyonwiz System ID for the
         device. Used to ensure that the firmware is for the correct type of
         device.
 
-    version
+        version
+
         The version string that is printed in the verification popup window
         on the beyonwiz when the firmware is uploaded for verification.
 
-    md5file
+        md5file
+
         Checksum over the file, with this field set to zeros.
 
-    count
+        count
+
         Count of the remaining payloads to process. This interpretation is
         uncertain. The value has only ever been observed to be 1.
 
-    imageTag
+        imageTag
+
         Uncertain interpretation. Has always been observed to be [108, 32].
 
-    imageType
+        imageType
+
         Type of firmware payload.
 
           0 - None
@@ -78,28 +87,34 @@ ARGUMENTS
 
         Has only been observed to have value 2.
 
-    imageOffset
+        imageOffset
+
         Offset of the start of the payload for this header.
 
-    imageLength
+        imageLength
+
         Length of the payload. The actual file alloction for the payload
         appears to be rounded up to an even multiple of 1024 bytes, as
         *floor*((imageLength + 1023) / 1024 ) * 1024. A zero-filled header
         block follows this allocated space as an empty header to indicate
         the end of the package.
 
-    md5image
+        md5image
+
         MD5 checksum of the payload (over exactly the given length).
 
-    fsType
+        fsType
+
         Payload file system type. Only -rom1fs- for a Linux ROMFS file
         system has been observed.
 
-    fsSize
+        fsSize
+
         File system size. For ROMFS file systems always an integer multiple
         of 16.
 
-    fsVol
+        fsVol
+
         File system volume label.
 
 BUGS
@@ -113,4 +128,13 @@ ACKNOWLEDGEMENTS
     Most of the header interpretation was done by efry (Eric) on the
     Australian Beyonwiz Forum
     (<http://www.beyonwiz.com.au/phpbb2/index.php>).
+
+POD ERRORS
+
+    Hey! The above document had some coding errors, which are explained
+    below:
+
+    Around line 41:
+        You can't have =items (as at line 47) unless the first thing after
+        the =over is an =item
 

@@ -4,7 +4,7 @@
 <head>
 <title>bw_rootfs</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:rurban@x-ray.at" />
+<link rev="made" href="mailto:root@omen.apple.com" />
 </head>
 
 <body style="background-color: white">
@@ -48,13 +48,17 @@ uncompressed Beyonwiz kernel.</p>
 <p>Either extract the ROMFS root file system embedded in an uncompressed
 Beyonwiz kernel to <em>romfs_name</em>, or update (<strong>-u</strong> or <strong>--update</strong>)
 the existing root file system from <em>romfs_name</em>.</p>
+<p>When the ROMFS root file system is extracted, the file size is zero-padded
+to the next 1024-byte boundary, for compatibility with genromfs and loopback
+mounting of the ROMFS image on systems that support it.</p>
 <p>The size of the update file is limited. The ROMFS image start in the kernel is
 aligned to a 4096-byte boundary, and its size is padded out to an integral
 number of 4096-byte pages. Since the size of the ROMFS image itself is an
 integral number of 16-byte blocks, there is never more than
 4080 (4096 - 16) bytes of spare space in the kernel to accept a larger
 ROMFS image, and there is typically less.</p>
-<p><strong>bw_rootfs</strong> prints the location, size, amount of spare space
+<p><strong>bw_rootfs</strong> prints the location, size, and padded file size for the
+embedded root ROMFS, and the amount of spare space
 available for an update and the maximum size update that <strong>-u</strong> will accept.
 It also checks that the padding from the end of the ROMFS image to the
 next page boundary is all zero bytes, and prints a warning if it isn't.</p>

@@ -13,6 +13,11 @@ DESCRIPTION
     Beyonwiz kernel to *romfs_name*, or update (-u or --update) the existing
     root file system from *romfs_name*.
 
+    When the ROMFS root file system is extracted, the file size is
+    zero-padded to the next 1024-byte boundary, for compatibility with
+    genromfs and loopback mounting of the ROMFS image on systems that
+    support it.
+
     The size of the update file is limited. The ROMFS image start in the
     kernel is aligned to a 4096-byte boundary, and its size is padded out to
     an integral number of 4096-byte pages. Since the size of the ROMFS image
@@ -20,9 +25,10 @@ DESCRIPTION
     4080 (4096 - 16) bytes of spare space in the kernel to accept a larger
     ROMFS image, and there is typically less.
 
-    bw_rootfs prints the location, size, amount of spare space available for
-    an update and the maximum size update that -u will accept. It also
-    checks that the padding from the end of the ROMFS image to the next page
+    bw_rootfs prints the location, size, and padded file size for the
+    embedded root ROMFS, and the amount of spare space available for an
+    update and the maximum size update that -u will accept. It also checks
+    that the padding from the end of the ROMFS image to the next page
     boundary is all zero bytes, and prints a warning if it isn't.
 
     On an update, bw_rootfs will not update the file if the padding check
@@ -84,9 +90,8 @@ BUGS
     Using the -f option may cause the resulting kernel to crash when run in
     a Beyonwiz, requiring the use of the
 
-    Beyonwiz emergency firmware update procedure
-    (http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298)
-
+Beyonwiz emergency firmware update procedure
+(http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298)
     which is only supported on a Windows PC.
 
     If a kernel is updated with a *smaller* ROMFS image than the original,
@@ -102,9 +107,8 @@ BUGS
     Changing the Beyonwiz root file system may itself result in a firmware
     package that will fail to run correctly, and need the
 
-    Beyonwiz emergency firmware update procedure
-    (http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298)
-
+Beyonwiz emergency firmware update procedure
+(http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298)
     to restore it, but then if you're doing this I hope you knew that
     already.
 

@@ -6,7 +6,7 @@ NAME
 SYNOPSIS
 
         use BWFW;
-    
+
     or
 
         use BWFW qw(

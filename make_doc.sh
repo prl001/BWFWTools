@@ -43,7 +43,7 @@ for i in *.p[ml]; do
     echo "<li><a href=\"$j.html\">$synopsis</li>" >> $index
 
     # Convert the Perl POD markup to plain text with DOS line separators
-    pod2text --loose $i | unix2dos > doc/$j.txt
+    pod2text --loose $i | perl -ape 's/\n/\r\n/ if(!/\r\n$/)' > doc/$j.txt
 done
 
 # Header for index.html

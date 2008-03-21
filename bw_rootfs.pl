@@ -18,6 +18,10 @@ Either extract the ROMFS root file system embedded in an uncompressed
 Beyonwiz kernel to I<romfs_name>, or update (B<-u> or B<--update>)
 the existing root file system from I<romfs_name>.
 
+When the ROMFS root file system is extracted, the file size is zero-padded
+to the next 1024-byte boundary, for compatibility with genromfs and loopback
+mounting of the ROMFS image on systems that support it.
+
 The size of the update file is limited. The ROMFS image start in the kernel is
 aligned to a 4096-byte boundary, and its size is padded out to an integral
 number of 4096-byte pages. Since the size of the ROMFS image itself is an
@@ -25,7 +29,8 @@ integral number of 16-byte blocks, there is never more than
 4080 (4096 - 16) bytes of spare space in the kernel to accept a larger
 ROMFS image, and there is typically less.
 
-B<bw_rootfs> prints the location, size, amount of spare space
+B<bw_rootfs> prints the location, size, and padded file size for the
+embedded root ROMFS, and the amount of spare space
 available for an update and the maximum size update that B<-u> will accept.
 It also checks that the padding from the end of the ROMFS image to the
 next page boundary is all zero bytes, and prints a warning if it isn't.
@@ -137,8 +142,16 @@ sub usage() {
         " beyonwiz_uncompressed_kernel [romfs_name]\n";
 }
 
-use constant BLOCKSZ	=> 4096;
-use constant ROMFSMAGIC	=> '-rom1fs-';
+# BLOCKSZ is the alignment/block size for the embedded ROMFS
+# ROMFSBLKSZ is the block size used in genromfs.
+
+# The code assumes BLOCKSZ >= ROMFSBLKSZ
+
+use constant BLOCKSZ	  => 4096;
+use constant ROMFSMAGIC	  => '-rom1fs-';
+use constant ROMFSBLKSZ   => 1024;
+
+use constant ROMFSPADDING => '\0' x ROMFSBLKSZ;
 
 use Getopt::Long;
 
@@ -155,6 +168,13 @@ sub warn_or_die($$) {
     } else {
 	warn $mess;
     }
+}
+
+# Round up to the next block size
+
+sub roundup($$) {
+    my ($size, $blksz) = @_;
+    return int(($size + $blksz - 1) / $blksz) * $blksz;
 }
 
 # Find the location of the ROMFS root file system in the file handle $fh.
@@ -190,7 +210,7 @@ sub check_lastfs_block($$$$) {
     my ($kern_fn, $kern_fh, $kpos, $size) = @_;
     my $buf;
     my $sum = 0;
-    $kpos = $kpos + int(($size + BLOCKSZ - 1) / BLOCKSZ - 1) * BLOCKSZ;
+    $kpos = $kpos + roundup($size, BLOCKSZ);
     read_or_die($kern_fn, $kern_fh, $kpos, \$buf, BLOCKSZ, 1);
     if($size % BLOCKSZ != 0) {
 	my $off = $size % BLOCKSZ;
@@ -226,8 +246,17 @@ sub extract_rootfs($$$$$$$) {
     while($left > 0) {
 	read_or_die($kern_fn, $kern_fh, $kpos, $buf, BLOCKSZ, 1);
 	$kpos += BLOCKSZ;
-        write_or_die($root_fn, $root_fh, $rpos, $buf,
-	    ($left < BLOCKSZ ? $left : BLOCKSZ), 1);
+	if($left < BLOCKSZ) {
+	    if($left % ROMFSBLKSZ != 0) {
+		my $newlen = roundup($left, ROMFSBLKSZ);
+		substr($$buf, $left, $newlen-$left) =
+			substr ROMFSPADDING, 0, $newlen-$left;
+		$left = $newlen;
+	    }
+            write_or_die($root_fn, $root_fh, $rpos, $buf, $left, 1);
+	} else {
+            write_or_die($root_fn, $root_fh, $rpos, $buf, BLOCKSZ, 1);
+	}
 	$rpos += BLOCKSZ;
 	$left -= BLOCKSZ;
     }
@@ -272,11 +301,13 @@ open KERN, '<', $kern_fn or die "$0: $kern_fn - $!\n";
 check_magics($kern_fn, \*KERN);
 
 my ($pos, $size, $buf) = find_rootfs($kern_fn, \*KERN);
-my $spare = $size % BLOCKSZ == 0 ? 0 : BLOCKSZ - $size % BLOCKSZ;
+my $spare = roundup($size, BLOCKSZ) - $size;
 
 # Print the location, size, and spare space for the file system
 
 printf "Found rootfs at file location 0x%08x size: %d\n", $pos, $size;
+printf "Romfs padded file size: %d\n",
+    int(($size + ROMFSBLKSZ - 1) / ROMFSBLKSZ) * ROMFSBLKSZ;
 printf "Spare space: %d bytes\n", $spare;
 printf "Maximum update size: %d bytes\n", $size + $spare;
 

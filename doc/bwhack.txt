@@ -1,0 +1,107 @@
+NAME
+
+    bwhack - remotely enable and disable Beyonwiz "hacks"
+
+SYNOPSIS
+
+        bwhack [-H host|--host=host] [-p port|--port=port]
+               [-v|--verbose] [-h|help] [ hack1 on hack2 off ...]
+
+DESCRIPTION
+
+    Uses the presence and absence of files on the Beyonwiz HDD to enable or
+    disable various user extensions ("hacks") on the Beyonwiz at startup
+    time.
+
+    Must be used with a suitable "rc.local" file installed as executable in
+    the Beyonwiz "/tmp/config". An example "rc.local" is included in the
+    *BWFWTools* package.
+
+    In order to get the file there in the first place, Eric Fry's *Telnet
+    patch*
+    <http://www.beyonwizsoftware.net/software-b28/telnet-firmware-patch> can
+    be used. This only works on specific Beyonwiz firmware versions, but
+    once "" is installed on the Beyonwiz, it will not be removed by firmware
+    updates, only by a Beyonwiz *Factory Settings* reset.
+
+    Alternatively the "/etc/rc.sysinit" file in any firmware distribution
+    can be modified in a similar way to the modification in *Telnet patch*,
+    using "unpack_wrp", "pack_wrp" and a suitable editor.
+
+ARGUMENTS
+
+    The main arguments allow the known hacks to be enabled ("on") or
+    disabled ("off").
+
+    If no "hack" arguments are given, prints which are enabled and which are
+    disbled.
+
+    The known hacks are
+
+    dim The front panel display is run in a dimmer mode (as it is when on
+        standby).
+
+    telnetd
+        Run *telnetd* to allow login to the Beyonwiz using the *telnet*
+        protocol.
+
+    wizremote
+        Enable Eric Fry's *wizremote*
+        (<http://www.beyonwizsoftware.net/software-b28/wizremote>) on the
+        Beyonwiz.
+
+    httproot
+        Enable HTTP access to whole BW.
+
+        The Beyonwiz root file system starts at
+        "http://your_bw_ip_addr:49152/root". The Beyonwiz HTTP server
+        doesn't allow directory listing, so you have to know where you're
+        navigating.
+
+    The options to *bwhack* are:
+
+    host
+          --host=host
+          -H host
+
+        Sets the host name or IP address of the Beyonwiz to connect to.
+
+    port
+          --port=port
+          -p port
+
+        Sets the IP port number of the Beyonwiz WizPnP/HTTP server to
+        connect to. Must match the WizPnP port value set in
+        "SETUP>Network>WizPnP" on the Beyonwiz.
+
+    verbose
+          --verbose
+          -v
+
+        Prints which hacks have been turned on or off.
+
+    help
+          --help
+          -h
+
+        Prints a summary of the command use.
+
+PREREQUSITES
+
+    Uses packages "Getopt::Long" and "URI", "LWP::Simple" and
+    "HTTP::Request".
+
+BUGS
+
+    Requires a suitable startup procedure on the Beyonwiz to work as
+    intended. The simplest way of adding one is to use an "rc.local" file
+    like the one included in the *BWFWTools* package installed on the
+    Beyonwiz in "/tmp/config".
+
+    Using user extensions or hacks may make your Beyonwiz unable to operate
+    correctly, or even start. If that happens, you may need to use the
+    procedures in NOTICE - How to recover from FW update failure
+    <http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298> procedure on
+    the Beyonwiz forum. It's not known whether that procedure will fix all
+    failure due to user modifications or "hacks".
+

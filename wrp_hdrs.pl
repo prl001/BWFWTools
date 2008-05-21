@@ -200,16 +200,17 @@ sub printHdr($) {
 
     foreach my $fld (qw/fileSize offset magic machMagic version
 		    md5file
-		    count imageTag imageType imageOffset imageLength
+		    count imageTag imageType imageOffset
+		    imageLength spaceRemaining
 		    md5image
 		    fsType fsSize fsVol/) {
 	my $fmt = $formats{$fld};
 	$fmt = "%s" if(!defined($fmt));
 	if(ref($hdr->{$fld}) eq 'ARRAY') {
-	    printf "%12s: [%s]\n", $fld,
+	    printf "%14s: [%s]\n", $fld,
 		join(', ', map {sprintf $fmt, $_} @{$hdr->{$fld}});
 	} else {
-	    printf "%12s: $fmt\n", $fld, $hdr->{$fld};
+	    printf "%14s: $fmt\n", $fld, $hdr->{$fld};
 	}
     }
     print "Trailer padding not 512 bytes\n"
@@ -224,6 +225,7 @@ sub printHdr($) {
 
 foreach my $fn (@ARGV) {
     my $hdr = readHdrFile($fn);
+    $hdr->{spaceRemaining} = 0x7b0000 - $hdr->{imageLength};
     if($hdr) {
 	print "$fn:\n";
 	printHdr($hdr);

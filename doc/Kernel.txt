@@ -6,7 +6,7 @@ NAME
 SYNOPSIS
 
         use Beyonwiz::Kernel;
-    
+
     or
 
         use Beyonwiz::Kernel qw(

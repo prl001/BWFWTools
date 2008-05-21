@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# An example rc.local to use with the bwhack hack enabler/disabler
+
+HACKS='dim telnetd wizremote httproot'
+SHOWHACKON=yes
+SHOWHACKOFF=no
+
+# Announce the presence of the rc.local
+micomparam -q -t rc.local
+
+# Wait for HDD to be mounted...
+while [ ! -f /tmp/mnt/idehdd/.super ]; do sleep 1; done
+
+for hack in $HACKS; do
+    if [ -f /tmp/mnt/idehdd/$hack ]; then
+	if [ $SHOWHACKON = yes ]; then micomparam -q -t $hack; fi
+	case $hack in
+	    telnetd)
+		telnetd -l /bin/sh &
+		;;
+	    wizremote)
+		(cd /tmp/mnt/idehdd/wizremote; ./wizremote > /dev/null &)
+		;;
+	    httproot)
+		ln -s / /tmp/mnt/root
+		;;
+	    dim)
+		# Tone down the display
+		micomparam -q -r 500101
+		;;
+	esac
+   else
+	if [ $SHOWHACKOFF = yes ]; then micomparam -q -t $hack; fi
+	case $hack in
+	    telnetd)
+		;;
+	    wizremote)
+		;;
+	    httproot)
+		;;
+	    dim)
+		;;
+	esac
+   fi
+done
+
+exit 0

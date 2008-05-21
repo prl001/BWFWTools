@@ -4,7 +4,7 @@ LIB=$(PREFIX)/lib/perl
 
 MODULEDIR=Beyonwiz
 
-SCRIPTS=bw_rootfs.pl getksyms.pl gunzip_bflt.pl make_kern_bflt.pl \
+SCRIPTS=bwhack.pl bw_rootfs.pl getksyms.pl gunzip_bflt.pl make_kern_bflt.pl \
 	pack_wrp.pl unpack_wrp.pl wrp_hdrs.pl
 MODULES=$(MODULEDIR)/Kernel.pm
 

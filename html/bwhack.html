@@ -1,0 +1,193 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>bwhack</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@omen.apple.com" />
+</head>
+
+<body style="background-color: white">
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;bwhack</span></strong></big>
+</td></tr>
+</table>
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#arguments">ARGUMENTS</a></li>
+	<li><a href="#prerequsites">PREREQUSITES</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>bwhack - remotely enable and disable Beyonwiz ``hacks''</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+    bwhack [-H host|--host=host] [-p port|--port=port]
+           [-v|--verbose] [-h|help] [ hack1 on hack2 off ...]</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>Uses the presence and absence of files on the Beyonwiz HDD
+to enable or disable various user extensions (``hacks'') on the Beyonwiz
+at startup time.</p>
+<p>Must be used with a suitable <code>rc.local</code> file installed
+as executable in the Beyonwiz <code>/tmp/config</code>.
+An example <code>rc.local</code> is included in the
+<em>BWFWTools</em> package.</p>
+<p>In order to get the file there in the first place,
+Eric Fry's <em>Telnet patch</em>
+<a href="http://www.beyonwizsoftware.net/software-b28/telnet-firmware-patch">http://www.beyonwizsoftware.net/software-b28/telnet-firmware-patch</a>
+can be used.
+This only works on specific Beyonwiz firmware versions,
+but once <code></code> is installed
+on the Beyonwiz, it will not be removed
+by firmware updates, only
+by a Beyonwiz <em>Factory Settings</em> reset.</p>
+<p>Alternatively the <code>/etc/rc.sysinit</code> file in any
+firmware distribution can be modified in a similar
+way to the modification in <em>Telnet patch</em>,
+using <a href=".././html/unpack_wrp.html"> <code>unpack_wrp</code></a>,
+<a href=".././html/pack_wrp.html"> <code>pack_wrp</code></a>
+and a suitable editor.</p>
+<p>
+</p>
+<hr />
+<h1><a name="arguments">ARGUMENTS</a></h1>
+<p>The main arguments allow the known hacks to be enabled (<code>on</code>)
+or disabled (<code>off</code>).</p>
+<p>If no ``hack'' arguments are given, prints which are enabled and which
+are disbled.</p>
+<p>The known hacks are</p>
+<dl>
+<dt><strong><a name="item_dim">dim</a></strong>
+
+<dd>
+<p>The front panel display is run in a dimmer mode (as it is when on standby).</p>
+</dd>
+</li>
+<dt><strong><a name="item_telnetd">telnetd</a></strong>
+
+<dd>
+<p>Run <em>telnetd</em> to allow login to the Beyonwiz using the <em>telnet</em>
+protocol.</p>
+</dd>
+</li>
+<dt><strong><a name="item_wizremote">wizremote</a></strong>
+
+<dd>
+<p>Enable Eric Fry's <em>wizremote</em>
+(<a href="http://www.beyonwizsoftware.net/software-b28/wizremote">http://www.beyonwizsoftware.net/software-b28/wizremote</a>)
+on the Beyonwiz.</p>
+</dd>
+</li>
+<dt><strong><a name="item_httproot">httproot</a></strong>
+
+<dd>
+<p>Enable HTTP access to whole BW.</p>
+</dd>
+<dd>
+<p>The Beyonwiz root file system starts at
+<code>http://your_bw_ip_addr:49152/root</code>.
+The Beyonwiz HTTP server doesn't allow directory
+listing, so you have to know where you're navigating.</p>
+</dd>
+</li>
+</dl>
+<p>The options to <em>bwhack</em> are:</p>
+<dl>
+<dt><strong><a name="item_host">host</a></strong>
+
+<dd>
+<pre>
+  --host=host
+  -H host</pre>
+</dd>
+<dd>
+<p>Sets the host name or IP address of the Beyonwiz to connect to.</p>
+</dd>
+<dt><strong><a name="item_port">port</a></strong>
+
+<dd>
+<pre>
+  --port=port
+  -p port</pre>
+</dd>
+<dd>
+<p>Sets the IP port number of the Beyonwiz WizPnP/HTTP server
+to connect to.
+Must match the WizPnP port value set in <code>SETUP&gt;Network&gt;WizPnP</code>
+on the Beyonwiz.</p>
+</dd>
+<dt><strong><a name="item_verbose">verbose</a></strong>
+
+<dd>
+<pre>
+  --verbose
+  -v</pre>
+</dd>
+<dd>
+<p>Prints which hacks have been turned on or off.</p>
+</dd>
+<dt><strong><a name="item_help">help</a></strong>
+
+<dd>
+<pre>
+  --help
+  -h</pre>
+</dd>
+<dd>
+<p>Prints a summary of the command use.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="prerequsites">PREREQUSITES</a></h1>
+<p>Uses packages <code>Getopt::Long</code>
+and <code>URI</code>,
+<code>LWP::Simple</code> and
+<code>HTTP::Request</code>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>Requires a suitable startup procedure on the Beyonwiz
+to work as intended.
+The simplest way of adding one is to use an <code>rc.local</code>
+file like the one included in the <em>BWFWTools</em> package installed
+on the Beyonwiz in <code>/tmp/config</code>.</p>
+<p>Using user extensions or hacks may make your Beyonwiz unable to
+operate correctly, or even start.
+If that happens, you may need to use the procedures in
+<strong>NOTICE - How to recover from FW update failure</strong>
+<a href="http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298">http://www.beyonwiz.com.au/phpbb2/viewtopic.php</a>
+procedure on the Beyonwiz forum.
+It's not known whether that procedure will fix all 
+failure due to user modifications or ``hacks''.</p>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;bwhack</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>

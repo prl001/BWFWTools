@@ -7,12 +7,6 @@ index=html/index.html
 
 podpath=--podpath=.:Beyonwiz
 
-if [ `uname` = Darwin ]; then
-    echo "On Mac OS X, using html2pod's --podpath causes ihtml2pod to hang" 1>&2
-    echo "Unsetting --podpath; expect some 'cannot resolve' errors" 1>&2
-    podpath=
-fi
-
 # Header for index.html
 
 cat > $index << '_EOF'
@@ -49,7 +43,7 @@ for i in "$@"; do
     # Convert the Perl POD markup to HTML
     pod2html --htmlroot=.. --podroot=. $podpath --htmldir=. \
              --header --title=$j \
-             --infile=$i --outfile=html/$d/$j.html
+             --infile=$i > html/$d/$j.html
     # Add a line to index.html
     echo "<li><a href=\"$j.html\">$synopsis</li>" >> $index
 

@@ -1,0 +1,28 @@
+NAME
+
+    svcdat - print the contents of Beyonwiz "svc.dat" (service scan
+    configuration) files
+
+SYNOPSIS
+
+        svcdat svc.dat_files...
+
+DESCRIPTION
+
+    Prints or dumps the tables in Beyonwiz "svc.dat" files. Normal listing
+    is of the decoded service table, channel table and (assumed) tuner
+    parameter table grouped by channel, then by service. The columns marked
+    as PMT PID and PCR PID have not been confirmed as the PIDs for the
+    service Program Map Table and Program Clock Reference. The (presumed)
+    tuner parameters are indicated as "T1(...) T2(...)" for the two tuners.
+
+    The option -d does a hexadecimal dump of the tables as 16-bit
+    little-endian integers. The columns are headed by the interpretation of
+    the values.
+
+ACKNOWLEDGEMENTS
+
+    Most of the "svc.dat" interpretation was done by efry (Eric Fry) and
+    tonymy01 (Tony) on the Australian Beyonwiz Forum
+    (<http://www.beyonwiz.com.au/phpbb2/index.php>).
+

@@ -1,0 +1,173 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>BwhackSupport</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@omen.apple.com" />
+</head>
+
+<body style="background-color: white">
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;BwhackSupport</span></strong></big>
+</td></tr>
+</table>
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#functions">FUNCTIONS</a></li>
+	<li><a href="#disabling_the_hack">DISABLING THE HACK</a></li>
+	<li><a href="#prerequsites">PREREQUSITES</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<pre>
+    Beyonwiz::Hack::BwhackSupport;</pre>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p>A module to use as an argument to use with <a href="../../../html/bw_patcher.html"> <code>bw_patcher</code></a>.
+It modifies the firmware to start a user-selectable set of hacks
+that can be enabled/disabled using <a href="../../../html/bwhack.html"> <code>bwhack</code></a>.</p>
+<p>The hacks available for enabling (default is all disabled) are:</p>
+<dl>
+<dt><strong><a name="item_dim">dim</a></strong>
+
+<dd>
+<p>The front panel display is run in a dimmer mode (as it is when on standby).</p>
+</dd>
+</li>
+<dt><strong><a name="item_telnetd">telnetd</a></strong>
+
+<dd>
+<p>Run <em>telnetd</em> to allow login to the Beyonwiz using the <em>telnet</em>
+protocol.</p>
+</dd>
+</li>
+<dt><strong><a name="item_wizremote">wizremote</a></strong>
+
+<dd>
+<p>Enable Eric Fry's <em>wizremote</em>
+(<a href="http://www.beyonwizsoftware.net/software-b28/wizremote">http://www.beyonwizsoftware.net/software-b28/wizremote</a>)
+on the Beyonwiz.</p>
+</dd>
+</li>
+<dt><strong><a name="item_httproot">httproot</a></strong>
+
+<dd>
+<p>Enable HTTP access to whole BW.</p>
+</dd>
+<dd>
+<p>The Beyonwiz root file system starts at
+<code>http://your_bw_ip_addr:49152/root</code>.
+The Beyonwiz HTTP server doesn't allow directory
+listing, so you have to know where you're navigating.</p>
+</dd>
+</li>
+</dl>
+<p>The installation process modifies the Beyonwiz firmware startup script
+<code>/etc/rc.sysinit</code> to copy the added
+firmware file <code>/etc/rc.localcopy</code> into <code>/tmp/config/rc.localcopy</code>
+each time the Beyonwiz starts.
+<code>/tmp/config/rc.localcopy</code> is also copied into, and restored from,
+non-volatile storage each time the Beyonwiz restarts.
+<code>/etc/rc.sysinit</code> runs after this copy, so modifications to
+<code>/tmp/config/rc.localcopy</code> will be overwritten each time the
+Beyonwiz starts (and before <code>/tmp/config/rc.localcopy</code> has been run).
+However, this means that even if you install an unmodified firmware package
+on the beyonwiz, the patch will still be active, because running
+<code>/tmp/config/rc.localcopy</code> is part of normal firmware startup.</p>
+<p>The effect of this hack will <em>not</em> be undone if you load
+unmodified firmware onto the Beyonwiz.</p>
+<p>
+</p>
+<hr />
+<h1><a name="functions">FUNCTIONS</a></h1>
+<dl>
+<dt><strong><a name="item_hack"><code>hack($flash_dir, $root_dir)</code></a></strong>
+
+<dd>
+<p>Called by <a href="../../../html/bw_patcher.html"> <code>bw_patcher</code></a> to perform the patch.</p>
+</dd>
+<dd>
+<p>Inserts the lines:</p>
+</dd>
+<dd>
+<pre>
+    if [ ! -x /etc/rc.localcopy ]; then
+            rm -f &quot;${CONFIG_DIR}/rc.local&quot;
+            cp /etc/rc.localcopy &quot;${CONFIG_DIR}/rc.local&quot;
+    fi</pre>
+</dd>
+<dd>
+<p>into the file that will be <code>/etc/rc.sysinit</code>, the system startup script,
+on the Beyonwiz.
+The line will be inserted just before the comment line:</p>
+</dd>
+<dd>
+<pre>
+    # rc.local</pre>
+</dd>
+<dd>
+<p>It also adds the new file <code>/etc/rc.localcopy</code> to the firmware.
+This file actually implements the hack.</p>
+</dd>
+</li>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="disabling_the_hack">DISABLING THE HACK</a></h1>
+<p>If the Beyonwiz is not running an unmodified firmware package,
+download unmodified firmware into the Beyonwiz and
+restart.</p>
+<p>Enable only the <code>telnet</code> hack using <a href="../../../html/bwhack.html"> <code>bwhack</code></a>
+(installing unmodified firmware has not disabled the hacks):</p>
+<pre>
+    bwhack.pl --host=my.BW.IP.addr all off
+    bwhack.pl --host=my.BW.IP.addr telnetd on</pre>
+<p>Connect to the Beyonwiz using <code>telntt</code>.</p>
+<p>When you see the <code>#</code> command prompt, type</p>
+<pre>
+    rm /tmp/config/rc.localcopy /tmp/mnt/idehdd/telnetd
+    exit</pre>
+<p>Then restart the Beyonwiz.</p>
+<p>
+</p>
+<hr />
+<h1><a name="prerequsites">PREREQUSITES</a></h1>
+<p>Uses packages 
+<a href="../../../html/./Beyonwiz/Hack/Utils.html"><code>Beyonwiz::Hack::Utils</code></a>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>This firmware hack will not work on a DP-H1 (nothing bad will
+happen to the DP-H1, you just won't be able to enable the hacks),
+but if you do install it,
+it's not straight-forward to remove.</p>
+<p><strong>Using <em>bw_patcher</em> (or any other method) to create a modified
+version of the firmware for any Beyonwiz model can result in a
+firmware package that can cause the Beyonwiz firmware to fail
+completely.</strong></p>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;BwhackSupport</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>

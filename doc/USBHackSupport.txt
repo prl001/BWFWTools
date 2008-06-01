@@ -1,0 +1,187 @@
+NAME
+
+        Beyonwiz::Hack::USBHackSupport;
+
+SYNOPSIS
+
+    A module to use as an argument to use with "bw_patcher". It modifies the
+    firmware to start hack scripts that are in the directory
+    "beyonwiz/etc/init.d" any USB device connected at startup. If no such
+    USB device is connected at startup no hacks will be started.
+
+    Memory cards in the front slots on the DP-S1 count as connected USB
+    devices, so memory cards as well as USB thumb and hard drives can be
+    used to enable hacks this way.
+
+    The hacks available for enabling (default is all disabled) are:
+
+    S00enablevfd
+        Enables display of progress through the hack startup on the front
+        panel VFD (Vacuum Fluorescent Display).
+
+    S01dimvfd
+        The front panel display is run in a dimmer mode (as it is when on
+        standby).
+
+    S02telnet
+        Run *telnetd* to allow login to the Beyonwiz using the *telnet*
+        protocol.
+
+    S08recfixer
+        A version of tonymy01's *Error loading media file* fixer. Copies a
+        "stat" file from an existing recording into recordings that are
+        missing them, so that they become playable again. Unlike tonymy01's
+        version, which only repairs recordings on the DP-S1 and DP-P1
+        internal drive, this version will also look on any "registered for
+        recording" drive on any Beyonwiz model and repair recordings there.
+
+    S09wizremote
+        Starts Eric Fry's (efry) *wizremote* server
+        (<http://www.beyonwizsoftware.net/software-b28/wizremote>), if it is
+        installed in /tmp/config. Otherwise has no effect.
+
+    S99removehacks
+        Removes the "/tmp/config/rc.local" file from the Beyonwiz. For this
+        to be effective, unmodified Beyonwiz firmware must be downloaded to
+        the Beyonwiz first. See
+
+    The patching process modifies the Beyonwiz firmware startup script
+    "/etc/rc.sysinit" to copy the added firmware file
+    "/flash/hacks/rc.local" into "/tmp/config/rc.local" each time the
+    Beyonwiz starts. "/tmp/config/rc.local" is also copied into, and
+    restored from, non-volatile storage each time the Beyonwiz restarts.
+    "/etc/rc.sysinit" runs after this copy, so modifications to
+    "/tmp/config/rc.local" will be overwritten each time the Beyonwiz starts
+    (and before "/tmp/config/rc.local" has been run). However, this means
+    that even if you install an unmodified firmware package on the beyonwiz,
+    the patch will still be active, because running "/tmp/config/rc.local"
+    is part of normal firmware startup.
+
+    The effect of this hack will *not* be undone if you load unmodified
+    firmware onto the Beyonwiz.
+
+PREPARING THE USB DEVICE OR MEMORY CARD
+
+    The USB device must be formatted as either FAT32 or NTFS.
+
+    Create the directories "beyonwiz", "beyonwiz/etc" and
+    "beyonwiz/etc/init.d" (or the equivalent "beyonwiz\etc", etc. if you are
+    using Windows).
+
+    Then copy the hack scripts you want to use from "etc/init.d" in this
+    package into "beyonwiz/etc/init.d" on the USB device while it's
+    connected to your PC (Mac, etc).
+
+    If the device prepared this way is connected to the Beyonwiz at startup,
+    the corresponding hacks will be started.
+
+USING THE HACK USB DEVICE OR MEMORY CARD
+
+    To run/start the hacks that you've installed on the USB device (or
+    memory card), simply plug the device into an appropriate port on the
+    Beyonwiz, and (re)start it.
+
+    If you've included the "S00enablevfd" hack on the device when you set it
+    up, the progress of running the hack scripts will be shown on the
+    Beyonwiz front panel display.
+
+    If you've included "S08recfixer" on the device, it will display "Fixed
+    recording" on the front panel if any recordings were repaired by the
+    script. It will also create a fake recording in the recording device's
+    "recording" folder called "Fixed_some_broken_recordings" to indicate
+    that repairs were made. This recording will be unplayable, but it can be
+    deleted.
+
+FOR ADVANCED USERS
+
+    The scripts must be named starting with "S" and two digits, and the
+    scripts on any single USB device will be run in numerical order.
+
+    You can temporarily disable a hack on a USB device simply by renaming it
+    not to start with "S". It can be reactivated by renaming it to start
+    with "S".
+
+    The startup code searches all USB devices connected to the Beyonwiz, and
+    runs scripts from any (and all) attched devices with the scripts in the
+    appropriate location.
+
+    The USB defices are searched in the following order:
+
+    DP-S1
+            Front panel memory card
+            Front panel USB port
+            Rear USB port
+
+    DP-P1 and DP-H1
+            Lower rear USB port
+            Upper rear USB port
+
+    If two cards are inserted on the DP-S1, the search order is uncertain,
+    if it works at all.
+
+    If you want to create or modify scripts, you must use an editor that
+    respects and preserves Unix-style LF line endings. Many Windows editors
+    do not do this. In particular, WordPad will read the files correctly,
+    but if you write them, it will convert the line endings to the DOS CRLF
+    convention, and they will often fail to work on the Beyonwiz. The CR
+    character is *not* treated as whitespace by the Beyonwiz shell.
+
+    You'll need to familiarise yourself with the limited Linux command set
+    available on the Beyonwiz, and the fact the command shell on the
+    Beyonwiz is much more limited than Linux "bash" and similar.
+
+    Resources on <http://www.OpenWiz.org/> may be useful.
+
+    You can test your scripts by copying them to a Windows Share that the
+    Beyonwiz can access, and mounting the share by navigating to the share
+    in the file player. You can find where the share is mounted in the
+    Beyonwiz file system by running
+
+        mount
+
+FUNCTIONS
+
+    "hack($flash_dir, $root_dir)"
+        Called by "bw_patcher" to perform the patch.
+
+        Inserts the lines:
+
+            if [ ! -x /flash/hacks/rc.local ]; then
+                    rm -f "${CONFIG_DIR}/rc.local"
+                    cp /flash/hacks/rc.local "${CONFIG_DIR}/rc.local"
+            fi
+
+        into the file that will be "/etc/rc.sysinit", the system startup
+        script, on the Beyonwiz. The line will be inserted just before the
+        comment line:
+
+            # rc.local
+
+        It also adds the new file "/flash/hacks/rc.local" to the firmware.
+        This file actually implements the hack.
+
+DISABLING THE HACK
+
+    If the Beyonwiz is not running an unmodified firmware package, download
+    unmodified firmware into the Beyonwiz and restart.
+
+    Remove the hacks by restarting the Beyonwiz with a USB device that has
+    (at least) "S99removehacks" in "beyonwiz/etc/init.d".
+
+    Then restart the Beyonwiz.
+
+PREREQUSITES
+
+    Uses packages "Beyonwiz::Hack::Utils" "File::Spec::Functions".
+
+BUGS
+
+    Waits 4 seconds before searching for USB devices. This may occasionally
+    not be long enough. If you expect patches to run, and they don't, try
+    restarting the Beyonwiz. With the limited scripting facilities
+    available, this bug is fifficult to resolve.
+
+    Using *bw_patcher* (or any other method) to create a modified version of
+    the firmware for any Beyonwiz model can result in a firmware package
+    that can cause the Beyonwiz firmware to fail completely.
+

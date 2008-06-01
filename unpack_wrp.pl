@@ -45,7 +45,7 @@ This mode is automatically invoked on systems that normally have case-insensitiv
   --force
   -f
 
-Passed through to L< C<bw_rootfs>|bw_rootfs/> >.
+Passed through to L< C<bw_rootfs>|bw_rootfs/>.
 Forces extraction in some cases where it would otherwise fail.
 
 =item keep
@@ -60,10 +60,10 @@ C<linux.bin> and C<root.romfs>, which are otherwise deleted.
 
 =head1 PREREQUSITES
 
-Uses packages C<Getopt::Long>,
-C<IO::Uncompress::Gunzip> and C<POSIX>.
+Uses packages C<Getopt::Long>, C<File::Spec::Functions>,
+C<IO::Uncompress::Gunzip>.
 
-Uses L< C<bw_rootfs>|bw_rootfs/> >.
+Uses L< C<bw_rootfs>|bw_rootfs/>.
 
 Uses Eric Fry's wizfwtools program wiz_unpack.
 
@@ -75,9 +75,11 @@ They may fail and the extraction of the root file system will fail.
 =cut
 
 use strict;
+use warnings;
 
 use IO::Uncompress::Gunzip qw(gunzip $GunzipError) ;
 use Getopt::Long;
+use File::Spec::Functions;
 
 Getopt::Long::Configure qw/no_ignore_case bundling/;
 
@@ -122,8 +124,6 @@ my $bw_rootfs_args = $force ? " -f" : "";
 
 my ($wrp_fn, $flash_dir, $rootfs_dir) = @ARGV;
 
-my $perl_dir = PERLS;
-
 $SIG{$_} = \&on_exit foreach qw(HUP INT QUIT PIPE TERM __DIE__);
 
 print "Extract application file system $wrp_fn into $flash_dir\n";
@@ -133,24 +133,24 @@ die "Target directory $flash_dir already exists\n"
 die "Target directory $rootfs_dir already exists\n"
     if(defined $rootfs_dir && -e $rootfs_dir);
 
-system("wiz_unpack$wrp_unpack_args -x $q$flash_dir$q $q$wrp_fn$q") == 0
+system("wiz_unpack$wrp_unpack_args -q -x $q$flash_dir$q $q$wrp_fn$q") == 0
     or die "wiz_unpack of $wrp_fn into $flash_dir failed\n";
 
 if(defined $rootfs_dir) {
     print "Extract root file system into $rootfs_dir\n";
-    $lingz = $flash_dir . '/' . ($insens ? '001x_' : '') . LINGZ;
-    $lingz = $flash_dir . '/' . '001r_' . LINGZ
+    $lingz = catfile($flash_dir, ($insens ? '001x_' : '') . LINGZ);
+    $lingz = catfile($flash_dir, '001r_' . LINGZ)
 	if($insens && !-e $lingz);
-    $lin = $flash_dir . '/' . LIN;
-    $rootfs = $flash_dir . '/' . ROOTFS;
+    $lin = catfile($flash_dir, LIN);
+    $rootfs = catfile($flash_dir, ROOTFS);
     mkdir $rootfs_dir or die "Can't create $rootfs_dir: $!\n"
 	if(!-d $rootfs_dir);
     gunzip($lingz => $lin, BinModeOut => 1)
 	or die "gunzip of $lingz to $lin failed: $GunzipError\n";
-    system("perl $q$perl_dir/bw_rootfs.pl$q$bw_rootfs_args"
+    system("bw_rootfs.pl$bw_rootfs_args"
 		. " $q$lin$q $q$rootfs$q") == 0
 	or die "Extraction of $rootfs from $lin failed\n";
-    system("wiz_unpack$wrp_unpack_args -x $q$rootfs_dir$q $q$rootfs$q") == 0
+    system("wiz_unpack$wrp_unpack_args -q -x $q$rootfs_dir$q $q$rootfs$q") == 0
 	or die "wiz_unpack of $rootfs into $rootfs_dir failed\n";
 }
 

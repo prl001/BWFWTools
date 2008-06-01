@@ -2,26 +2,47 @@ PREFIX=/usr/local
 BIN=$(PREFIX)/bin
 LIB=$(PREFIX)/lib/perl
 
-MODULEDIR=Beyonwiz
+BWMODULEDIR=Beyonwiz
+HACKMODULEDIR=$(BWMODULEDIR)/Hack
 
-SCRIPTS=bwhack.pl bw_rootfs.pl getksyms.pl gunzip_bflt.pl make_kern_bflt.pl \
-	pack_wrp.pl unpack_wrp.pl wrp_hdrs.pl
-MODULES=$(MODULEDIR)/Kernel.pm
+SCRIPTS=bw_patcher.pl bw_rootfs.pl bwhack.pl getksyms.pl \
+	gunzip_bflt.pl make_kern_bflt.pl pack_wrp.pl svcdat.pl \
+	unpack_wrp.pl wrp_hdrs.pl
+
+
+BWMODULES=$(BWMODULEDIR)/Kernel.pm
+
+
+HACKMODULES=$(HACKMODULEDIR)/BwhackSupport.pm $(HACKMODULEDIR)/Telnet.pm \
+	$(HACKMODULEDIR)/USBHackSupport.pm $(HACKMODULEDIR)/Utils.pm
+
+
+MODULES=$(BWMODULES) $(HACKMODULES)
 
 all:
 
 install: all install_lib install_bin
 
 install_lib:
-	mkdir -p '$(LIB)/$(MODULEDIR)'
-	cp $(MODULES) '$(LIB)/$(MODULEDIR)'
+	mkdir -p '$(LIB)/$(BWMODULEDIR)' '$(LIB)/$(HACKMODULEDIR)'
+	@echo Installing modules to $(BWMODULES)
+	@for s in $(BWMODULES); do \
+		cp $$s '$(LIB)/$(BWMODULEDIR)'; \
+		chmod a+r '$(LIB)'/$$s; \
+	done
+	@echo Installing modules to $(HACKMODULEDIR)
+	@for s in $(HACKMODULES); do \
+		cp $$s '$(LIB)/$(HACKMODULEDIR)'; \
+		chmod a+r '$(LIB)'/$$s; \
+	done
 
 install_bin:
 	mkdir -p '$(LIB)'
+	cp $(SCRIPTS) '$(BIN)'
 	@for s in $(SCRIPTS); do \
 		echo Install $$s in $(BIN); \
-		sed "/use constant PERLS/s|'\.'|'$(BIN)'|" $$s > '$(BIN)'/$$s; \
-		chmod a+x '$(BIN)'/$$s; \
+		cp $$s '$(BIN)'/$$s; \
+		chmod a+rx '$(BIN)'/$$s; \
 	done
 
 uninstall: uninstall_bin uninstall_lib
@@ -31,7 +52,7 @@ uninstall_bin:
 	
 uninstall_lib:
 	cd '$(LIB)' && rm -f $(MODULES)
-	-rmdir '$(LIB)/$(MODULEDIR)'
+	-rmdir '$(LIB)/$(HACKMODULEDIR)' '$(LIB)/$(BWMODULEDIR)'
 	
 doc::
 	./make_doc.sh $(SCRIPTS) $(MODULES)

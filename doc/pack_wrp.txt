@@ -26,7 +26,7 @@ DESCRIPTION
 
 ARGUMENTS
 
-    Make_kernel_bflt takes the following arguments:
+    Pack_wrp takes the following arguments:
 
     insens
           --insens
@@ -139,16 +139,18 @@ ARGUMENTS
           --compress=level
           -c level
 
-        Set the *gzip* compression level to *level* when the kernel binary
-        is recompressed after an update. The default is to use the *gzip*
-        default compression level. *Level* must be in the range 1..9; 9 for
-        best compression.
+        Set the gzip compression level to *level* when the kernel binary is
+        recompressed after an update. The default is to use the gzip default
+        compression level if gzip is used for compression, and 9 if the Perl
+        "IO::Compress::Gzip" package is used. The Perl package does not
+        appear to compress as effectively as gzip, and even at level 9 its
+        result is still slightly larger than for gzip's default compression.
+        *Level* must be in the range 1..9; 9 for best compression.
 
-        Beyonwiz kernels appear to be compressed at level 8. The *gzip*
-        default is level 6.
+        The gzip default is level 6.
 
-        *Gzip* is only invoked if *root_directory* is specified, otherwise
-        the kernel binary is not modified.
+        Gzip is only invoked if *root_directory* is specified, otherwise the
+        kernel binary is not modified.
 
     perlgzip, gzip
           --perlgzip
@@ -166,7 +168,7 @@ ARGUMENTS
 PREREQUSITES
 
     Uses packages "Getopt::Long", "IO::Compress::Gzip",
-    "IO::Uncompress::Gunzip" and "POSIX".
+    "IO::Uncompress::Gunzip" and "FindBin".
 
     Uses "bw_rootfs".
 
@@ -176,6 +178,10 @@ PREREQUSITES
     unless one of --perlgzip or --gzip is used.
 
 BUGS
+
+    Using *pack_wrp* (or any other method) to create a modified version of
+    the firmware for any Beyonwiz model can result in a firmware package
+    that can cause the Beyonwiz firmware to fail completely.
 
     Tries to use some contextual information to find the root filesystem.
     They may fail and the updating of the root file system will fail.

@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
 =pod
 
@@ -25,6 +25,7 @@ Uses packages C<IO::Uncompress::Gunzip> and C<POSIX>.
 =cut
 
 use strict;
+use warnings;
 
 # gunzip_bflt zipped_blflt_files...
 

@@ -1,0 +1,64 @@
+NAME
+
+        use Beyonwiz::Hack::Utils qw(
+            findMatchingPath findNewFile
+            patchFile addFile
+            insens
+        );
+
+SYNOPSIS
+
+    Some functions to help implement patch modules for "Beyonwiz::Hack"
+    modules to use in "bw_patcher".
+
+FUNCTIONS
+
+    "insens($insens)"
+        Use the case-insensitive encoding of file/directory path names if
+        $insens is non-zero, otherwise paths are used as-is.
+
+    "findMatchingPath($fw_dir, $path)"
+        Given a directory for the root of an unpacked firmware directory
+        tree $fw_dir and a path within it $path, return a list of files that
+        match the path in the firmware, taking into account the encoding of
+        path names that's done in case-insensitive mode. This is done using
+        a file glob, so file name expansion will be done on any file name
+        expansion characters in either part of the name. The
+        case-insensitive encoding is only done on $path.
+
+        If the returned list contains more than one path, it's up to the
+        caller to determine what to do.
+
+    "findNewFile($fw_dir, $path, $exec)"
+        Given a directory for the root of an unpacked firmware directory
+        tree $fw_dir, a path within it $path and a flag to set whether the
+        file should be executable return either a list of matching paths
+        found using "findMatchingPath($fw_dir, $path)", or if none match the
+        path name of a new file (the file is not created), again taking into
+        account the path-name encoding in case-insensitive mode and doing a
+        file glob.
+
+    "patchFile($file, $pattern, $patch, $after)"
+        Given a $file, a path to an existing file in the firmware (probably
+        generated using "findMatchingPath($fw_dir, $path)", add the text in
+        the string $patch after ("$after == 1") or before ("$after == 0")
+        the line matching the Perl regular expression in $match.
+
+        $patch must have the newlines and any indenting in the correct
+        position to "fit" properly in the file; in particular it probably
+        should end in a newline.
+
+        Takes some care not to put DOS CRLF line endings in the file.
+
+    "addFile($file, $patch, $exec)"
+        Add a new file $file, a path to an existing file in the firmware
+        (probably generated using "findMatchingPath($fw_dir, $path)",
+        containing the tezt in $patch. The file will be marked as executable
+        in the firmware if $exec is non-zero.
+
+        $patch must have the newlines and any indenting in the correct
+        position to "fit" properly in the file; in particular it probably
+        should end in a newline.
+
+        Takes some care not to put DOS CRLF line endings in the file.
+

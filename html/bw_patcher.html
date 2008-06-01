@@ -1,0 +1,215 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>bw_patcher</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@omen.apple.com" />
+</head>
+
+<body style="background-color: white">
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;bw_patcher</span></strong></big>
+</td></tr>
+</table>
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#arguments">ARGUMENTS</a></li>
+	<li><a href="#patch_modules">PATCH MODULES</a></li>
+	<li><a href="#prerequsites">PREREQUSITES</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>bw_patcher - pack a Beyonwiz firmware update file</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+    bw_patcher [-t type|--machtype=type] [-T code|--machcode=code] [-i|--insens]
+             [-f|--force] [-k|--keep] [-V volume|--volname=volume]
+             [-v version|--version=version] [-s suffix|--versionsuffix=suffix]
+             [-p|-perlgzip] [-g|-gzip]
+             firmware_file patched_firmware_file patch_modules...</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>Applies the firmware patches in the <em>patch_modules</em> to <em>firmware_file</em>
+and creates a new version of the firmware in <em>patched_firmware_file</em>.</p>
+<p>Uses BWFWTools <a href=".././html/unpack_wrp.html"> <code>unpack_wrp</code></a>
+and
+<a href=".././html/pack_wrp.html"> <code>pack_wrp</code></a>
+to unpack and re-pack the firmware file after applting the patches.
+Most of the options to <strong>bw_patcher</strong> are passed through to those
+programs as applicable.</p>
+<p>
+</p>
+<hr />
+<h1><a name="arguments">ARGUMENTS</a></h1>
+<p><strong>Bw_patcher</strong> takes the following arguments:</p>
+<dl>
+<dt><strong><a name="item_insens">insens</a></strong>
+
+<dd>
+<pre>
+  --insens
+  -i</pre>
+</dd>
+<dt><strong><a name="item_machtype">machtype</a></strong>
+
+<dd>
+<pre>
+  --machtype=type
+  -t type</pre>
+</dd>
+<dt><strong><a name="item_machcode">machcode</a></strong>
+
+<dd>
+<pre>
+  --machcode=code
+  -T code</pre>
+</dd>
+<dt><strong><a name="item_force">force</a></strong>
+
+<dd>
+<pre>
+  --force
+  -f</pre>
+</dd>
+<dt><strong><a name="item_keep">keep</a></strong>
+
+<dd>
+<pre>
+  --keep
+  -k</pre>
+</dd>
+<dt><strong><a name="item_volname">volname</a></strong>
+
+<dd>
+<pre>
+  --volname=volume
+  -V volume</pre>
+</dd>
+<dt><strong><a name="item_version">version</a></strong>
+
+<dd>
+<pre>
+  --version=version
+  -v version</pre>
+</dd>
+<dt><strong><a name="item_versionsuffix">versionsuffix</a></strong>
+
+<dd>
+<pre>
+  --versionsuffix=suffix
+  -v suffix</pre>
+</dd>
+<dt><strong><a name="item_compress">compress</a></strong>
+
+<dd>
+<pre>
+  --compress=level
+  -c level</pre>
+</dd>
+<dt><strong><a name="item_perlgzip_2c_gzip">perlgzip, gzip</a></strong>
+
+<dd>
+<pre>
+  --perlgzip
+  -p
+  --gzip
+  -g</pre>
+</dd>
+<dd>
+<p>All the above options are passed through as the corresponding options to
+<a href=".././html/unpack_wrp.html"> <code>unpack_wrp</code></a>
+and
+<a href=".././html/pack_wrp.html"> <code>pack_wrp</code></a>
+as appropriate.</p>
+</dd>
+<dt><strong>keep</strong>
+
+<dd>
+<pre>
+  --keep
+  -k</pre>
+</dd>
+<dd>
+<p>Keep the unpacked firmware directories in the system temporary directory.
+Not passed through to 
+<a href=".././html/unpack_wrp.html"> <code>unpack_wrp</code></a>
+or
+<a href=".././html/pack_wrp.html"> <code>pack_wrp</code></a>.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="patch_modules">PATCH MODULES</a></h1>
+<p>The <em>patch_modules</em> are Perl modules that are loaded and used to apply
+the necessary patches to the unpacked firmware.
+The modules distributed with <strong>bw_patcher</strong> are in the package
+<code>Beyonwiz::Hack</code>, but any module that implements the function
+<code>hack($flash_dir, $root_dir)</code> can be used.
+The two arguments are the directories holding the <code>/flash</code> and
+<code>/</code> (root) file systems unpacked from the firmware.
+The function typically modifies <code>etc/rc.sysinit</code> in <code>$root_dir</code>,
+and may add new files to, or overwrite files in, either firmware directory.</p>
+<p>The modules packaged with <strong>bw_patcher</strong> are
+<a href=".././html/Beyonwiz/Hack/Telnet.html"><code>Beyonwiz::Hack::Telnet</code></a>,
+<a href=".././html/Beyonwiz/Hack/BwhackSupport.html"><code>Beyonwiz::Hack::BwhackSupport</code></a>
+and
+<a href=".././html/Beyonwiz/Hack/USBHackSupport.html"><code>Beyonwiz::Hack::USBHackSupport</code></a>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="prerequsites">PREREQUSITES</a></h1>
+<p>Uses packages <code>Getopt::Long</code>,
+<code>IO::Compress::Gzip</code>, <code>IO::Uncompress::Gunzip</code> and <code>POSIX</code>.</p>
+<p>Uses <a href=".././html/unpack_wrp.html"> <code>unpack_wrp</code></a>,
+<a href=".././html/pack_wrp.html"> <code>pack_wrp</code></a>
+and
+<a href=".././html/bw_rootfs.html"> <code>bw_rootfs</code></a>.</p>
+<p>Uses Eric Fry's wizfwtools programs <code>wiz_pack</code>
+and <code>wiz_genromfs</code>.</p>
+<p><code>Getopt::Long</code>,
+<code>File::Spec::Functions</code>,
+<code>File::Path</code>,
+<code>Carp</code>,
+and
+<a href=".././html/Beyonwiz/Hack/Utils.html"><code>Beyonwiz::Hack::Utils</code></a>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p><strong>Using <em>bw_patcher</em> (or any other method) to create a modified
+version of the firmware for any Beyonwiz model can result in a
+firmware package that can cause the Beyonwiz firmware to fail
+completely.</strong></p>
+<p>Tries to use some contextual information to find the root filesystem.
+They may fail and the updating of the root file system will fail.</p>
+<p>Also see the BUGS entry for the tools that <strong>bw_patcher</strong> uses.</p>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;bw_patcher</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>

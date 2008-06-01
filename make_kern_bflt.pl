@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
 =pod
 
@@ -86,6 +86,7 @@ in B<make_kernel_bflt>
 =cut
 
 use strict;
+use warnings;
 
 use POSIX;
 use Getopt::Long;

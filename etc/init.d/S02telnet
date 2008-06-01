@@ -1,0 +1,3 @@
+# Enable telnet by running the telnet daemon
+echo "telnet hack"
+telnetd -l /bin/sh &

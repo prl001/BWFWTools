@@ -1,0 +1,3 @@
+# Remove the hack script
+echo "remove hacks" >> /tmp/tweakbootlog
+rm /tmp/config/rc.local >> /tmp/tweakbootlog 2>&1

@@ -1,0 +1,102 @@
+NAME
+
+        Beyonwiz::Hack::BwhackSupport;
+
+SYNOPSIS
+
+    A module to use as an argument to use with "bw_patcher". It modifies the
+    firmware to start a user-selectable set of hacks that can be
+    enabled/disabled using "bwhack".
+
+    The hacks available for enabling (default is all disabled) are:
+
+    dim The front panel display is run in a dimmer mode (as it is when on
+        standby).
+
+    telnetd
+        Run *telnetd* to allow login to the Beyonwiz using the *telnet*
+        protocol.
+
+    wizremote
+        Enable Eric Fry's *wizremote*
+        (<http://www.beyonwizsoftware.net/software-b28/wizremote>) on the
+        Beyonwiz.
+
+    httproot
+        Enable HTTP access to whole BW.
+
+        The Beyonwiz root file system starts at
+        "http://your_bw_ip_addr:49152/root". The Beyonwiz HTTP server
+        doesn't allow directory listing, so you have to know where you're
+        navigating.
+
+    The installation process modifies the Beyonwiz firmware startup script
+    "/etc/rc.sysinit" to copy the added firmware file "/etc/rc.localcopy"
+    into "/tmp/config/rc.localcopy" each time the Beyonwiz starts.
+    "/tmp/config/rc.localcopy" is also copied into, and restored from,
+    non-volatile storage each time the Beyonwiz restarts. "/etc/rc.sysinit"
+    runs after this copy, so modifications to "/tmp/config/rc.localcopy"
+    will be overwritten each time the Beyonwiz starts (and before
+    "/tmp/config/rc.localcopy" has been run). However, this means that even
+    if you install an unmodified firmware package on the beyonwiz, the patch
+    will still be active, because running "/tmp/config/rc.localcopy" is part
+    of normal firmware startup.
+
+    The effect of this hack will *not* be undone if you load unmodified
+    firmware onto the Beyonwiz.
+
+FUNCTIONS
+
+    "hack($flash_dir, $root_dir)"
+        Called by "bw_patcher" to perform the patch.
+
+        Inserts the lines:
+
+            if [ ! -x /etc/rc.localcopy ]; then
+                    rm -f "${CONFIG_DIR}/rc.local"
+                    cp /etc/rc.localcopy "${CONFIG_DIR}/rc.local"
+            fi
+
+        into the file that will be "/etc/rc.sysinit", the system startup
+        script, on the Beyonwiz. The line will be inserted just before the
+        comment line:
+
+            # rc.local
+
+        It also adds the new file "/etc/rc.localcopy" to the firmware. This
+        file actually implements the hack.
+
+DISABLING THE HACK
+
+    If the Beyonwiz is not running an unmodified firmware package, download
+    unmodified firmware into the Beyonwiz and restart.
+
+    Enable only the "telnet" hack using "bwhack" (installing unmodified
+    firmware has not disabled the hacks):
+
+        bwhack.pl --host=my.BW.IP.addr all off
+        bwhack.pl --host=my.BW.IP.addr telnetd on
+
+    Connect to the Beyonwiz using "telntt".
+
+    When you see the "#" command prompt, type
+
+        rm /tmp/config/rc.localcopy /tmp/mnt/idehdd/telnetd
+        exit
+
+    Then restart the Beyonwiz.
+
+PREREQUSITES
+
+    Uses packages "Beyonwiz::Hack::Utils".
+
+BUGS
+
+    This firmware hack will not work on a DP-H1 (nothing bad will happen to
+    the DP-H1, you just won't be able to enable the hacks), but if you do
+    install it, it's not straight-forward to remove.
+
+    Using *bw_patcher* (or any other method) to create a modified version of
+    the firmware for any Beyonwiz model can result in a firmware package
+    that can cause the Beyonwiz firmware to fail completely.
+

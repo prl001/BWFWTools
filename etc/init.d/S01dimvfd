@@ -1,0 +1,3 @@
+# Run the front panel displayy dimmed, as when on standby
+
+micomparam -q -r 500101

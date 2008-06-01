@@ -36,8 +36,8 @@ ARGUMENTS
           --force
           -f
 
-        Passed through to "bw_rootfs" >. Forces extraction in some cases
-        where it would otherwise fail.
+        Passed through to "bw_rootfs". Forces extraction in some cases where
+        it would otherwise fail.
 
     keep
           --keep
@@ -48,9 +48,10 @@ ARGUMENTS
 
 PREREQUSITES
 
-    Uses packages "Getopt::Long", "IO::Uncompress::Gunzip" and "POSIX".
+    Uses packages "Getopt::Long", "File::Spec::Functions",
+    "IO::Uncompress::Gunzip" and "FindBin".
 
-    Uses "bw_rootfs" >.
+    Uses "bw_rootfs".
 
     Uses Eric Fry's wizfwtools program wiz_unpack.
 

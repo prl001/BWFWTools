@@ -33,7 +33,7 @@ See L< C<bw_rootfs>|bw_rootfs/ > for more details.
 
 =head1 ARGUMENTS
 
-B<Make_kernel_bflt> takes the following arguments:
+B<Pack_wrp> takes the following arguments:
 
 =over 4
 
@@ -155,15 +155,19 @@ Defaults to '__wiz_pack'.
   --compress=level
   -c level
 
-Set the I<gzip> compression level to I<level> when the kernel binary
+Set the B<gzip> compression level to I<level> when the kernel binary
 is recompressed after an update.
-The default is to use the I<gzip> default compression level.
+The default is to use the B<gzip> default compression level
+if B<gzip> is used for compression, and 9 if the Perl C<IO::Compress::Gzip>
+package is used.
+The Perl package does not appear to compress as effectively as B<gzip>,
+and even at level 9 its result is still slightly larger than for
+B<gzip>'s default compression.
 I<Level> must be in the range 1..9; 9 for best compression.
 
-Beyonwiz kernels appear to be compressed at level 8.
-The I<gzip> default is level 6.
+The B<gzip> default is level 6.
 
-I<Gzip> is only invoked if I<root_directory> is specified,
+B<Gzip> is only invoked if I<root_directory> is specified,
 otherwise the kernel binary is not modified.
 
 =item perlgzip, gzip
@@ -185,7 +189,8 @@ These options force the use of only one of the two compression mechanisms.
 =head1 PREREQUSITES
 
 Uses packages C<Getopt::Long>,
-C<IO::Compress::Gzip>, C<IO::Uncompress::Gunzip> and C<POSIX>.
+C<IO::Compress::Gzip>, C<IO::Uncompress::Gunzip> and
+C<File::Spec::Functions>.
 
 Uses L< C<bw_rootfs>|bw_rootfs/ >.
 
@@ -196,6 +201,11 @@ Tries GNU C<gzip>, C<IO::Compress::Gzip> to compress the kernel
 image unless one of B<--perlgzip> or B<--gzip> is used.
 
 =head1 BUGS
+
+B<Using I<pack_wrp> (or any other method) to create a modified
+version of the firmware for any Beyonwiz model can result in a
+firmware package that can cause the Beyonwiz firmware to fail
+completely.>
 
 Tries to use some contextual information to find the root filesystem.
 They may fail and the updating of the root file system will fail.
@@ -215,9 +225,11 @@ Has too many options.
 =cut
 
 use strict;
+use warnings;
 
 use IO::Uncompress::Gunzip qw(gunzip $GunzipError);
 use IO::Compress::Gzip qw(gzip $GzipError);
+use File::Spec::Functions qw(catfile tmpdir);
 
 use Getopt::Long;
 
@@ -250,7 +262,6 @@ sub on_exit() {
 use constant LINGZ     => 'linux.bin.gz';
 use constant LIN       => 'linux.bin';
 use constant ROOTFS    => 'root.romfs';
-use constant TMP       => $^O eq 'MSWin32' ? 'c:/Windows/Temp' : '/tmp';
 use constant MAX_FLASH => 8*1024*1024 - 5 * 64 * 1024;
 
 # Location of the perl scripts used in this script
@@ -265,7 +276,9 @@ sub do_gzip($$$$$) {
     my ($use_perlgzip, $use_gzip, $from, $to, $compresslevel) = @_;
     if(!$use_perlgzip) {
 	my $compressflag = defined($compresslevel) ? " -$compresslevel " : '';
-	if(system("gzip$compressflag -c $q$from$q > $q$to$q") != 0) {
+	if(system("gzip$compressflag -c $q$from$q > $q$to$q") == 0) {
+	    $use_gzip = 1; # Succcessful, don't retry using perl gzip
+	} else {
 	    my $mess = "gzip of $lingz to $lin failed";
 	    if($use_gzip) {
 		die $mess, "\n";
@@ -276,7 +289,8 @@ sub do_gzip($$$$$) {
     }
     if(!$use_gzip) {
 	my @compresslevel;
-	@compresslevel = (-Level => $compresslevel) if($compresslevel);
+	$compresslevel = 9 if(!defined $compresslevel);
+	@compresslevel = (-Level => $compresslevel);
 	gzip($from => $to, BinModeIn => 1, @compresslevel)
 	    or die "perl gzip of $lingz to $lin failed: $GzipError\n";
     }
@@ -308,8 +322,10 @@ my ($wrp_fn, $flash_dir, $rootfs_dir) = @ARGV;
 
 if(!defined $machtype && !defined $machcode
 || !defined $version) {
-    foreach my $ver (glob("$flash_dir/${insens_prefix_x}version/*-romfs.bin"),
-		     glob("$flash_dir/${insens_prefix_r}version/*-romfs.bin")) {
+    foreach my $ver (glob(catfile($flash_dir, "${insens_prefix_x}version",
+					"*-romfs.bin")),
+		     glob(catfile($flash_dir, "${insens_prefix_r}version",
+					"*-romfs.bin"))) {
 	if(!defined $machtype && !defined $machcode && $ver =~ /-(DP[SPH]1)-/) {
 	    my $type = $1;
 	    substr $type, 2, 0, '-';
@@ -335,23 +351,22 @@ my $bw_rootfs_args = $force ? " -f" : "";
 my $wiz_genromfs_args =" -V '$volname'";
    $wiz_genromfs_args .= " -i" if($insens);
 
-my $perl_dir = PERLS;
-
 $SIG{$_} = \&on_exit foreach qw(HUP INT QUIT PIPE TERM __DIE__);
 
 if(defined $rootfs_dir) {
     print "Construct root file system from $rootfs_dir\n";
-    $lingz = $flash_dir . '/' . $insens_prefix_x . LINGZ;
-    $lingz = $flash_dir . '/' . $insens_prefix_r . LINGZ
+    $lingz = catfile($flash_dir, $insens_prefix_x . LINGZ);
+    $lingz = catfile($flash_dir, $insens_prefix_r . LINGZ)
 	if($insens && !-e $lingz);
-    $lin = $flash_dir . '/' . LIN;
-    $rootfs = $flash_dir . '/' . ROOTFS;
+    $lin = catfile($flash_dir, LIN);
+    $rootfs = catfile($flash_dir, ROOTFS);
     system("wiz_genromfs$wiz_genromfs_args"
 	    . " -d $q$rootfs_dir$q -f $q$rootfs$q") == 0
 	or die "Generation of $rootfs from $rootfs_dir failed\n";
+    print "Insert the root file system into the kernel image $lingz\n";
     gunzip($lingz => $lin, BinModeOut => 1)
 	or die "gunzip of $lingz to $lin failed: $GunzipError\n";
-    system("perl $q$perl_dir/bw_rootfs.pl$q$bw_rootfs_args"
+    system("bw_rootfs.pl$bw_rootfs_args"
 	    . " -u $q$lin$q $q$rootfs$q") == 0
 	or die "Update of $rootfs into $lin failed\n";
     do_gzip($perlgzip, $gzip, $lin => $lingz, $compresslevel);
@@ -363,7 +378,7 @@ if(defined $rootfs_dir) {
 
 print "Construct BW firmware file $wrp_fn from $flash_dir\n";
 
-$flashfs = TMP . '/flash' . $$;
+$flashfs = catfile(tmpdir, 'flash' . $$);
 
 system("wiz_genromfs$wiz_genromfs_args"
 	. " -d $q$flash_dir$q -f $q$flashfs$q") == 0
@@ -375,8 +390,15 @@ my $root_size = (stat $flashfs)[7];
 defined $root_size
     or die "Can't get size of $flashfs: $!\n";
 
-warn "$flashfs is too big to fit in BW flash memory: $root_size > ",
-	MAX_FLASH, "\n"
-    if($root_size > MAX_FLASH);
+if($root_size <= MAX_FLASH) {
+    print "$wrp_fn uses: $root_size bytes; available: ", MAX_FLASH,
+	"; spare: ", MAX_FLASH - $root_size, "\n";
+} else {
+    unlink $wrp_fn if(!$keep);
+    warn "$wrp_fn is too big to fit in BW flash memory: $root_size > ",
+	    MAX_FLASH, "\n",
+	 ($keep ? '' : "	- firmware .wrp file not created\n");
+
+}
 
 on_exit();

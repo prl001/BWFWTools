@@ -70,7 +70,7 @@ ARGUMENTS
 
 PREREQUSITES
 
-    Uses packages "Getopt::Long" and "Beyonwiz::Kernel".
+    Uses packages "POSIX", "Getopt::Long" and "Beyonwiz::Kernel".
 
 BUGS
 

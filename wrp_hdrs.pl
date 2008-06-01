@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
 =pod
 
@@ -142,6 +142,7 @@ Beyonwiz Forum (L<http://www.beyonwiz.com.au/phpbb2/index.php>).
 =cut
 
 use strict;
+use warnings;
 
 # Read and unpack the .wrp file header from the current
 # file handle read location

@@ -1,0 +1,71 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>svcdat</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@omen.apple.com" />
+</head>
+
+<body style="background-color: white">
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;svcdat</span></strong></big>
+</td></tr>
+</table>
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#acknowledgements">ACKNOWLEDGEMENTS</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>svcdat - print the contents of Beyonwiz <code>svc.dat</code> (service scan configuration) files</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+    svcdat svc.dat_files...</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>Prints or dumps the tables in Beyonwiz <code>svc.dat</code> files.
+Normal listing is of the decoded service table, channel table
+and (assumed) tuner parameter table grouped by channel, then by service.
+The columns marked as PMT PID and PCR PID have not been confirmed
+as the PIDs for the service Program Map Table and Program Clock Reference.
+The (presumed) tuner parameters are indicated as <code>T1(...) T2(...)</code>
+for the two tuners.</p>
+<p>The option <strong>-d</strong> does a hexadecimal dump of the tables as 16-bit
+little-endian integers.
+The columns are headed by the interpretation of the values.</p>
+<p>
+</p>
+<hr />
+<h1><a name="acknowledgements">ACKNOWLEDGEMENTS</a></h1>
+<p>Most of the <code>svc.dat</code> interpretation was done by
+efry (Eric Fry) and tonymy01 (Tony)
+on the Australian Beyonwiz Forum
+(<a href="http://www.beyonwiz.com.au/phpbb2/index.php">http://www.beyonwiz.com.au/phpbb2/index.php</a>).</p>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;svcdat</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>

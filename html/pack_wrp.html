@@ -62,7 +62,7 @@ See <a href=".././html/bw_rootfs.html"> <code>bw_rootfs</code></a> for more deta
 </p>
 <hr />
 <h1><a name="arguments">ARGUMENTS</a></h1>
-<p><strong>Make_kernel_bflt</strong> takes the following arguments:</p>
+<p><strong>Pack_wrp</strong> takes the following arguments:</p>
 <dl>
 <dt><strong><a name="item_insens">insens</a></strong>
 
@@ -220,17 +220,21 @@ as described above in <strong>version</strong>.</p>
   -c level</pre>
 </dd>
 <dd>
-<p>Set the <em>gzip</em> compression level to <em>level</em> when the kernel binary
+<p>Set the <strong>gzip</strong> compression level to <em>level</em> when the kernel binary
 is recompressed after an update.
-The default is to use the <em>gzip</em> default compression level.
+The default is to use the <strong>gzip</strong> default compression level
+if <strong>gzip</strong> is used for compression, and 9 if the Perl <code>IO::Compress::Gzip</code>
+package is used.
+The Perl package does not appear to compress as effectively as <strong>gzip</strong>,
+and even at level 9 its result is still slightly larger than for
+<strong>gzip</strong>'s default compression.
 <em>Level</em> must be in the range 1..9; 9 for best compression.</p>
 </dd>
 <dd>
-<p>Beyonwiz kernels appear to be compressed at level 8.
-The <em>gzip</em> default is level 6.</p>
+<p>The <strong>gzip</strong> default is level 6.</p>
 </dd>
 <dd>
-<p><em>Gzip</em> is only invoked if <em>root_directory</em> is specified,
+<p><strong>Gzip</strong> is only invoked if <em>root_directory</em> is specified,
 otherwise the kernel binary is not modified.</p>
 </dd>
 <dt><strong><a name="item_perlgzip_2c_gzip">perlgzip, gzip</a></strong>
@@ -256,7 +260,8 @@ GNU <code>gzip</code> program, then if that fails, by using the Perl
 <hr />
 <h1><a name="prerequsites">PREREQUSITES</a></h1>
 <p>Uses packages <code>Getopt::Long</code>,
-<code>IO::Compress::Gzip</code>, <code>IO::Uncompress::Gunzip</code> and <code>POSIX</code>.</p>
+<code>IO::Compress::Gzip</code>, <code>IO::Uncompress::Gunzip</code> and
+<code>FindBin</code>.</p>
 <p>Uses <a href=".././html/bw_rootfs.html"> <code>bw_rootfs</code></a>.</p>
 <p>Uses Eric Fry's wizfwtools programs <code>wiz_pack</code>
 and <code>wiz_genromfs</code>.</p>
@@ -266,6 +271,10 @@ image unless one of <strong>--perlgzip</strong> or <strong>--gzip</strong> is us
 </p>
 <hr />
 <h1><a name="bugs">BUGS</a></h1>
+<p><strong>Using <em>pack_wrp</em> (or any other method) to create a modified
+version of the firmware for any Beyonwiz model can result in a
+firmware package that can cause the Beyonwiz firmware to fail
+completely.</strong></p>
 <p>Tries to use some contextual information to find the root filesystem.
 They may fail and the updating of the root file system will fail.</p>
 <p>Because of the way the root file system is patched into the kernel,

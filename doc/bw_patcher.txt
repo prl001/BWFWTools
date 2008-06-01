@@ -1,0 +1,114 @@
+NAME
+
+    bw_patcher - pack a Beyonwiz firmware update file
+
+SYNOPSIS
+
+        bw_patcher [-t type|--machtype=type] [-T code|--machcode=code] [-i|--insens]
+                 [-f|--force] [-k|--keep] [-V volume|--volname=volume]
+                 [-v version|--version=version] [-s suffix|--versionsuffix=suffix]
+                 [-p|-perlgzip] [-g|-gzip]
+                 firmware_file patched_firmware_file patch_modules...
+
+DESCRIPTION
+
+    Applies the firmware patches in the *patch_modules* to *firmware_file*
+    and creates a new version of the firmware in *patched_firmware_file*.
+
+    Uses BWFWTools "unpack_wrp" and "pack_wrp" to unpack and re-pack the
+    firmware file after applting the patches. Most of the options to
+    bw_patcher are passed through to those programs as applicable.
+
+ARGUMENTS
+
+    Bw_patcher takes the following arguments:
+
+    insens
+          --insens
+          -i
+
+    machtype
+          --machtype=type
+          -t type
+
+    machcode
+          --machcode=code
+          -T code
+
+    force
+          --force
+          -f
+
+    keep
+          --keep
+          -k
+
+    volname
+          --volname=volume
+          -V volume
+
+    version
+          --version=version
+          -v version
+
+    versionsuffix
+          --versionsuffix=suffix
+          -v suffix
+
+    compress
+          --compress=level
+          -c level
+
+    perlgzip, gzip
+          --perlgzip
+          -p
+          --gzip
+          -g
+
+        All the above options are passed through as the corresponding
+        options to "unpack_wrp" and "pack_wrp" as appropriate.
+
+    keep
+          --keep
+          -k
+
+        Keep the unpacked firmware directories in the system temporary
+        directory. Not passed through to "unpack_wrp" or "pack_wrp".
+
+PATCH MODULES
+
+    The *patch_modules* are Perl modules that are loaded and used to apply
+    the necessary patches to the unpacked firmware. The modules distributed
+    with bw_patcher are in the package "Beyonwiz::Hack", but any module that
+    implements the function "hack($flash_dir, $root_dir)" can be used. The
+    two arguments are the directories holding the "/flash" and "/" (root)
+    file systems unpacked from the firmware. The function typically modifies
+    "etc/rc.sysinit" in $root_dir, and may add new files to, or overwrite
+    files in, either firmware directory.
+
+    The modules packaged with bw_patcher are "Beyonwiz::Hack::Telnet",
+    "Beyonwiz::Hack::BwhackSupport" and "Beyonwiz::Hack::USBHackSupport".
+
+PREREQUSITES
+
+    Uses packages "Getopt::Long", "IO::Compress::Gzip",
+    "IO::Uncompress::Gunzip" and "POSIX".
+
+    Uses "unpack_wrp", "pack_wrp" and "bw_rootfs".
+
+    Uses Eric Fry's wizfwtools programs "wiz_pack" and "wiz_genromfs".
+
+    "Getopt::Long", "File::Spec::Functions", "File::Path", "Carp", and
+    "Beyonwiz::Hack::Utils".
+
+BUGS
+
+    Using *bw_patcher* (or any other method) to create a modified version of
+    the firmware for any Beyonwiz model can result in a firmware package
+    that can cause the Beyonwiz firmware to fail completely.
+
+    Tries to use some contextual information to find the root filesystem.
+    They may fail and the updating of the root file system will fail.
+
+    Also see the BUGS entry for the tools that bw_patcher uses.
+

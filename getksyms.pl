@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
 =pod
 
@@ -44,6 +44,7 @@ and the program may produce garbage.
 =cut
 
 use strict;
+use warnings;
 
 use Beyonwiz::Kernel
 	qw(BASE check_magics get_words get_words_sym get_str);

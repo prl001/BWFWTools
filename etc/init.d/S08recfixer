@@ -1,0 +1,47 @@
+# For some reason, this fails with a syntax error when
+# run from rc.local if it starts with 'for', so start
+# with the null command ':'
+:
+patterns='/tmp/mnt/idehdd/* /tmp/mnt/usb/Device*/*'
+found=no
+for t in 10 9 8 7 6 5 4 3 2 1 0; do
+    for x in $patterns; do
+	if [ -f "$x/.super" ]; then
+	    found=yes
+	    break 2
+	fi
+	sleep 1
+    done
+done
+if [ $found = yes ]; then
+    # first find a stat file
+    for x in $patterns; do
+	if [ -f "$x/.super" ]; then
+	    for y in $x/recording/*; do
+		if [ -f "$y/header.tvwiz" -a -f  "$y/stat" ]; then
+		    statfile="$y/stat"
+		    echo "found stat $statfile"
+		    break 2
+		fi
+	    done
+	fi
+    done
+
+    # then find any directories without one and copy it
+    for x in $patterns; do
+	if [ -f "$x/.super" ]; then
+	    for y in $x/recording/*; do
+		if [ -f "$y/header.tvwiz" -a ! -f "$y/stat" ]; then
+		    echo fixed $y
+		    cp "$statfile" "$y"
+		    mkdir "$x/recording/Fixed_some_broken_recordings.tvwiz"
+		    if [ /tmp/enablevfd ]; then
+			micomparam -q -t "Fixed recording"
+		    fi
+		fi
+	    done
+	fi
+    done
+else
+   echo "couldn't find any recordings..."
+fi

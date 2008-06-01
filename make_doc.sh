@@ -5,7 +5,7 @@
 
 index=html/index.html
 
-podpath=--podpath=.:Beyonwiz
+podpath=--podpath=.:Beyonwiz:Beyonwiz/Hack
 
 # Header for index.html
 
@@ -32,25 +32,31 @@ for i in "$@"; do
     d=`dirname $i`
     [ -d html/$d ] || mkdir -p html/$d
 
+    dots=`echo $d | sed 's,[^/.][^/]*,..,g'`
+
     # Extract the synopsis line for index.html
 
     synopsis=`sed -n \
 	-e '/=head1 NAME/,/=head1 SYNOPSIS/{
+		s/use //
 	        /^[^=]/p
 	    }' \
 	    $i`
 
     # Convert the Perl POD markup to HTML
-    pod2html --htmlroot=.. --podroot=. $podpath --htmldir=. \
+    pod2html --htmlroot=../$dots/html --podroot=. $podpath --htmldir=. \
              --header --title=$j \
-             --infile=$i > html/$d/$j.html
+             --infile=$i --outfile=html/$d/$j.html
     # Add a line to index.html
-    echo "<li><a href=\"$j.html\">$synopsis</li>" >> $index
+    echo "<li><a href=\"$d/$j.html\">$synopsis</li>" >> $index
 
     # Convert the Perl POD markup to plain text with DOS line separators
     pod2text --loose $i | perl -ape 's/\n/\r\n/ if(!/\r\n$/)' > doc/$j.txt
 
 done
+
+# Still can't get the URLs right in links!
+find html -name '*.html' | xargs perl -pi -e 's,/html/(\./)?html/,/html/,g'
 
 # Header for index.html
 

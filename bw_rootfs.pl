@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
 =pod
 
@@ -82,7 +82,7 @@ and perform the operation anyway.
 
 =head1 PREREQUSITES
 
-Uses packages C<Getopt::Long>
+Uses packages C<POSIX>, C<Getopt::Long>
 and L<C<Beyonwiz::Kernel>|Kernel>.
 
 =head1 BUGS
@@ -125,6 +125,7 @@ I hope you knew that already.
 =cut
 
 use strict;
+use warnings;
 
 # Extract the symbols published by the kernel for the module interface.
 
@@ -145,6 +146,7 @@ use constant ROMFSBLKSZ   => 1024;
 use constant ROMFSPADDING => '\0' x ROMFSBLKSZ;
 
 use Getopt::Long;
+use POSIX;
 
 use Beyonwiz::Kernel
 	qw(BASE check_magics read_or_die write_or_die get_words get_words_sym);
@@ -268,20 +270,36 @@ sub extract_rootfs($$$$$$$) {
 # at the position $kpos.
 # The _fn variables are the corresponding file names.
 
-sub update_rootfs($$$$$$) {
-    my ($kern_fn, $kern_fh, $root_fn, $root_fh, $kpos, $size) = @_;
+sub update_rootfs($$$$$$$) {
+    my ($kern_fn, $kern_fh, $root_fn, $root_fh, $kpos, $size, $kern_size) = @_;
     my $buf;
     my $left = $size;
     my $rpos = 0;
     while($left > 0) {
-	read_or_die($root_fn, $root_fh, $rpos, \$buf,
-	    ($left < BLOCKSZ ? $left : BLOCKSZ), 1);
-	$rpos += BLOCKSZ;
-	write_or_die($kern_fn, $kern_fh, $kpos, \$buf,
-	    ($left < BLOCKSZ ? $left : BLOCKSZ), 1);
-	$kpos += BLOCKSZ;
-	$left -= BLOCKSZ;
+	my $io_size = $left < BLOCKSZ ? $left : BLOCKSZ;
+	read_or_die($root_fn, $root_fh, $rpos, \$buf, $io_size, 1);
+	$rpos += $io_size;
+	write_or_die($kern_fn, $kern_fh, $kpos, \$buf, $io_size, 1);
+	$kpos += $io_size;
+	$left -= $io_size;
     }
+    $buf = "\000" x BLOCKSZ;
+    $left = $kern_size - $size;
+    while($left > 0) {
+	my $io_size = $left < BLOCKSZ ? $left : BLOCKSZ;
+	write_or_die($kern_fn, $kern_fh, $kpos, \$buf, $io_size, 1);
+	$kpos += $io_size;
+	$left -= $io_size;
+    }
+}
+
+sub check_romfs_hdr($$) {
+    my ($root_fn, $root_fh) = @_;
+    my $buf;
+    read_or_die($root_fn, $root_fh, 0, \$buf, 12, 1);
+    my ($magic, $size) = unpack 'a8 N', $buf;
+    sysseek $root_fh, 0, SEEK_SET;
+    return ($magic eq '-rom1fs-', $size);
 }
 
 my ($uflag, $cflag, $fflag);
@@ -306,11 +324,12 @@ my $spare = roundup($size, BLOCKSZ) - $size;
 
 # Print the location, size, and spare space for the file system
 
-printf "Found rootfs at file location 0x%08x size: %d\n", $pos, $size;
-printf "Romfs padded file size: %d\n",
-    int(($size + ROMFSBLKSZ - 1) / ROMFSBLKSZ) * ROMFSBLKSZ;
-printf "Spare space: %d bytes\n", $spare;
-printf "Maximum update size: %d bytes\n", $size + $spare;
+printf "Found Root ROMFS at kernel file location 0x%08x size: %d\n",
+    $pos, $size;
+print  'Root ROMFS sizes', ($uflag ? ' before update' : ''), "\n";
+printf "Root ROMFS padded file size: %d\n", roundup($size, ROMFSBLKSZ);
+printf "Free space available for larger Root ROMFS: %d bytes\n", $spare;
+printf "Maximum Root ROMFS update size: %d bytes\n", $size + $spare;
 
 if($uflag) {
 
@@ -328,13 +347,23 @@ if($uflag) {
 
     open ROOTFS, '<', $root_fn or die "$0: $root_fn - $!\n";
 
-    my $root_size = (stat ROOTFS)[7];
+    my $root_file_size = (stat ROOTFS)[7];
+    my ($ok, $root_size) = check_romfs_hdr($root_fn, \*ROOTFS);
 
-    if($root_size > $size + $spare) {
+    die "$root_fn isn't a ROMFS file\n"
+	if(!$ok);
+
+    if($root_file_size > $size + $spare) {
 	warn_or_die !$fflag, sprintf "$root_fn is too large (%d bytes)"
 	    . " available space is (%d bytes)\n",
 	    $root_size, $size + $spare;
 	warn "But proceeding anyway!\n" if(!$cflag);
+    } else {
+	print "Root ROMFS sizes after update\n";
+	printf "Updated Root ROMFS size: %d\n", $root_size;
+	printf "Updated Root ROMFS padded file size: %d\n", $root_file_size;
+	printf "Free space available for larger Root ROMFS after update: %d bytes\n",
+	    roundup($root_size, BLOCKSZ) - $root_size;
     }
 
     exit if($cflag);
@@ -345,7 +374,8 @@ if($uflag) {
     close KERN;
     open KERN, '+<', $kern_fn or die "$0: $kern_fn - $!\n";
 
-    update_rootfs($kern_fn, \*KERN, $ARGV[1], \*ROOTFS, $pos, $root_size);
+    update_rootfs($kern_fn, \*KERN, $root_fn, \*ROOTFS,
+			$pos, $root_size, $size + $spare);
 
 } else {
 
@@ -361,7 +391,7 @@ if($uflag) {
 
     open ROOTFS, '>', $root_fn or die "$0: $root_fn - $!\n";
 
-    extract_rootfs($kern_fn, \*KERN, $ARGV[1], \*ROOTFS, $pos, $size, \$buf);
+    extract_rootfs($kern_fn, \*KERN, $root_fn, \*ROOTFS, $pos, $size, \$buf);
 
     close ROOTFS;
 }

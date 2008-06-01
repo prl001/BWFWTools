@@ -1,0 +1,5 @@
+# Start wizremote, assuming it has been installed in
+# /tmp/config
+
+echo "wizremote starting" >>/tmp/tweakbootlog
+/tmp/config/wizremote >/dev/null&

@@ -4,7 +4,7 @@ package Beyonwiz::Hack::Utils;
 
     use Beyonwiz::Hack::Utils qw(
         findMatchingPath findNewFile
-        patchFile addFile
+        patchFile addFile copyFile
 	insens
     );
 
@@ -31,6 +31,16 @@ of path names that's done in case-insensitive mode.
 This is done using a file glob, so file name expansion will be done
 on any file name expansion characters in either part of the name.
 The case-insensitive encoding is only done on C<$path>.
+
+If the returned list contains more than one path,
+it's up to the caller to determine what to do.
+
+=item C<< makeMatchingDirectoryPath($fw_dir, $path) >>
+
+Given a directory for the root of an unpacked firmware directory
+tree C<$fw_dir> and a path within it C<$path>,
+create a list of directories representing the complete path,
+taking into account any case-insensitive name mapping.
 
 If the returned list contains more than one path,
 it's up to the caller to determine what to do.
@@ -72,6 +82,12 @@ in a newline.
 
 Takes some care not to put DOS CRLF line endings in the file.
 
+=item C<< pathTildeExpand() >>
+
+Expands C<~> and C<~>I<username> home directory abbreviations in
+C<$ENV{PATH}>. This is needed because Perl C<system> and C<exec>
+functions don't do tilde expansions.
+
 =back
 
 =cut
@@ -82,7 +98,7 @@ use warnings;
 use File::Spec::Functions qw(canonpath catdir catfile catpath
 				splitdir splitpath);
 use File::Glob qw(:glob);
-use Fcntl qw(	O_WRONLY O_CREAT
+use Fcntl qw(	O_WRONLY O_CREAT O_TRUNC
 		S_IFMT
 		S_IRWXU S_IXUSR S_IRUSR S_IWUSR
 		S_IRGRP S_IXGRP
@@ -91,9 +107,10 @@ use Fcntl qw(	O_WRONLY O_CREAT
 use Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
-        findMatchingPath findNewFile
-        patchFile addFile
+        findMatchingPath makeMatchingDirectoryPath findNewFile
+        patchFile addFile copyFile
 	insens
+	pathTildeExpand
     );
 
 my $insens;
@@ -115,6 +132,50 @@ sub findMatchingPath($$) {
     my ($vol, $dir) = splitpath($fw_dir, 1);
     my $search_path = catpath($vol, catfile($dir, $path), '');
     return bsd_glob($search_path, GLOB_NOCASE);
+}
+
+sub makeMatchingDirectoryPath($$) {
+    my ($fw_dir, $path) = @_;
+    my ($vol, $dir) = splitpath($fw_dir, 1);
+    if($insens) {
+	my @segs = splitdir($path);
+	my @matchsegs;
+	foreach my $seg (@segs) {
+	    push @matchsegs,
+		(defined $seg && $seg ne '' && $seg ne '.' && $seg ne '..'
+		    ? '[0-9][0-9][0-9][rx]_' . $seg
+		    : $seg);
+	}
+
+	my @matchpaths;
+	while(@matchsegs) {
+	    my $search_path = catpath($vol,
+				    catdir($dir, catfile(@matchsegs)),
+				    '');
+	    @matchpaths = bsd_glob($search_path, GLOB_NOCASE);
+	    last if(@matchpaths >= 1);
+	    pop @matchsegs;
+	}
+
+	if(@segs - @matchsegs == 0) {
+	    return @matchpaths;
+	} else {
+	    for(my $j = scalar(@matchsegs); $j < @segs; $j++) {
+		$segs[$j] = '001x_' . $segs[$j];
+	    }
+	    $matchpaths[0] = $fw_dir if(!@matchpaths);
+	    foreach my $pathmatch (@matchpaths) {
+		($vol, $dir) = splitpath($pathmatch, 1);
+		$pathmatch = catpath($vol,
+				     catdir(splitdir($dir),
+					    @segs[@matchsegs..$#segs]),
+				     '');
+	    }
+	    return @matchpaths;
+	}
+    } else {
+	return (catpath($vol, catdir(splitdir($dir), splitdir($path))), '');
+    }
 }
 
 sub findNewFile($$$) {
@@ -191,6 +252,51 @@ sub addFile($$$) {
     print NEWF $patch;
     close NEWF;
     chmod $perms, $file;
+}
+
+sub copyFile($$$) {
+    my ($file, $patch_file, $exec) = @_;
+    open OLDF, '<', $patch_file
+	or die "Can't open patch file $patch_file: $!\n";
+    binmode OLDF;
+    my $perms;
+    if(-f $file) {
+	$perms = (stat $file)[2] & ~S_IFMT;
+    } else {
+	$perms = (stat $patch_file)[2] & ~S_IFMT;
+	$perms |= S_IRUSR | S_IRGRP | S_IROTH # 0444 for old-timers
+    }
+    $perms |= S_IXUSR | S_IXGRP | S_IXOTH # Add executable bit for all
+	if($exec);
+    sysopen NEWF, $file, O_WRONLY|O_CREAT|O_TRUNC, $perms
+	or die "Can't create new copy of $file - $!\n";;
+    binmode NEWF;
+    my ($buf, $nread);
+    while(($nread = sysread OLDF, $buf, 4096) > 0) {
+	defined(syswrite NEWF, $buf, $nread)
+	    or die "Error writing $file: $!\n";
+    }
+    die "Error reading $patch_file: $!\n"
+	unless($nread == 0);
+    close NEWF;
+    close OLDF;
+    chmod $perms, $file;
+}
+
+sub pathTildeExpand() {
+    if(defined $ENV{PATH}) {
+	my @path = split ':', $ENV{PATH};
+	foreach my $p (@path) {
+	    # Do tilde expansion. Shamelessly lifted from the Perl FAQs
+	    $p =~ s{
+	      ^~([^/]*)
+	    }{
+	      $1 ? (getpwnam($1))[7]
+		 : ( $ENV{HOME} || $ENV{LOGDIR} )
+	    }ex;
+	}
+	$ENV{PATH} = join ':', @path;
+    }
 }
 
 1;

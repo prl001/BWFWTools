@@ -24,6 +24,7 @@
 	<li><a href="#description">DESCRIPTION</a></li>
 	<li><a href="#arguments">ARGUMENTS</a></li>
 	<li><a href="#patch_modules">PATCH MODULES</a></li>
+	<li><a href="#disabling_the_hacks">DISABLING THE HACKS</a></li>
 	<li><a href="#prerequsites">PREREQUSITES</a></li>
 	<li><a href="#bugs">BUGS</a></li>
 </ul>
@@ -34,7 +35,8 @@
 </p>
 <hr />
 <h1><a name="name">NAME</a></h1>
-<p>bw_patcher - pack a Beyonwiz firmware update file</p>
+<p>bw_patcher - all-in-one tool to automatically apply Beyonwiz firm
+ware patches</p>
 <p>
 </p>
 <hr />
@@ -178,6 +180,14 @@ and
 <p>
 </p>
 <hr />
+<h1><a name="disabling_the_hacks">DISABLING THE HACKS</a></h1>
+<p>For instructions on disabling the hacks installed see the disabling
+instructions in the documentation for the appropriate patch module.</p>
+<p><strong>Just installing an unmodified Beyonwiz firmware package may <em>not</em>
+actually disable the hack!</strong></p>
+<p>
+</p>
+<hr />
 <h1><a name="prerequsites">PREREQUSITES</a></h1>
 <p>Uses packages <code>Getopt::Long</code>,
 <code>IO::Compress::Gzip</code>, <code>IO::Uncompress::Gunzip</code> and <code>POSIX</code>.</p>
@@ -197,13 +207,30 @@ and
 </p>
 <hr />
 <h1><a name="bugs">BUGS</a></h1>
-<p><strong>Using <em>bw_patcher</em> (or any other method) to create a modified
-version of the firmware for any Beyonwiz model can result in a
-firmware package that can cause the Beyonwiz firmware to fail
-completely.</strong></p>
+<p><strong>Using user extensions or hacks may make your Beyonwiz unable to
+operate correctly, or even start.
+Some modifications are known to interfere with the correct
+functioning of the Beyonwiz.</strong></p>
+<p>If your Beyonwiz cannot start after you load modified firmware,
+you may need to use the procedures in the
+<strong>NOTICE - How to recover from FW update failure</strong>
+<a href="http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298">http://www.beyonwiz.com.au/phpbb2/viewtopic.php</a>
+procedure on the Beyonwiz forum.
+It's not known whether that procedure will fix all 
+failures due to user modifications or ``hacks''.</p>
+<p>If you run modified firmware on your Beyonwiz, and have
+problems with its operation, try to reproduce
+any problems you do have on a Beyonwiz running unmodified firmware,
+or at least mention the modifications you use when reporting the
+problem to Beyonwiz support or on the Beyonwiz Forum
+<a href="http://www.beyonwiz.com.au/phpbb2/index.php">http://www.beyonwiz.com.au/phpbb2/index.php</a>.
+Beyonwiz support may not be able to assist if you are running anything
+other than unmodified firmware from Beyonwiz.
+Forum contributers may be able to be more flexible, but they will
+need to know what modifications you have made.</p>
 <p>Tries to use some contextual information to find the root filesystem.
 They may fail and the updating of the root file system will fail.</p>
-<p>Also see the BUGS entry for the tools that <strong>bw_patcher</strong> uses.</p>
+<p>Also see the BUGS entries for the tools that <strong>bw_patcher</strong> uses.</p>
 <table border="0" width="100%" cellspacing="0" cellpadding="3">
 <tr><td class="block" style="background-color: #cccccc" valign="middle">
 <big><strong><span class="block">&nbsp;bw_patcher</span></strong></big>

@@ -21,11 +21,11 @@
 
 	<li><a href="#name">NAME</a></li>
 	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#disabling_the_hack">DISABLING THE HACK</a></li>
 	<li><a href="#preparing_the_usb_device_or_memory_card">PREPARING THE USB DEVICE OR MEMORY CARD</a></li>
 	<li><a href="#using_the_hack_usb_device_or_memory_card">USING THE HACK USB DEVICE OR MEMORY CARD</a></li>
 	<li><a href="#for_advanced_users">FOR ADVANCED USERS</a></li>
 	<li><a href="#functions">FUNCTIONS</a></li>
-	<li><a href="#disabling_the_hack">DISABLING THE HACK</a></li>
 	<li><a href="#prerequsites">PREREQUSITES</a></li>
 	<li><a href="#bugs">BUGS</a></li>
 </ul>
@@ -49,6 +49,13 @@ If no such USB device is connected at startup no hacks will be started.</p>
 <p>Memory cards in the front slots on the DP-S1 count as connected USB devices,
 so memory cards as well as USB thumb and hard drives can be used to enable
 hacks this way.</p>
+<p><strong>Not designed for use in combination with
+<a href="../../../html/./Beyonwiz/Hack/BwhackSupport.html"><code>Beyonwiz::Hack::BwhackSupport</code></a></strong>.
+However, <code>Beyonwiz::Hack::USBHackSupport</code>
+offers all the functionality available through
+<a href="../../../html/./Beyonwiz/Hack/BwhackSupport.html"><code>Beyonwiz::Hack::BwhackSupport</code></a>,
+except <a href="../../../html/./Beyonwiz/Hack/BwhackSupport.html#item_httproot"><code>httproot</code></a>,
+and unlike that patch, will work on the DP-H1.</p>
 <p>The hacks available for enabling (default is all disabled) are:</p>
 <dl>
 <dt><strong><a name="item_s00enablevfd">S00enablevfd</a></strong>
@@ -95,15 +102,21 @@ if it is installed in
 <dt><strong><a name="item_s99removehacks">S99removehacks</a></strong>
 
 <dd>
-<p>Removes the <code>/tmp/config/rc.local</code> file from the Beyonwiz.
+<p>Removes the <code>/tmp/config/rc.local</code>
+and <code>/tmp/config/usb.local</code> files from the Beyonwiz.
 For this to be effective, unmodified Beyonwiz firmware must
-be downloaded to the Beyonwiz first. See</p>
+be downloaded to the Beyonwiz first. See <a href="#disabling_the_hack">DISABLING THE HACK</a>.</p>
+</dd>
+<dd>
+<p>This script can also be used in conjunction with the <code>usb</code> hack
+in <a href="../../../html/./Beyonwiz/Hack/BwhackSupport.html"><code>Beyonwiz::Hack::BwhackSupport</code></a>
+to remove hacks installed by that installer.</p>
 </dd>
 </li>
 </dl>
 <p>The patching process modifies the Beyonwiz firmware startup script
 <code>/etc/rc.sysinit</code> to copy the added
-firmware file <code>/flash/hacks/rc.local</code> into <code>/tmp/config/rc.local</code>
+firmware file <code>/flash/opt/rc.local</code> into <code>/tmp/config/rc.local</code>
 each time the Beyonwiz starts.
 <code>/tmp/config/rc.local</code> is also copied into, and restored from,
 non-volatile storage each time the Beyonwiz restarts.
@@ -115,6 +128,16 @@ on the beyonwiz, the patch will still be active, because running
 <code>/tmp/config/rc.local</code> is part of normal firmware startup.</p>
 <p>The effect of this hack will <em>not</em> be undone if you load
 unmodified firmware onto the Beyonwiz.</p>
+<p>
+</p>
+<hr />
+<h1><a name="disabling_the_hack">DISABLING THE HACK</a></h1>
+<p>If the Beyonwiz is not running an unmodified firmware package,
+download unmodified firmware into the Beyonwiz and
+restart.</p>
+<p>Remove the hacks by restarting the Beyonwiz with a USB device
+that has (at least) <a href="#item_s99removehacks"><code>S99removehacks</code></a> in <code>beyonwiz/etc/init.d</code>.</p>
+<p>Then restart the Beyonwiz.</p>
 <p>
 </p>
 <hr />
@@ -156,7 +179,7 @@ the scripts on any single USB device will be run in numerical order.</p>
 it not to start with <code>S</code>.
 It can be reactivated by renaming it to start with <code>S</code>.</p>
 <p>The startup code searches all USB devices connected to the Beyonwiz,
-and runs scripts from any (and all) attched devices with the scripts in the
+and runs scripts from any (and all) attached devices with the scripts in the
 appropriate location.</p>
 <p>The USB defices are searched in the following order:</p>
 <dl>
@@ -176,8 +199,9 @@ appropriate location.</p>
     Upper rear USB port</pre>
 </dd>
 </dl>
-<p>If two cards are inserted on the DP-S1, the search order is uncertain, if it
-works at all.</p>
+<p>If two cards are inserted on the DP-S1 or DP-H1,
+the search order is uncertain,
+if it works at all.</p>
 <p>If you want to create or modify scripts, <strong>you must use an
 editor that respects and preserves Unix-style LF line endings</strong>.
 Many Windows editors do not do this.
@@ -211,9 +235,9 @@ system by running</p>
 </dd>
 <dd>
 <pre>
-    if [ ! -x /flash/hacks/rc.local ]; then
+    if [ ! -x /flash/opt/rc.local ]; then
             rm -f &quot;${CONFIG_DIR}/rc.local&quot;
-            cp /flash/hacks/rc.local &quot;${CONFIG_DIR}/rc.local&quot;
+            cp /flash/opt/rc.local &quot;${CONFIG_DIR}/rc.local&quot;
     fi</pre>
 </dd>
 <dd>
@@ -226,42 +250,71 @@ The line will be inserted just before the comment line:</p>
     # rc.local</pre>
 </dd>
 <dd>
-<p>It also adds the new file <code>/flash/hacks/rc.local</code> to the firmware.
+<p>It also adds the new file <code>/flash/opt/rc.local</code> to the firmware.
 This file actually implements the hack.</p>
+</dd>
+</li>
+<dt><strong><a name="item_hacktag"><code>hackTag()</code></a></strong>
+
+<dd>
+<p>Returns <code>usbhack</code> as the default suffix tag for the patch.</p>
+</dd>
+</li>
+<dt><strong><a name="item_printhack"><code>printHack()</code></a></strong>
+
+<dd>
+<p>Prints the file that would be installed as
+<code>/tmp/config/rc.local</code>
+by this installer.</p>
+</dd>
+<dd>
+<p>It can be run standalone as:</p>
+</dd>
+<dd>
+<pre>
+    perl -MBeyonwiz::Hack::USBHackSupport -e &quot;Beyonwiz::Hack::USBHackSupport::printHack()&quot;</pre>
 </dd>
 </li>
 </dl>
 <p>
 </p>
 <hr />
-<h1><a name="disabling_the_hack">DISABLING THE HACK</a></h1>
-<p>If the Beyonwiz is not running an unmodified firmware package,
-download unmodified firmware into the Beyonwiz and
-restart.</p>
-<p>Remove the hacks by restarting the Beyonwiz with a USB device
-that has (at least) <a href="#item_s99removehacks"><code>S99removehacks</code></a> in <code>beyonwiz/etc/init.d</code>.</p>
-<p>Then restart the Beyonwiz.</p>
-<p>
-</p>
-<hr />
 <h1><a name="prerequsites">PREREQUSITES</a></h1>
 <p>Uses packages 
-<a href="../../../html/./Beyonwiz/Hack/Utils.html"><code>Beyonwiz::Hack::Utils</code></a>
-<code>File::Spec::Functions</code>.</p>
+<a href="../../../html/./Beyonwiz/Hack/Utils.html"><code>Beyonwiz::Hack::Utils</code></a>,
+<code>File::Spec::Functions</code>
+<code>File::Path</code>;</p>
 <p>
 </p>
 <hr />
 <h1><a name="bugs">BUGS</a></h1>
+<p><strong>Using user extensions or hacks may make your Beyonwiz unable to
+operate correctly, or even start.
+Some modifications are known to interfere with the correct
+functioning of the Beyonwiz.</strong></p>
+<p>If your Beyonwiz cannot start after you load modified firmware,
+you may need to use the procedures in the
+<strong>NOTICE - How to recover from FW update failure</strong>
+<a href="http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298">http://www.beyonwiz.com.au/phpbb2/viewtopic.php</a>
+procedure on the Beyonwiz forum.
+It's not known whether that procedure will fix all 
+failures due to user modifications or ``hacks''.</p>
+<p>If you run modified firmware on your Beyonwiz, and have
+problems with its operation, try to reproduce
+any problems you do have on a Beyonwiz running unmodified firmware,
+or at least mention the modifications you use when reporting the
+problem to Beyonwiz support or on the Beyonwiz Forum
+<a href="http://www.beyonwiz.com.au/phpbb2/index.php">http://www.beyonwiz.com.au/phpbb2/index.php</a>.
+Beyonwiz support may not be able to assist if you are running anything
+other than unmodified firmware from Beyonwiz.
+Forum contributers may be able to be more flexible, but they will
+need to know what modifications you have made.</p>
 <p>Waits 4 seconds before searching for USB devices.
 This may occasionally not be long enough.
 If you expect patches to run, and they don't, try restarting
 the Beyonwiz.
 With the limited scripting facilities available, this bug is fifficult
 to resolve.</p>
-<p><strong>Using <em>bw_patcher</em> (or any other method) to create a modified
-version of the firmware for any Beyonwiz model can result in a
-firmware package that can cause the Beyonwiz firmware to fail
-completely.</strong></p>
 <table border="0" width="100%" cellspacing="0" cellpadding="3">
 <tr><td class="block" style="background-color: #cccccc" valign="middle">
 <big><strong><span class="block">&nbsp;USBHackSupport</span></strong></big>

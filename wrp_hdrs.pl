@@ -157,7 +157,7 @@ sub readHdrFilehandle($$) {
     sysread $hdr->{fileHandle}, $buf, 1024, $off or return undef;
     (
         $hdr->{magic},
-	@{$hdr->{machMagic}}[0..1],
+	@{$hdr->{machMagic}}[0..3],
 	$hdr->{version},
 	@{$hdr->{md5file}}[0..15],
 	$hdr->{count},
@@ -169,8 +169,9 @@ sub readHdrFilehandle($$) {
 	$hdr->{fsType},
 	$hdr->{fsSize},
 	$hdr->{fsVol},
-    ) = unpack 'Z12 V2 Z64 C16 V6 C16 @512 Z8 N x4 Z16', $buf;
+    ) = unpack 'Z12 v4 Z64 C16 V6 C16 @512 Z8 N x4 Z16', $buf;
 
+    @{$hdr->{machMagic}}= reverse @{$hdr->{machMagic}};
     return $hdr;
 }
 
@@ -189,7 +190,7 @@ sub readHdrFile($) {
 # Formats for printing various fields in the header
 
 my %formats = (
-    machMagic => "0x%08x",
+    machMagic => "%04x",
     md5file => "%02x",
     md5image => "%02x",
 );

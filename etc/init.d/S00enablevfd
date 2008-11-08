@@ -1,5 +1,5 @@
-# Announce that the hacks have started, and create a flag
-# file to switch on displays from the hacks.
+# Announce that the hacks have started, set the variable
+# to switch on displays from the hacks.
 
 micomparam -q -t 'USB hacks'
-touch /tmp/enablevfd
+export SHOWHACKON=yes

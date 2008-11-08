@@ -29,6 +29,10 @@ CONSTANTS
 
 FUNCTIONS
 
+    "check_sym($sym)"
+        Looks up $sym in an internal table, and returns true if the
+        corresponding symbol has been found.
+
     "sym_val($sym)"
         Looks up $sym in an internal table, and returns the address of a
         word in the kernel that contains the symbol value. Fatal error if

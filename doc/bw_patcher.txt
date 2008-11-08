@@ -1,6 +1,7 @@
 NAME
 
-    bw_patcher - pack a Beyonwiz firmware update file
+    bw_patcher - all-in-one tool to automatically apply Beyonwiz firm ware
+    patches
 
 SYNOPSIS
 
@@ -89,6 +90,14 @@ PATCH MODULES
     The modules packaged with bw_patcher are "Beyonwiz::Hack::Telnet",
     "Beyonwiz::Hack::BwhackSupport" and "Beyonwiz::Hack::USBHackSupport".
 
+DISABLING THE HACKS
+
+    For instructions on disabling the hacks installed see the disabling
+    instructions in the documentation for the appropriate patch module.
+
+    Just installing an unmodified Beyonwiz firmware package may *not*
+    actually disable the hack!
+
 PREREQUSITES
 
     Uses packages "Getopt::Long", "IO::Compress::Gzip",
@@ -103,12 +112,28 @@ PREREQUSITES
 
 BUGS
 
-    Using *bw_patcher* (or any other method) to create a modified version of
-    the firmware for any Beyonwiz model can result in a firmware package
-    that can cause the Beyonwiz firmware to fail completely.
+    Using user extensions or hacks may make your Beyonwiz unable to operate
+    correctly, or even start. Some modifications are known to interfere with
+    the correct functioning of the Beyonwiz.
+
+    If your Beyonwiz cannot start after you load modified firmware, you may
+    need to use the procedures in the NOTICE - How to recover from FW update
+    failure <http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>
+    procedure on the Beyonwiz forum. It's not known whether that procedure
+    will fix all failures due to user modifications or "hacks".
+
+    If you run modified firmware on your Beyonwiz, and have problems with
+    its operation, try to reproduce any problems you do have on a Beyonwiz
+    running unmodified firmware, or at least mention the modifications you
+    use when reporting the problem to Beyonwiz support or on the Beyonwiz
+    Forum <http://www.beyonwiz.com.au/phpbb2/index.php>. Beyonwiz support
+    may not be able to assist if you are running anything other than
+    unmodified firmware from Beyonwiz. Forum contributers may be able to be
+    more flexible, but they will need to know what modifications you have
+    made.
 
     Tries to use some contextual information to find the root filesystem.
     They may fail and the updating of the root file system will fail.
 
-    Also see the BUGS entry for the tools that bw_patcher uses.
+    Also see the BUGS entries for the tools that bw_patcher uses.
 

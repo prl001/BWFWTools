@@ -2,12 +2,15 @@
 # run from rc.local if it starts with 'for', so start
 # with the null command ':'
 :
-patterns='/tmp/mnt/idehdd/* /tmp/mnt/usb/Device*/*'
+echo recfixer
+patterns='/tmp/mnt/idehdd /tmp/mnt/usb/Device*/*'
 found=no
 for t in 10 9 8 7 6 5 4 3 2 1 0; do
     for x in $patterns; do
-	if [ -f "$x/.super" ]; then
-	    found=yes
+	if [ -d "$x" ]; then
+	    if [ -f "$x/.super" ]; then
+		found=yes
+	    fi
 	    break 2
 	fi
 	sleep 1

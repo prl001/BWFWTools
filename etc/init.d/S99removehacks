@@ -1,3 +1,7 @@
 # Remove the hack script
-echo "remove hacks" >> /tmp/tweakbootlog
-rm /tmp/config/rc.local >> /tmp/tweakbootlog 2>&1
+echo "remove hacks"
+rm /tmp/config/rc.local
+rm /tmp/config/usb.local
+for h in dim telnetd wizremote httproot usb; do
+    rm /tmp/mnt/idehdd/$h
+done

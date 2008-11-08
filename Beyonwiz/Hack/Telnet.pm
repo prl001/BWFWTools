@@ -31,6 +31,10 @@ The line will be inserted just before the comment line:
 
     # rc.local
 
+=item C<< hackTag() >>
+
+Returns C<telnet> as the default suffix tag for the patch.
+
 =back
 
 =head1 DISABLING THE HACK
@@ -45,10 +49,29 @@ L<C<Beyonwiz::Hack::Utils>|Beyonwiz::Hack::Utils>.
 
 =head1 BUGS
 
-B<Using I<bw_patcher> (or any other method) to create a modified
-version of the firmware for any Beyonwiz model can result in a
-firmware package that can cause the Beyonwiz firmware to fail
-completely.>
+B<Using user extensions or hacks may make your Beyonwiz unable to
+operate correctly, or even start.
+Some modifications are known to interfere with the correct
+functioning of the Beyonwiz.>
+
+If your Beyonwiz cannot start after you load modified firmware,
+you may need to use the procedures in the
+B<NOTICE - How to recover from FW update failure>
+L<http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>
+procedure on the Beyonwiz forum.
+It's not known whether that procedure will fix all 
+failures due to user modifications or "hacks".
+
+If you run modified firmware on your Beyonwiz, and have
+problems with its operation, try to reproduce
+any problems you do have on a Beyonwiz running unmodified firmware,
+or at least mention the modifications you use when reporting the
+problem to Beyonwiz support or on the Beyonwiz Forum
+L<http://www.beyonwiz.com.au/phpbb2/index.php>.
+Beyonwiz support may not be able to assist if you are running anything
+other than unmodified firmware from Beyonwiz.
+Forum contributers may be able to be more flexible, but they will
+need to know what modifications you have made.
 
 =cut
 
@@ -56,6 +79,10 @@ use strict;
 use warnings;
 
 use Beyonwiz::Hack::Utils qw(findMatchingPath patchFile);
+
+sub hackTag() {
+    return 'telnet';
+}
 
 # System init file to patch
 my $sysfile  = 'etc/rc.sysinit';

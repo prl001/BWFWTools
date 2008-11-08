@@ -1,37 +1,27 @@
 NAME
 
-        Beyonwiz::Hack::Telnet;
+        Beyonwiz::Hack::RemFile;
 
 SYNOPSIS
 
-    A module to use as an argument to use with "bw_patcher" to patch
-    Beyonwiz firmware to start "telnetd" at startup to allow telnet
-    connections to the Beyonwiz.
-
-    The effect of this hack will be undone if you load unmodified firmware
-    onto the Beyonwiz.
-
-FUNCTIONS
-
-    "hack($flash_dir, $root_dir)"
-        Called by "bw_patcher" to perform the patch.
-
-        Inserts the line:
-
-            telnetd -l /bin/sh &
-
-        into the file that will be "/etc/rc.sysinit", the system startup
-        script, on the Beyonwiz. The line will be inserted just before the
-        comment line:
-
-            # rc.local
-
-    "hackTag()"
-        Returns "telnet" as the default suffix tag for the patch.
+    A module to use as an argument to use with "bw_patcher". Deletes a file
+    at the given relative location in either the root or the flash file
+    system..
 
 DISABLING THE HACK
 
-    Simply download unmodified firmware into the Beyonwiz and restart.
+    Download unmodified firmware into the Beyonwiz and restart.
+
+FUNCTIONS
+
+    "hack($flash_dir, $root_dir, $filesystem, $file)"
+        Deletes $file from the firmware filesystem $filesystem, named
+        relative to the filesystem root.
+
+        $filesystem must be one of (root, flash).
+
+    "hackTag()"
+        Returns "bg" as the default suffix tag for the patch.
 
 PREREQUSITES
 
@@ -58,12 +48,4 @@ BUGS
     unmodified firmware from Beyonwiz. Forum contributers may be able to be
     more flexible, but they will need to know what modifications you have
     made.
-
-POD ERRORS
-
-    Hey! The above document had some coding errors, which are explained
-    below:
-
-    Around line 9:
-        Deleting unknown formatting code D<>
 

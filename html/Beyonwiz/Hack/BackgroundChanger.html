@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Telnet</title>
+<title>BackgroundChanger</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rev="made" href="mailto:root@omen.apple.com" />
 </head>
@@ -10,7 +10,7 @@
 <body style="background-color: white">
 <table border="0" width="100%" cellspacing="0" cellpadding="3">
 <tr><td class="block" style="background-color: #cccccc" valign="middle">
-<big><strong><span class="block">&nbsp;Telnet</span></strong></big>
+<big><strong><span class="block">&nbsp;BackgroundChanger</span></strong></big>
 </td></tr>
 </table>
 
@@ -21,8 +21,8 @@
 
 	<li><a href="#name">NAME</a></li>
 	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#functions">FUNCTIONS</a></li>
 	<li><a href="#disabling_the_hack">DISABLING THE HACK</a></li>
+	<li><a href="#functions">FUNCTIONS</a></li>
 	<li><a href="#prerequsites">PREREQUSITES</a></li>
 	<li><a href="#bugs">BUGS</a></li>
 </ul>
@@ -33,62 +33,61 @@
 </p>
 <h1><a name="name">NAME</a></h1>
 <pre>
-    Beyonwiz::Hack::Telnet;</pre>
+    Beyonwiz::Hack::BackgroundChanger;</pre>
 <p>
 </p>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<p>A module to use as an argument to use with <a href="../../../html/bw_patcher.html"> <code>bw_patcher</code></a>
-to patch Beyonwiz firmware to start <code>telnetd</code> at startup to allow
-D&lt;telnet&gt; connections to the Beyonwiz.</p>
-<p>The effect of this hack will be undone if you load
-unmodified firmware onto the Beyonwiz.</p>
+<p>A module to use as an argument to use with <a href="../../../html/bw_patcher.html"> <code>bw_patcher</code></a>.
+It modifies the firmware to display a different background image
+in the full-screen menus.</p>
+<p>The image file must be a JPEG image, 1280x720 pixels for Beyonwiz firmware
+01.05.247 and earlier.</p>
+<p>For firmware versions after 01.05.247, the image file must be a PNG
+image, 1280x720 pixels.
+The Beyonwiz then simply adds the constant GUI colour to that image,
+so greyscale images will probably come out best. The maximum intensity
+of each pixel in the image needs to be limited, otherwise the colour
+values can wrap around after adding the GUI colouring and you get
+weird effects.
+The image in the original firmware has no pixel with RGB values
+greater than (103, 103, 103) decimal (0x67, 0x67, 0x67). The Beyonwiz
+base image is greyscale, but it has a colour map, so it's possible
+that coloured colour mapped images may also work.</p>
+<p>
+</p>
+<hr />
+<h1><a name="disabling_the_hack">DISABLING THE HACK</a></h1>
+<p>Download unmodified firmware into the Beyonwiz and
+restart.</p>
 <p>
 </p>
 <hr />
 <h1><a name="functions">FUNCTIONS</a></h1>
 <dl>
-<dt><strong><a name="item_hack"><code>hack($flash_dir, $root_dir)</code></a></strong>
+<dt><strong><a name="item_hack"><code>hack($flash_dir, $root_dir, $image_file)</code></a></strong>
 
 <dd>
-<p>Called by <a href="../../../html/bw_patcher.html"> <code>bw_patcher</code></a> to perform the patch.</p>
-</dd>
-<dd>
-<p>Inserts the line:</p>
-</dd>
-<dd>
-<pre>
-    telnetd -l /bin/sh &amp;</pre>
-</dd>
-<dd>
-<p>into the file that will be <code>/etc/rc.sysinit</code>, the system startup script,
-on the Beyonwiz.
-The line will be inserted just before the comment line:</p>
-</dd>
-<dd>
-<pre>
-    # rc.local</pre>
+<p>Inserts <code>$image_file</code> into the firmware instead of the
+default <code>wizdvp/guidata/bitmaps/wiz/total_image/Main-image-1.jpg</code></p>
 </dd>
 </li>
 <dt><strong><a name="item_hacktag"><code>hackTag()</code></a></strong>
 
 <dd>
-<p>Returns <code>telnet</code> as the default suffix tag for the patch.</p>
+<p>Returns <code>bg</code> as the default suffix tag for the patch.</p>
 </dd>
 </li>
 </dl>
 <p>
 </p>
 <hr />
-<h1><a name="disabling_the_hack">DISABLING THE HACK</a></h1>
-<p>Simply download unmodified firmware into the Beyonwiz and
-restart.</p>
-<p>
-</p>
-<hr />
 <h1><a name="prerequsites">PREREQUSITES</a></h1>
-<p>Uses packages 
-<a href="../../../html/./Beyonwiz/Hack/Utils.html"><code>Beyonwiz::Hack::Utils</code></a>.</p>
+<p>Uses packages
+<code>Image::Size</code>,
+<a href="../../../html/./Beyonwiz/Hack/PutFile.html"><code>Beyonwiz::Hack::PutFile</code></a>
+<a href="../../../html/./Beyonwiz/Hack/RemFile.html"><code>Beyonwiz::Hack::RemFile</code></a>
+.</p>
 <p>
 </p>
 <hr />
@@ -116,7 +115,7 @@ Forum contributers may be able to be more flexible, but they will
 need to know what modifications you have made.</p>
 <table border="0" width="100%" cellspacing="0" cellpadding="3">
 <tr><td class="block" style="background-color: #cccccc" valign="middle">
-<big><strong><span class="block">&nbsp;Telnet</span></strong></big>
+<big><strong><span class="block">&nbsp;BackgroundChanger</span></strong></big>
 </td></tr>
 </table>
 

@@ -16,6 +16,14 @@ Memory cards in the front slots on the DP-S1 count as connected USB devices,
 so memory cards as well as USB thumb and hard drives can be used to enable
 hacks this way.
 
+B<Not designed for use in combination with
+L<C<Beyonwiz::Hack::BwhackSupport>|Beyonwiz::Hack::BwhackSupport>>.
+However, C<Beyonwiz::Hack::USBHackSupport>
+offers all the functionality available through
+L<C<Beyonwiz::Hack::BwhackSupport>|Beyonwiz::Hack::BwhackSupport>,
+except L<C<httproot>|Beyonwiz::Hack::BwhackSupport/item_httproot>,
+and unlike that patch, will work on the DP-H1.
+
 The hacks available for enabling (default is all disabled) are:
 
 =over 4
@@ -53,15 +61,20 @@ if it is installed in
 
 =item S99removehacks
 
-Removes the C</tmp/config/rc.local> file from the Beyonwiz.
+Removes the C</tmp/config/rc.local>
+and C</tmp/config/usb.local> files from the Beyonwiz.
 For this to be effective, unmodified Beyonwiz firmware must
-be downloaded to the Beyonwiz first. See 
+be downloaded to the Beyonwiz first. See L<DISABLING THE HACK>.
+
+This script can also be used in conjunction with the C<usb> hack
+in L<C<Beyonwiz::Hack::BwhackSupport>|Beyonwiz::Hack::BwhackSupport>
+to remove hacks installed by that installer.
 
 =back
 
 The patching process modifies the Beyonwiz firmware startup script
 C</etc/rc.sysinit> to copy the added
-firmware file C</flash/hacks/rc.local> into C</tmp/config/rc.local>
+firmware file C</flash/opt/rc.local> into C</tmp/config/rc.local>
 each time the Beyonwiz starts.
 C</tmp/config/rc.local> is also copied into, and restored from,
 non-volatile storage each time the Beyonwiz restarts.
@@ -74,6 +87,17 @@ C</tmp/config/rc.local> is part of normal firmware startup.
 
 The effect of this hack will I<not> be undone if you load
 unmodified firmware onto the Beyonwiz.
+
+=head1 DISABLING THE HACK
+
+If the Beyonwiz is not running an unmodified firmware package,
+download unmodified firmware into the Beyonwiz and
+restart.
+
+Remove the hacks by restarting the Beyonwiz with a USB device
+that has (at least) C<S99removehacks> in C<beyonwiz/etc/init.d>.
+
+Then restart the Beyonwiz.
 
 =head1 PREPARING THE USB DEVICE OR MEMORY CARD
 
@@ -119,7 +143,7 @@ it not to start with C<S>.
 It can be reactivated by renaming it to start with C<S>.
 
 The startup code searches all USB devices connected to the Beyonwiz,
-and runs scripts from any (and all) attched devices with the scripts in the
+and runs scripts from any (and all) attached devices with the scripts in the
 appropriate location.
 
 The USB defices are searched in the following order:
@@ -139,8 +163,9 @@ The USB defices are searched in the following order:
 
 =back
 
-If two cards are inserted on the DP-S1, the search order is uncertain, if it
-works at all.
+If two cards are inserted on the DP-S1 or DP-H1,
+the search order is uncertain,
+if it works at all.
 
 If you want to create or modify scripts, B<you must use an
 editor that respects and preserves Unix-style LF line endings>.
@@ -174,9 +199,9 @@ Called by L< C<bw_patcher>|bw_patcher/ > to perform the patch.
 
 Inserts the lines:
 
-    if [ ! -x /flash/hacks/rc.local ]; then
+    if [ ! -x /flash/opt/rc.local ]; then
             rm -f "${CONFIG_DIR}/rc.local"
-            cp /flash/hacks/rc.local "${CONFIG_DIR}/rc.local"
+            cp /flash/opt/rc.local "${CONFIG_DIR}/rc.local"
     fi
 
 into the file that will be C</etc/rc.sysinit>, the system startup script,
@@ -185,29 +210,57 @@ The line will be inserted just before the comment line:
 
     # rc.local
 
-It also adds the new file C</flash/hacks/rc.local> to the firmware.
+It also adds the new file C</flash/opt/rc.local> to the firmware.
 This file actually implements the hack.
 
+=item C<< hackTag() >>
+
+Returns C<usbhack> as the default suffix tag for the patch.
+
+=item C<< printHack() >>
+
+Prints the file that would be installed as
+C</tmp/config/rc.local>
+by this installer.
+
+It can be run standalone as:
+
+    perl -MBeyonwiz::Hack::USBHackSupport -e "Beyonwiz::Hack::USBHackSupport::printHack()"
+
 =back
-
-=head1 DISABLING THE HACK
-
-If the Beyonwiz is not running an unmodified firmware package,
-download unmodified firmware into the Beyonwiz and
-restart.
-
-Remove the hacks by restarting the Beyonwiz with a USB device
-that has (at least) C<S99removehacks> in C<beyonwiz/etc/init.d>.
-
-Then restart the Beyonwiz.
 
 =head1 PREREQUSITES
 
 Uses packages 
-L<C<Beyonwiz::Hack::Utils>|Beyonwiz::Hack::Utils>
-C<File::Spec::Functions>.
+L<C<Beyonwiz::Hack::Utils>|Beyonwiz::Hack::Utils>,
+C<File::Spec::Functions>
+C<File::Path>;
 
 =head1 BUGS
+
+B<Using user extensions or hacks may make your Beyonwiz unable to
+operate correctly, or even start.
+Some modifications are known to interfere with the correct
+functioning of the Beyonwiz.>
+
+If your Beyonwiz cannot start after you load modified firmware,
+you may need to use the procedures in the
+B<NOTICE - How to recover from FW update failure>
+L<http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>
+procedure on the Beyonwiz forum.
+It's not known whether that procedure will fix all 
+failures due to user modifications or "hacks".
+
+If you run modified firmware on your Beyonwiz, and have
+problems with its operation, try to reproduce
+any problems you do have on a Beyonwiz running unmodified firmware,
+or at least mention the modifications you use when reporting the
+problem to Beyonwiz support or on the Beyonwiz Forum
+L<http://www.beyonwiz.com.au/phpbb2/index.php>.
+Beyonwiz support may not be able to assist if you are running anything
+other than unmodified firmware from Beyonwiz.
+Forum contributers may be able to be more flexible, but they will
+need to know what modifications you have made.
 
 Waits 4 seconds before searching for USB devices.
 This may occasionally not be long enough.
@@ -216,22 +269,22 @@ the Beyonwiz.
 With the limited scripting facilities available, this bug is fifficult
 to resolve.
 
-B<Using I<bw_patcher> (or any other method) to create a modified
-version of the firmware for any Beyonwiz model can result in a
-firmware package that can cause the Beyonwiz firmware to fail
-completely.>
-
 =cut
 
 use strict;
 use warnings;
 
 use File::Spec::Functions qw(catfile);
+use File::Path 'mkpath';
 use Beyonwiz::Hack::Utils qw(
-	findMatchingPath findNewFile
+	findMatchingPath makeMatchingDirectoryPath findNewFile
         patchFile addFile
     );
     
+sub hackTag() {
+    return 'usbhack';
+}
+
 # System init file to patch
 my $sysfile  = 'etc/rc.sysinit';
 
@@ -243,14 +296,14 @@ my $after    = 0;
 
 # Commands to patch in
 my $patch    = <<'EOF';
-	if [ -x /flash/hacks/rc.local ]; then
+	if [ -x /flash/opt/rc.local ]; then
 		rm -f ${CONFIG_DIR}/rc.local
-		cp /flash/hacks/rc.local ${CONFIG_DIR}/rc.local
+		cp /flash/opt/rc.local ${CONFIG_DIR}/rc.local
 	fi
 EOF
 
-# Location of rc.local file to be copied into /tm/pconfig
-my $rc_local_dir = 'hacks';
+# Location of rc.local file to be copied into /tmp/config
+my $rc_local_dir = 'opt';
 my $rc_local_file = catfile($rc_local_dir, 'rc.local');
 
 # Make it executable?
@@ -261,18 +314,19 @@ my $rc_local_exec = 1;
 # on the Beyonwiz forum (http://www.beyonwiz.com.au/phpbb2/index.php),
 # code written by tonymy01 on the same forum.
 
-# For some reason the 'break' in the 'for typ' loop does nothing.
+# For some reason the 'break' in the 'for typ' loop causes junk to be
+# executed, so it's commented out.
 # This doesn't affect the function of the script, but I don't know
 # why it happens.
  
 my $rc_local      = <<'EOF';
 #!/bin/sh
-export MNTPT=/tmp/mnt/usb/tmp
+MNTPT=/tmp/mnt/usb/tmp
 log=/tmp/tweakbootlog
-exec >> $log 2>&1 <&-
 
 sleep 4
 
+exec > $log 2>&1 <&-
 date -u
 mkdir $MNTPT
 
@@ -287,7 +341,7 @@ for dev in /dev/scsi/host*/bus*/target*/lun*/part*; do
 		    do
 			if [ -r "$script" ]; then
 			    echo "loading tweak $script"
-			    if [ /tmp/enablevfd ]; then
+			    if [ "$SHOWHACKON" = yes ]; then
 				msg=`basename $script`
 				micomparam -q -t "$msg"
 			    fi
@@ -304,13 +358,32 @@ for dev in /dev/scsi/host*/bus*/target*/lun*/part*; do
 		    echo usb unmount failed
 		    exit 1
 		fi
-		break
+		#break
 	    fi
 	done
     fi
 done
 rmdir $MNTPT
 EOF
+
+sub addRcLocalFile($$$) {
+    my ($flash_dir, $rc_local_file, $rc_local_exec) = @_;
+
+    my @rc_local = findNewFile($flash_dir, $rc_local_file, $rc_local_exec);
+
+    die "Can't find directory for $rc_local_file in $flash_dir\n"
+	if(!@rc_local);
+    die "Found too many copies of $rc_local_file in $flash_dir\n"
+	if(@rc_local > 1);
+
+    addFile($rc_local[0], $rc_local, $rc_local_exec);
+}
+
+sub printHack() {
+    binmode STDOUT;
+    $rc_local =~ s/\015\012/\012/g;
+    print STDOUT $rc_local;
+}
 
 sub hack($$) {
     my ($flash_dir, $root_dir) = @_;
@@ -327,14 +400,23 @@ sub hack($$) {
     die "Patch applied $patches times: should only be applied once!\n"
 	if($patches != 1);
 
-    my @hacksdir = findNewFile($flash_dir, $rc_local_dir, 1);
-    die "Can't find directory for $rc_local_dir in $root_dir\n"
-	if(!@hacksdir);
-    die "Found too many copies of $rc_local_dir in $root_dir\n"
-	if(@hacksdir > 1);
-    die "Can't create $rc_local_dir in $root_dir: $!\n"
-	if(!mkdir $hacksdir[0]);
-    
+    my @rc_local_dir = findMatchingPath($flash_dir, $rc_local_dir);
+    if(!@rc_local_dir) {
+	@rc_local_dir = makeMatchingDirectoryPath($flash_dir, $rc_local_dir);
+	if(@rc_local_dir == 1) {
+	    if(!-d $rc_local_dir[0]) {
+		die "$rc_local_dir[0] exists already but isn't a directory\n"
+		    if(-e _);
+		print "Make new directory path: $rc_local_dir[0]\n";
+		mkpath $rc_local_dir[0]
+		    or die "Can't create $rc_local_dir[0] - $!\n";
+	    }
+	}
+    }
+    die "Found too many paths matching $rc_local_dir in $flash_dir\n"
+	    if(@rc_local_dir > 1);
+
+    addRcLocalFile($flash_dir, $rc_local_file, $rc_local_exec);
     my @rc_local = findNewFile($flash_dir, $rc_local_file, $rc_local_exec);
 
     die "Can't find directory for $rc_local_file in $root_dir\n"

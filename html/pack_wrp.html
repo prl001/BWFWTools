@@ -92,8 +92,8 @@ a <code>.wrp</code> file that will cause a Beyonwiz to be unbootable.</p>
 </dd>
 <dd>
 <p>Set the machine type in the <code>.wrp</code> firmware file header.
-<em>type</em> must be one of <strong>s</strong>, <strong>p</strong> or <strong>h</strong> for the DP-S1, DP-P1
-and DP-H1 Beyonwiz models respectively.</p>
+<em>type</em> should be one of <code>DP-S1</code>, <code>DP-P1</code>, <code>DP-P2</code>, <code>DP-H1</code>, 
+<code>FT-P1</code>, <code>FT-H1</code>,  <code>FC-H1</code> or <code>FC-H1</code>.</p>
 </dd>
 <dd>
 <p>If neither <em>machtype</em> nor <em>machcode</em> is specified, the name of the file
@@ -121,7 +121,10 @@ unless the machine type can't be detected automatically.</p>
 <p>Set the 16-digit hexadecimal System ID code
 (<a href="http://www.openwiz.org/wiki/Hardware#System_IDs">http://www.openwiz.org/wiki/Hardware#System_IDs</a>)
 for the firmware.
-Don't use the spaces that appear in the codes on the Web page in the argument.</p>
+You can use spares or hyphens between bytes for readability,
+so the spaces that appear in the codes on the Web page
+can be used in the argument.
+Don't forget to quote the argument if it contains spaces!</p>
 </dd>
 <dd>
 <p>One of either <em>machtype</em> or <em>machcode</em> must be specified.</p>
@@ -259,9 +262,12 @@ GNU <code>gzip</code> program, then if that fails, by using the Perl
 </p>
 <hr />
 <h1><a name="prerequsites">PREREQUSITES</a></h1>
-<p>Uses packages <code>Getopt::Long</code>,
-<code>IO::Compress::Gzip</code>, <code>IO::Uncompress::Gunzip</code> and
-<code>FindBin</code>.</p>
+<p>Uses packages
+<code>Beyonwiz::Hack::Utils</code>,
+<code>Getopt::Long</code>,
+<code>IO::Compress::Gzip</code>,
+<code>IO::Uncompress::Gunzip</code> and
+<code>File::Spec::Functions</code>.</p>
 <p>Uses <a href=".././html/bw_rootfs.html"> <code>bw_rootfs</code></a>.</p>
 <p>Uses Eric Fry's wizfwtools programs <code>wiz_pack</code>
 and <code>wiz_genromfs</code>.</p>
@@ -271,10 +277,27 @@ image unless one of <strong>--perlgzip</strong> or <strong>--gzip</strong> is us
 </p>
 <hr />
 <h1><a name="bugs">BUGS</a></h1>
-<p><strong>Using <em>pack_wrp</em> (or any other method) to create a modified
-version of the firmware for any Beyonwiz model can result in a
-firmware package that can cause the Beyonwiz firmware to fail
-completely.</strong></p>
+<p><strong>Using modified firmware on your Beyonwiz may make it unable to
+operate correctly, or even start.
+Some modifications are known to interfere with the correct
+functioning of the Beyonwiz.</strong></p>
+<p>If your Beyonwiz cannot start after you load modified firmware,
+you may need to use the procedures in the
+<strong>NOTICE - How to recover from FW update failure</strong>
+<a href="http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298">http://www.beyonwiz.com.au/phpbb2/viewtopic.php</a>
+procedure on the Beyonwiz forum.
+It's not known whether that procedure will fix all 
+failures due to user modifications or ``hacks''.</p>
+<p>If you run modified firmware on your Beyonwiz, and have
+problems with its operation, try to reproduce
+any problems you do have on a Beyonwiz running unmodified firmware,
+or at least mention the modifications you use when reporting the
+problem to Beyonwiz support or on the Beyonwiz Forum
+<a href="http://www.beyonwiz.com.au/phpbb2/index.php">http://www.beyonwiz.com.au/phpbb2/index.php</a>.
+Beyonwiz support may not be able to assist if you are running anything
+other than unmodified firmware from Beyonwiz.
+Forum contributers may be able to be more flexible, but they will
+need to know what modifications you have made.</p>
 <p>Tries to use some contextual information to find the root filesystem.
 They may fail and the updating of the root file system will fail.</p>
 <p>Because of the way the root file system is patched into the kernel,
@@ -284,8 +307,12 @@ the patches, and then regzip the kernel.
 If you patch <code>linux.bin</code> and don't gzip it back into
 <code>linux.bin.gz</code> those changes will be lost in the three-argument
 form of <code>pack_wrp</code>.</p>
-<p>Using high compression levels for the kernel file is not yet tested.</p>
 <p>Has too many options.</p>
+<p>In the three-argument form of <code>pack_wrp</code> is used on Windows, the
+temporary copy of linux.bin cannot be deleted (it may be being kept
+open internally by Perl). This is a fatal error on other systems, but
+on Windows, a non-fatal warning is issued. You may want to clean the
+file up manually.</p>
 <table border="0" width="100%" cellspacing="0" cellpadding="3">
 <tr><td class="block" style="background-color: #cccccc" valign="middle">
 <big><strong><span class="block">&nbsp;pack_wrp</span></strong></big>

@@ -2,7 +2,7 @@ NAME
 
         use Beyonwiz::Hack::Utils qw(
             findMatchingPath findNewFile
-            patchFile addFile
+            patchFile addFile copyFile
             insens
         );
 
@@ -25,6 +25,15 @@ FUNCTIONS
         a file glob, so file name expansion will be done on any file name
         expansion characters in either part of the name. The
         case-insensitive encoding is only done on $path.
+
+        If the returned list contains more than one path, it's up to the
+        caller to determine what to do.
+
+    "makeMatchingDirectoryPath($fw_dir, $path)"
+        Given a directory for the root of an unpacked firmware directory
+        tree $fw_dir and a path within it $path, create a list of
+        directories representing the complete path, taking into account any
+        case-insensitive name mapping.
 
         If the returned list contains more than one path, it's up to the
         caller to determine what to do.
@@ -61,4 +70,9 @@ FUNCTIONS
         should end in a newline.
 
         Takes some care not to put DOS CRLF line endings in the file.
+
+    "pathTildeExpand()"
+        Expands "~" and "~"*username* home directory abbreviations in
+        $ENV{PATH}. This is needed because Perl "system" and "exec"
+        functions don't do tilde expansions.
 

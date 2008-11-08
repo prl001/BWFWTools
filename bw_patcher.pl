@@ -4,7 +4,8 @@
 
 =head1 NAME
 
-bw_patcher - pack a Beyonwiz firmware update file
+bw_patcher - all-in-one tool to automatically apply Beyonwiz firm
+ware patches
 
 
 =head1 SYNOPSIS
@@ -123,6 +124,14 @@ L<C<Beyonwiz::Hack::BwhackSupport>|BwhackSupport>
 and
 L<C<Beyonwiz::Hack::USBHackSupport>|USBHackSupport>.
 
+=head1 DISABLING THE HACKS
+
+For instructions on disabling the hacks installed see the disabling
+instructions in the documentation for the appropriate patch module.
+
+B<Just installing an unmodified Beyonwiz firmware package may I<not>
+actually disable the hack!>
+
 =head1 PREREQUSITES
 
 Uses packages C<Getopt::Long>,
@@ -145,15 +154,34 @@ L<C<Beyonwiz::Hack::Utils>|Utils>.
 
 =head1 BUGS
 
-B<Using I<bw_patcher> (or any other method) to create a modified
-version of the firmware for any Beyonwiz model can result in a
-firmware package that can cause the Beyonwiz firmware to fail
-completely.>
+B<Using user extensions or hacks may make your Beyonwiz unable to
+operate correctly, or even start.
+Some modifications are known to interfere with the correct
+functioning of the Beyonwiz.>
+
+If your Beyonwiz cannot start after you load modified firmware,
+you may need to use the procedures in the
+B<NOTICE - How to recover from FW update failure>
+L<http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>
+procedure on the Beyonwiz forum.
+It's not known whether that procedure will fix all 
+failures due to user modifications or "hacks".
+
+If you run modified firmware on your Beyonwiz, and have
+problems with its operation, try to reproduce
+any problems you do have on a Beyonwiz running unmodified firmware,
+or at least mention the modifications you use when reporting the
+problem to Beyonwiz support or on the Beyonwiz Forum
+L<http://www.beyonwiz.com.au/phpbb2/index.php>.
+Beyonwiz support may not be able to assist if you are running anything
+other than unmodified firmware from Beyonwiz.
+Forum contributers may be able to be more flexible, but they will
+need to know what modifications you have made.
 
 Tries to use some contextual information to find the root filesystem.
 They may fail and the updating of the root file system will fail.
 
-Also see the BUGS entry for the tools that B<bw_patcher> uses.
+Also see the BUGS entries for the tools that B<bw_patcher> uses.
 
 =cut
 
@@ -164,7 +192,7 @@ use Getopt::Long;
 use File::Spec::Functions qw(catfile tmpdir);
 use File::Path;
 use Carp;
-use Beyonwiz::Hack::Utils qw(insens);
+use Beyonwiz::Hack::Utils qw(insens pathTildeExpand);
 
 Getopt::Long::Configure qw/no_ignore_case bundling/;
 
@@ -185,10 +213,6 @@ my ($insens, $force, $keep, $volname, $machtype, $machcode, $compresslevel)
  = (undef,   undef,  undef, undef,    undef,     undef,     undef);
 my ($version, $versionsuffix, $perlgzip, $gzip,  $help)
  = (undef,    undef,          undef,      undef, undef);
-
-# Use double quotes for quoting on Windows, otherwise single quotes
-
-my $q = $^O eq 'MSWin32' ? '"' : "'";
 
 # Make case insensitive by default on Windows and Mac OS X
 
@@ -212,26 +236,28 @@ $help and usage;
 
 @ARGV >= 3 or usage;
 
-my $unpack_opts;
-$unpack_opts .= ' -i' if($insens);
-$unpack_opts .= ' -f' if($force);
+my @unpack_opts;
+    push @unpack_opts, '-i'		    if($insens);
+    push @unpack_opts, '-f'		    if($force);
 
-my $pack_opts;
-$pack_opts .= ' -i' if($insens);
-$pack_opts .= ' -f' if($force);
-$pack_opts .= " -V $q$volname$q" if(defined $volname);
-$pack_opts .= " -v $q$version$q" if(defined $version);
-$pack_opts .= " -s $q$versionsuffix$q" if(defined $versionsuffix);
-$pack_opts .= " -t $q$machtype$q" if(defined $machtype);
-$pack_opts .= " -T $q$machcode$q" if(defined $machcode);
-$pack_opts .= " -c $compresslevel" if(defined $compresslevel);
-$pack_opts .= ' -p' if($perlgzip);
-$pack_opts .= ' -g' if($gzip);
+my @pack_opts;
+    push @pack_opts, '-i'		    if($insens);
+    push @pack_opts, '-f'		    if($force);
+    push @pack_opts, '-V', $volname	    if(defined $volname);
+    push @pack_opts, '-v', $version	    if(defined $version);
+    push @pack_opts, '-s', $versionsuffix   if(defined $versionsuffix);
+    push @pack_opts, '-t', $machtype	    if(defined $machtype);
+    push @pack_opts, '-T', $machcode	    if(defined $machcode);
+    push @pack_opts, '-c', $compresslevel   if(defined $compresslevel);
+    push @pack_opts, '-p'		    if($perlgzip);
+    push @pack_opts, '-g'		    if($gzip);
 
 my ($insens_prefix_x , $insens_prefix_r)
  = $insens ? ('[0-9][0-9][0-9]x_', '[0-9][0-9][0-9]r_') : ('', '');
 
 insens($insens);
+
+pathTildeExpand();
 
 my ($src_fw, $dst_fw) = (shift, shift);
 
@@ -242,22 +268,56 @@ sub on_exit() {
     rmtree([$flash_dir, $root_dir]) if(!$keep);
 }
 
+sub call_hack($$) {
+    my ($proto, $hack_name) = @_;
+    ($proto =~ /^\$\$\$*$/) or
+	die $hack_name . "'s prototype ($proto) not permitted.",
+            " \$ only in prototype\n";
+
+    my $nargs = length($proto) - 2;
+    $nargs <= @ARGV
+	or die "Not enough earguments for $hack_name; requires $nargs,",
+	    " only ", scalar(@ARGV), " supplied\n";
+
+    my $exec_str = $hack_name . "::hack('$flash_dir', '$root_dir'";
+    if($nargs > 0) {
+	$exec_str .= join ', ', '', map { "'".$_."'" } @ARGV[0..$nargs-1];
+	splice @ARGV, 0, $nargs;
+    }
+    $exec_str .= ')';
+
+    eval $exec_str;
+    croak "$@\n" if($@);
+
+    my $hack_tag = eval $hack_name . "::hackTag()";
+    croak "$@\n" if($@);
+    return $hack_tag;
+}
+
 $SIG{$_} = \&on_exit foreach qw(HUP INT QUIT PIPE TERM __DIE__);
 
-
-system("unpack_wrp.pl$unpack_opts"
-	. " $q$src_fw$q $q$flash_dir$q $q$root_dir$q") == 0
+system({'perl'}
+	'perl', '-S', 'unpack_wrp.pl', @unpack_opts,
+					$src_fw, $flash_dir, $root_dir) == 0
     or die "Unpack of $src_fw into $flash_dir and $root_dir failed\n";
+
+my @hack_tags;
 
 while(my $hack_name = shift @ARGV) {
     eval "use $hack_name";
     croak "$@\n" if($@);
-    eval $hack_name . "::hack('$flash_dir', '$root_dir')";
-    croak "$@\n" if($@);
+    my $proto = eval 'prototype \&' . $hack_name . "::hack";
+    push @hack_tags, call_hack($proto, $hack_name);
 }
 
-system("pack_wrp.pl$pack_opts"
-	. " $q$dst_fw$q $q$flash_dir$q $q$root_dir$q") == 0
+if(!defined $versionsuffix and @hack_tags) {
+    $versionsuffix = join('_', '', @hack_tags);
+    push @pack_opts, '-s', $versionsuffix;
+}
+
+system({'perl'}
+	'perl', '-S', 'pack_wrp.pl', @pack_opts,
+					$dst_fw, $flash_dir, $root_dir) == 0
     or die "Packing $flash_dir and $root_dir into $src_fw failed\n";
 
 on_exit();

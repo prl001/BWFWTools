@@ -8,7 +8,15 @@ SYNOPSIS
     firmware to start a user-selectable set of hacks that can be
     enabled/disabled using "bwhack".
 
-    The hacks available for enabling (default is all disabled) are:
+    Not suitable for use on a Beyonwiz DP-H1. See "BUGS".
+
+    Not designed for use in combination with
+    "Beyonwiz::Hack::USBHackSupport". However, the "usb" hack that can be
+    enabled through this firmware patch contains all the functionality of
+    "Beyonwiz::Hack::USBHackSupport".
+
+    The hacks available for enabling (default is all disabled) are, in
+    execution order:
 
     dim The front panel display is run in a dimmer mode (as it is when on
         standby).
@@ -30,20 +38,66 @@ SYNOPSIS
         doesn't allow directory listing, so you have to know where you're
         navigating.
 
+        This hack is not available on firmware versions 01.05.271 (beta) and
+        later. See "bwhack" for details.
+
+    usb Enable the use of hacks loaded from a USB drive or memory stick. See
+        "Beyonwiz::Hack::USBHackSupport" for details.
+
     The installation process modifies the Beyonwiz firmware startup script
-    "/etc/rc.sysinit" to copy the added firmware file "/etc/rc.localcopy"
-    into "/tmp/config/rc.localcopy" each time the Beyonwiz starts.
-    "/tmp/config/rc.localcopy" is also copied into, and restored from,
-    non-volatile storage each time the Beyonwiz restarts. "/etc/rc.sysinit"
-    runs after this copy, so modifications to "/tmp/config/rc.localcopy"
-    will be overwritten each time the Beyonwiz starts (and before
-    "/tmp/config/rc.localcopy" has been run). However, this means that even
-    if you install an unmodified firmware package on the beyonwiz, the patch
-    will still be active, because running "/tmp/config/rc.localcopy" is part
-    of normal firmware startup.
+    "/etc/rc.sysinit" to copy the added firmware file "/flash/opt/rc.local"
+    and "/flash/opt/usb.local" into "/tmp/config" each time the Beyonwiz
+    starts. "/tmp/config/rc.local" and "/tmp/config/usb.local" are also
+    copied into, and restored from, non-volatile storage each time the
+    Beyonwiz restarts. "/etc/rc.sysinit" runs after this copy, so
+    modifications to "/tmp/config/rc.local" will be overwritten each time
+    the Beyonwiz starts (and before "/tmp/config/rc.local" has been run).
+    However, this means that even if you install an unmodified firmware
+    package on the beyonwiz, the patch will still be active, because running
+    "/tmp/config/rc.local" is part of normal firmware startup.
+
+    If the "usb" hack is enabled by "bwhack", "/tmp/config/usb.local" is run
+    from "/tmp/config/rc.local" to implement the ability to run hacks from a
+    USB drive (or memory card on an S1 or P1). See
+    "Beyonwiz::Hack::USBHackSupport" for details.
 
     The effect of this hack will *not* be undone if you load unmodified
     firmware onto the Beyonwiz.
+
+DISABLING THE HACK
+
+    If the Beyonwiz is not running an unmodified firmware package, download
+    unmodified firmware into the Beyonwiz and restart.
+
+    Then, either:
+
+    1   Enable only the "telnet" hack using "bwhack" (installing unmodified
+        firmware has not disabled the hacks):
+
+            bwhack.pl --host=my.BW.IP.addr all off
+            bwhack.pl --host=my.BW.IP.addr telnetd on
+
+    2   Connect to the Beyonwiz using "telnet".
+
+    3   When you see the "#" command prompt, type
+
+            rm /tmp/config/rc.local /tmp/config/usb.local /tmp/mnt/idehdd/telnetd
+            exit
+
+    or:
+
+    1   If they're not enabled already, enable USB hacks by running:
+
+            bwhack.pl --host=my.BW.IP.addr usb on
+
+        then restarting the Beyonwiz.
+
+    2   Then use the "S99removehacks" in "Beyonwiz::Hack::USBHackSupport" my
+        copying it into "beyonwiz/etc/init.d" on a USB stick or memory card,
+        connecting it to the Beyonwiz, and restart it. "S99removehacks" will
+        remove all the files installed by this installer.
+
+    Then restart the Beyonwiz (again, if you used the c<usb> hack).
 
 FUNCTIONS
 
@@ -52,9 +106,13 @@ FUNCTIONS
 
         Inserts the lines:
 
-            if [ ! -x /etc/rc.localcopy ]; then
-                    rm -f "${CONFIG_DIR}/rc.local"
-                    cp /etc/rc.localcopy "${CONFIG_DIR}/rc.local"
+            if [ -x /flash/opt/rc.local ]; then
+                rm -f ${CONFIG_DIR}/rc.local
+                cp /flash/opt/rc.local ${CONFIG_DIR}/rc.local
+            fi
+            if [ -x /flash/opt/usb.local ]; then
+                rm -f ${CONFIG_DIR}/usb.local
+                cp /flash/opt/usb.local ${CONFIG_DIR}/usb.local
             fi
 
         into the file that will be "/etc/rc.sysinit", the system startup
@@ -63,40 +121,59 @@ FUNCTIONS
 
             # rc.local
 
-        It also adds the new file "/etc/rc.localcopy" to the firmware. This
-        file actually implements the hack.
+        It also adds the new files "/flash/opt/rc.local" and
+        "/flash/opt/usb.local" to the firmware. These files are copied into
+        place in <C/tmp/config> to implement the hack.
 
-DISABLING THE HACK
+    "hackTag()"
+        Returns "bwhack" as the default suffix tag for the patch.
 
-    If the Beyonwiz is not running an unmodified firmware package, download
-    unmodified firmware into the Beyonwiz and restart.
+    "printHack()"
+        Prints the file that would be installed as "/tmp/config/rc.local" by
+        this installer.
 
-    Enable only the "telnet" hack using "bwhack" (installing unmodified
-    firmware has not disabled the hacks):
+        It can be run standalone as:
 
-        bwhack.pl --host=my.BW.IP.addr all off
-        bwhack.pl --host=my.BW.IP.addr telnetd on
+            perl -MBeyonwiz::Hack::USBHackSupport -e "Beyonwiz::Hack::USBHackSupport::printHack()"
 
-    Connect to the Beyonwiz using "telntt".
+        You can similarly print the file that would be installed as
+        "/tmp/config/usb.local" by running:
 
-    When you see the "#" command prompt, type
-
-        rm /tmp/config/rc.localcopy /tmp/mnt/idehdd/telnetd
-        exit
-
-    Then restart the Beyonwiz.
+        perl -MBeyonwiz::Hack::USBHackSupport -e
+        "Beyonwiz::Hack::USBHackSupport::printHack()"
 
 PREREQUSITES
 
-    Uses packages "Beyonwiz::Hack::Utils".
+    Uses packages "File::Spec::Functions", "File::Path",
+    "Beyonwiz::Hack::USBHackSupport" "Beyonwiz::Hack::Utils".
 
 BUGS
+
+    Using user extensions or hacks may make your Beyonwiz unable to operate
+    correctly, or even start. Some modifications are known to interfere with
+    the correct functioning of the Beyonwiz.
+
+    If your Beyonwiz cannot start after you load modified firmware, you may
+    need to use the procedures in the NOTICE - How to recover from FW update
+    failure <http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>
+    procedure on the Beyonwiz forum. It's not known whether that procedure
+    will fix all failures due to user modifications or "hacks".
+
+    If you run modified firmware on your Beyonwiz, and have problems with
+    its operation, try to reproduce any problems you do have on a Beyonwiz
+    running unmodified firmware, or at least mention the modifications you
+    use when reporting the problem to Beyonwiz support or on the Beyonwiz
+    Forum <http://www.beyonwiz.com.au/phpbb2/index.php>. Beyonwiz support
+    may not be able to assist if you are running anything other than
+    unmodified firmware from Beyonwiz. Forum contributers may be able to be
+    more flexible, but they will need to know what modifications you have
+    made.
 
     This firmware hack will not work on a DP-H1 (nothing bad will happen to
     the DP-H1, you just won't be able to enable the hacks), but if you do
     install it, it's not straight-forward to remove.
 
-    Using *bw_patcher* (or any other method) to create a modified version of
-    the firmware for any Beyonwiz model can result in a firmware package
-    that can cause the Beyonwiz firmware to fail completely.
+    The hack names are displayed on the front panel as they execute.
+    Sometimes the last name will remain on the display until the Beyonwiz
+    overwrites it. Changing channels will restore the dieplay to normal.
 

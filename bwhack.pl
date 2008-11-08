@@ -49,7 +49,7 @@ or disabled (C<off>).
 If no "hack" arguments are given, prints which are enabled and which
 are disbled.
 
-The known hacks are
+The known hacks are, in execution order:
 
 =over 4
 
@@ -76,6 +76,18 @@ The Beyonwiz root file system starts at
 C<http://your_bw_ip_addr:49152/root>.
 The Beyonwiz HTTP server doesn't allow directory
 listing, so you have to know where you're navigating.
+
+I<Httproot> does not work (but does not cause any apparent problems)
+on firmware versions 01.05.271 (beta) and newer.
+The C<ln> command has been removed from those firmware versions,
+and without it the Beyonwiz cannot create the soft link
+necessary to impement I<httproot>.
+
+=item usb
+
+Enable the use of hacks loaded from a USB drive or memory stick.
+See L<C<Beyonwiz::Hack::USBHackSupport>|Beyonwiz::Hack::USBHackSupport>
+for details.
 
 =back
 
@@ -125,20 +137,46 @@ C<HTTP::Request>.
 
 =head1 BUGS
 
-Requires a suitable startup procedure on the Beyonwiz
-to work as intended.
-The simplest way of adding one is to use an C<rc.local>
-file like the one included in the I<BWFWTools> package installed
-on the Beyonwiz in C</tmp/config>.
-
-Using user extensions or hacks may make your Beyonwiz unable to
+B<Using user extensions or hacks may make your Beyonwiz unable to
 operate correctly, or even start.
-If that happens, you may need to use the procedures in
+Some modifications are known to interfere with the correct
+functioning of the Beyonwiz.>
+
+If your Beyonwiz cannot start after you load modified firmware,
+you may need to use the procedures in the
 B<NOTICE - How to recover from FW update failure>
 L<http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>
 procedure on the Beyonwiz forum.
 It's not known whether that procedure will fix all 
-failure due to user modifications or "hacks".
+failures due to user modifications or "hacks".
+
+If you run modified firmware on your Beyonwiz, and have
+problems with its operation, try to reproduce
+any problems you do have on a Beyonwiz running unmodified firmware,
+or at least mention the modifications you use when reporting the
+problem to Beyonwiz support or on the Beyonwiz Forum
+L<http://www.beyonwiz.com.au/phpbb2/index.php>.
+Beyonwiz support may not be able to assist if you are running anything
+other than unmodified firmware from Beyonwiz.
+Forum contributers may be able to be more flexible, but they will
+need to know what modifications you have made.
+
+The hack names are displayed on the front panel as they execute.
+Sometimes the last name will remain on the display until the
+Beyonwiz overwrites it.
+Changing channels will restore the dieplay to normal.
+
+I<Httproot> does not work (but does not cause any apparent problems)
+on firmware versions 01.05.271 (beta) and newer.
+The C<ln> command has been removed from those firmware versions,
+and without it the Beyonwiz cannot create the soft link
+necessary to impement I<httproot>.
+
+Requires a suitable startup procedure on the Beyonwiz
+to work as intended.
+The simplest way of adding one is to use
+
+    bw_patcher.pl beyonwiz_firmware.wrp patched_firmware.wrp Beyonwiz::Hack::BwhackSupport
 
 =cut
 
@@ -156,6 +194,7 @@ my %hacks = (
     telnetd	=> 1,	# Run telnetd
     wizremote	=> 1,	# Run WizRemote server
     httproot	=> 1,	# Enable HTTP access to whole BW
+    usb		=> 1,	# Enable hacks on an attached USB stick
 );
 
 use Getopt::Long qw(:config no_ignore_case bundling);

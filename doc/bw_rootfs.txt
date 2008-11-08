@@ -74,10 +74,27 @@ PREREQUSITES
 
 BUGS
 
-    Not tested by the author to do an update on a firmware module that has
-    actually been run in a Beyonwiz PVR.
+    Using modified firmware on your Beyonwiz may make it unable to operate
+    correctly, or even start. Some modifications are known to interfere with
+    the correct functioning of the Beyonwiz.
 
-    Heuristics to find the embedded ROMFS root filesystem may fail, and
+    If your Beyonwiz cannot start after you load modified firmware, you may
+    need to use the procedures in the NOTICE - How to recover from FW update
+    failure <http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>
+    procedure on the Beyonwiz forum. It's not known whether that procedure
+    will fix all failures due to user modifications or "hacks".
+
+    If you run modified firmware on your Beyonwiz, and have problems with
+    its operation, try to reproduce any problems you do have on a Beyonwiz
+    running unmodified firmware, or at least mention the modifications you
+    use when reporting the problem to Beyonwiz support or on the Beyonwiz
+    Forum <http://www.beyonwiz.com.au/phpbb2/index.php>. Beyonwiz support
+    may not be able to assist if you are running anything other than
+    unmodified firmware from Beyonwiz. Forum contributers may be able to be
+    more flexible, but they will need to know what modifications you have
+    made.
+
+    Heuristics used to find the embedded ROMFS root filesystem may fail, and
     cause the update or extraction to fail, extract the wrong data or insert
     the update in the wrong location.
 

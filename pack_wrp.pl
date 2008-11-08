@@ -58,8 +58,8 @@ This mode is automatically invoked on systems that normally have case-insensitiv
   -t type
 
 Set the machine type in the C<.wrp> firmware file header.
-I<type> must be one of B<s>, B<p> or B<h> for the DP-S1, DP-P1
-and DP-H1 Beyonwiz models respectively.
+I<type> should be one of C<DP-S1>, C<DP-P1>, C<DP-P2>, C<DP-H1>, 
+C<FT-P1>, C<FT-H1>,  C<FC-H1> or C<FC-H1>.
 
 If neither I<machtype> nor I<machcode> is specified, the name of the file
 in I<flashdir>C</version> is checked for the machine type, and I<machtype>
@@ -81,7 +81,10 @@ unless the machine type can't be detected automatically.
 Set the 16-digit hexadecimal System ID code
 (L<http://www.openwiz.org/wiki/Hardware#System_IDs>)
 for the firmware.
-Don't use the spaces that appear in the codes on the Web page in the argument.
+You can use spares or hyphens between bytes for readability,
+so the spaces that appear in the codes on the Web page
+can be used in the argument.
+Don't forget to quote the argument if it contains spaces!
 
 One of either I<machtype> or I<machcode> must be specified.
 
@@ -188,8 +191,11 @@ These options force the use of only one of the two compression mechanisms.
 
 =head1 PREREQUSITES
 
-Uses packages C<Getopt::Long>,
-C<IO::Compress::Gzip>, C<IO::Uncompress::Gunzip> and
+Uses packages
+C<Beyonwiz::Hack::Utils>,
+C<Getopt::Long>,
+C<IO::Compress::Gzip>,
+C<IO::Uncompress::Gunzip> and
 C<File::Spec::Functions>.
 
 Uses L< C<bw_rootfs>|bw_rootfs/ >.
@@ -202,10 +208,29 @@ image unless one of B<--perlgzip> or B<--gzip> is used.
 
 =head1 BUGS
 
-B<Using I<pack_wrp> (or any other method) to create a modified
-version of the firmware for any Beyonwiz model can result in a
-firmware package that can cause the Beyonwiz firmware to fail
-completely.>
+B<Using modified firmware on your Beyonwiz may make it unable to
+operate correctly, or even start.
+Some modifications are known to interfere with the correct
+functioning of the Beyonwiz.>
+
+If your Beyonwiz cannot start after you load modified firmware,
+you may need to use the procedures in the
+B<NOTICE - How to recover from FW update failure>
+L<http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>
+procedure on the Beyonwiz forum.
+It's not known whether that procedure will fix all 
+failures due to user modifications or "hacks".
+
+If you run modified firmware on your Beyonwiz, and have
+problems with its operation, try to reproduce
+any problems you do have on a Beyonwiz running unmodified firmware,
+or at least mention the modifications you use when reporting the
+problem to Beyonwiz support or on the Beyonwiz Forum
+L<http://www.beyonwiz.com.au/phpbb2/index.php>.
+Beyonwiz support may not be able to assist if you are running anything
+other than unmodified firmware from Beyonwiz.
+Forum contributers may be able to be more flexible, but they will
+need to know what modifications you have made.
 
 Tries to use some contextual information to find the root filesystem.
 They may fail and the updating of the root file system will fail.
@@ -218,14 +243,20 @@ If you patch C<linux.bin> and don't gzip it back into
 C<linux.bin.gz> those changes will be lost in the three-argument
 form of C<pack_wrp>.
 
-Using high compression levels for the kernel file is not yet tested.
-
 Has too many options.
+
+In the three-argument form of C<pack_wrp> is used on Windows, the
+temporary copy of linux.bin cannot be deleted (it may be being kept
+open internally by Perl). This is a fatal error on other systems, but
+on Windows, a non-fatal warning is issued. You may want to clean the
+file up manually.
 
 =cut
 
 use strict;
 use warnings;
+
+use Beyonwiz::Hack::Utils qw(pathTildeExpand);
 
 use IO::Uncompress::Gunzip qw(gunzip $GunzipError);
 use IO::Compress::Gzip qw(gzip $GzipError);
@@ -260,23 +291,54 @@ sub on_exit() {
 }
 
 use constant LINGZ     => 'linux.bin.gz';
-use constant LIN       => 'linux.bin';
+use constant LIN       => 'linux.bin' . $$;
 use constant ROOTFS    => 'root.romfs';
-use constant MAX_FLASH => 8*1024*1024 - 5 * 64 * 1024;
 
-# Location of the perl scripts used in this script
-# Correct installation depends on the format of the next line. Don't change it!
-use constant PERLS     => '.';
+# Flash is 8MB, but 5 x 64-kB segments are reserved for other uses
+use constant MAX_FLASH => 8 * 1024*1024 - 5 * 64 * 1024;
 
-# Use double quotes for quoting on Windows, otherwise single quotes
+sub system_redirect(@) {
+    my @cmd = @_;
+    my $outfile = pop @cmd;
+    if(my $pid = fork) {
+	# Parent - successful fork
+	# Forks aren't real in Windows.
+	# In particular, file descriptors remain shared,
+	# so the parent must save and restore STDOUT!
+	# Ugly, no?
+	# However, this still seems to leave $outfile open,
+	# which may be the reason why $lin can't be deleted
+	open SAVESTDOUT, '>&', \*STDOUT
+		or die "Can't dup STDOUT to save it\n"
+	    if($^O eq 'MSWin32');
 
-my $q = $^O eq 'MSWin32' ? '"' : "'";
+	waitpid($pid, 0);
+	my $status = $?;
+
+	open STDOUT, '>&', \*SAVESTDOUT
+		or die "Can't restore STDOUT from dup\n"
+	    if($^O eq 'MSWin32');
+
+	return $status;
+    } else {
+	# Child or fork failed in parent
+	die "Fork failed: $!\n" unless(defined($pid));
+
+	# Child
+	open STDOUT, '>', $outfile
+	    or die "Can't open $outfile: $!\n";
+	exec { $cmd[0] } @cmd
+	    or die "Can't run $cmd[0]: $!\n";
+	# not reached
+    }
+}
 
 sub do_gzip($$$$$) {
     my ($use_perlgzip, $use_gzip, $from, $to, $compresslevel) = @_;
+    $compresslevel = 9 if(!defined $compresslevel);
     if(!$use_perlgzip) {
-	my $compressflag = defined($compresslevel) ? " -$compresslevel " : '';
-	if(system("gzip$compressflag -c $q$from$q > $q$to$q") == 0) {
+	my $compressflag = "-$compresslevel";
+	if(system_redirect('gzip', $compressflag, '-c', $from, $to) == 0) {
 	    $use_gzip = 1; # Succcessful, don't retry using perl gzip
 	} else {
 	    my $mess = "gzip of $lingz to $lin failed";
@@ -289,11 +351,36 @@ sub do_gzip($$$$$) {
     }
     if(!$use_gzip) {
 	my @compresslevel;
-	$compresslevel = 9 if(!defined $compresslevel);
 	@compresslevel = (-Level => $compresslevel);
 	gzip($from => $to, BinModeIn => 1, @compresslevel)
 	    or die "perl gzip of $lingz to $lin failed: $GzipError\n";
     }
+}
+
+# Work around a bug in Gunzip::gunzip() in Cygwin perl 5.10.0
+
+sub mygunzip($$@) {
+    my ($infile, $outfile, @opts) = @_;
+    my $gz = new IO::Uncompress::Gunzip $infile;
+    return undef if(!$gz);
+    unless(open OUT, '>', $outfile) {
+	$GunzipError = $!;
+	return undef;
+    }
+    binmode OUT;
+
+    my $buffer;
+    my $nread;
+
+    while (($nread = $gz->read($buffer, 16 * 1024)) > 0)
+    {
+	if(!defined syswrite(OUT, $buffer)) {
+	    $GunzipError = $!;
+	    return undef;
+	}
+    }
+
+    return 1;
 }
 
 # Make case insensitive by default on Windows and Mac OS X
@@ -326,12 +413,12 @@ if(!defined $machtype && !defined $machcode
 					"*-romfs.bin")),
 		     glob(catfile($flash_dir, "${insens_prefix_r}version",
 					"*-romfs.bin"))) {
-	if(!defined $machtype && !defined $machcode && $ver =~ /-(DP[SPH]1)-/) {
-	    my $type = $1;
-	    substr $type, 2, 0, '-';
-	    $machtype = substr $type, 3, 1;
-	    $machtype =~ y/SPH/sph/;
-	    print "Using default machine type $type (--machtype=$machtype)\n";
+	if(!defined $machtype
+	&& !defined $machcode
+	&& $ver =~ /-(DP[SPH][12]|F[TC][PH]1)-/) {
+	    $machtype = $1;
+	    print "Using default machine type $machtype",
+		" (--machtype=$machtype)\n";
 	}
 	if(!defined $version && $ver =~ /DP[SPH]1-([^\-]*)-romfs.bin/) {
 	    $version = $1.$versionsuffix;
@@ -344,34 +431,46 @@ defined $machtype or defined $machcode
     or die "Machine type must be specified with -t/--machtype",
 	   " or -T/--machcode\n";
 
-my $wrp_pack_args = defined($machtype) ? " -t $machtype" : '';
-   $wrp_pack_args .= " -T $machcode" if(defined $machcode);
-   $wrp_pack_args .= " -V '$version'" if(defined $version);
-my $bw_rootfs_args = $force ? " -f" : "";
-my $wiz_genromfs_args =" -V '$volname'";
-   $wiz_genromfs_args .= " -i" if($insens);
+my @wrp_pack_args;
+   push @wrp_pack_args, '-t', $machtype    if(defined $machtype);
+   push @wrp_pack_args, '-T', $machcode    if(defined $machcode);
+   push @wrp_pack_args, '-V', $version     if(defined $version);
+my @bw_rootfs_args;
+   push @bw_rootfs_args, '-f'              if($force);
+my @wiz_genromfs_args = ('-V', $volname);
+   push @wiz_genromfs_args, '-i'           if($insens);
 
 $SIG{$_} = \&on_exit foreach qw(HUP INT QUIT PIPE TERM __DIE__);
+
+pathTildeExpand();
 
 if(defined $rootfs_dir) {
     print "Construct root file system from $rootfs_dir\n";
     $lingz = catfile($flash_dir, $insens_prefix_x . LINGZ);
     $lingz = catfile($flash_dir, $insens_prefix_r . LINGZ)
 	if($insens && !-e $lingz);
-    $lin = catfile($flash_dir, LIN);
+    $lin = catfile(tmpdir, LIN);
     $rootfs = catfile($flash_dir, ROOTFS);
-    system("wiz_genromfs$wiz_genromfs_args"
-	    . " -d $q$rootfs_dir$q -f $q$rootfs$q") == 0
+    system({'wiz_genromfs'}
+	    'wiz_genromfs', @wiz_genromfs_args,
+	    '-d', $rootfs_dir, '-f', $rootfs) == 0
 	or die "Generation of $rootfs from $rootfs_dir failed\n";
     print "Insert the root file system into the kernel image $lingz\n";
-    gunzip($lingz => $lin, BinModeOut => 1)
+    mygunzip($lingz => $lin, BinModeOut => 1)
 	or die "gunzip of $lingz to $lin failed: $GunzipError\n";
-    system("bw_rootfs.pl$bw_rootfs_args"
-	    . " -u $q$lin$q $q$rootfs$q") == 0
+    system({'perl'}
+	    'perl', '-S', 'bw_rootfs.pl', @bw_rootfs_args,
+		    '-u', $lin, $rootfs) == 0
 	or die "Update of $rootfs into $lin failed\n";
     do_gzip($perlgzip, $gzip, $lin => $lingz, $compresslevel);
+
+    # For some reason, Windows won't do this delete...
+    # Warn instead of dying on Windows.
     unlink $lin
-	or die "Can't remove $lin $!\n";
+	or &{ $^O eq 'MSWin32'
+		? sub {warn @_}
+		: sub {die @_}}("Can't remove $lin $!\n");
+
     unlink $rootfs
 	or die "Can't remove $rootfs $!\n";
 }
@@ -380,10 +479,12 @@ print "Construct BW firmware file $wrp_fn from $flash_dir\n";
 
 $flashfs = catfile(tmpdir, 'flash' . $$);
 
-system("wiz_genromfs$wiz_genromfs_args"
-	. " -d $q$flash_dir$q -f $q$flashfs$q") == 0
+system({'wiz_genromfs'}
+	'wiz_genromfs', @wiz_genromfs_args,
+	'-d', $flash_dir, '-f', $flashfs) == 0
     or die "Generation of $rootfs from $rootfs_dir failed\n";
-system("wiz_pack$wrp_pack_args -i $q$flashfs$q -o $q$wrp_fn$q") == 0
+system({'wiz_pack'}
+	'wiz_pack', @wrp_pack_args, '-i', $flashfs, '-o', $wrp_fn) == 0
     or die "wiz_pack of $flashfs into $wrp_fn failed\n";
 
 my $root_size = (stat $flashfs)[7];
@@ -402,3 +503,5 @@ if($root_size <= MAX_FLASH) {
 }
 
 on_exit();
+
+exit(0);

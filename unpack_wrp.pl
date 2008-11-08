@@ -20,7 +20,7 @@ If the I<root_directory> argument is also given, the Beyonwix root
 file system is extracted from the kernel image in C</flash>
 into that directory.
 
-The two-argument form does not hve any more functionality than
+The two-argument form does not have any more functionality than
 Eric Fry's C<wiz_unpack>.
 
 =head1 ARGUMENTS
@@ -60,7 +60,10 @@ C<linux.bin> and C<root.romfs>, which are otherwise deleted.
 
 =head1 PREREQUSITES
 
-Uses packages C<Getopt::Long>, C<File::Spec::Functions>,
+Uses packages
+C<Beyonwiz::Hack::Utils>,
+C<Getopt::Long>,
+C<File::Spec::Functions>,
 C<IO::Uncompress::Gunzip>.
 
 Uses L< C<bw_rootfs>|bw_rootfs/>.
@@ -77,9 +80,11 @@ They may fail and the extraction of the root file system will fail.
 use strict;
 use warnings;
 
+use Beyonwiz::Hack::Utils qw(pathTildeExpand);
+
 use IO::Uncompress::Gunzip qw(gunzip $GunzipError) ;
 use Getopt::Long;
-use File::Spec::Functions;
+use File::Spec::Functions qw(catfile tmpdir);
 
 Getopt::Long::Configure qw/no_ignore_case bundling/;
 
@@ -98,33 +103,55 @@ sub on_exit() {
     }
 }
 
+# Work around a bug in Gunzip::gunzip() in Cygwin perl 5.10.0
+
+sub mygunzip($$@) {
+    my ($infile, $outfile, @opts) = @_;
+    my $gz = new IO::Uncompress::Gunzip $infile;
+    return undef if(!$gz);
+    unless(open OUT, '>', $outfile) {
+	$GunzipError = $!;
+	return undef;
+    }
+    binmode OUT;
+
+    my $buffer;
+    my $nread;
+
+    while (($nread = $gz->read($buffer, 16 * 1024)) > 0)
+    {
+	if(!defined syswrite(OUT, $buffer)) {
+	    $GunzipError = $!;
+	    return undef;
+	}
+    }
+
+    return 1;
+}
+
 use constant LINGZ  => 'linux.bin.gz';
 use constant LIN    => 'linux.bin';
 use constant ROOTFS => 'root.romfs';
 
-# Location of the perl scripts used in this script
-# Correct installation depends on the format of the next line. Don't change it!
-use constant PERLS     => '.';
-
 # Make case insensitive by default on Windows and Mac OS X
 
 $insens = 1 if($^O eq 'MSWin32' || $^O eq 'darwin' || $^O eq 'cygwin');
-
-my $q = $^O eq 'MSWin32' ? '"' : "'";
 
 GetOptions('i|insens' => \$insens,
            'f|force' => \$force,
 	   'k|keep' => \$keep
     ) or usage;
 
-my $wrp_unpack_args = $insens ? " -i" : "";
-my $bw_rootfs_args = $force ? " -f" : "";
+my @wrp_unpack_args = $insens ? qw(-i) : ();
+my @bw_rootfs_args  = $force  ? qw(-f) : ();
 
 @ARGV == 2 or @ARGV == 3 or usage;
 
 my ($wrp_fn, $flash_dir, $rootfs_dir) = @ARGV;
 
 $SIG{$_} = \&on_exit foreach qw(HUP INT QUIT PIPE TERM __DIE__);
+
+pathTildeExpand();
 
 print "Extract application file system $wrp_fn into $flash_dir\n";
 
@@ -133,7 +160,8 @@ die "Target directory $flash_dir already exists\n"
 die "Target directory $rootfs_dir already exists\n"
     if(defined $rootfs_dir && -e $rootfs_dir);
 
-system("wiz_unpack$wrp_unpack_args -q -x $q$flash_dir$q $q$wrp_fn$q") == 0
+system({'wiz_unpack'}
+	'wiz_unpack', @wrp_unpack_args, qw(-q -x), $flash_dir, $wrp_fn) == 0
     or die "wiz_unpack of $wrp_fn into $flash_dir failed\n";
 
 if(defined $rootfs_dir) {
@@ -141,16 +169,21 @@ if(defined $rootfs_dir) {
     $lingz = catfile($flash_dir, ($insens ? '001x_' : '') . LINGZ);
     $lingz = catfile($flash_dir, '001r_' . LINGZ)
 	if($insens && !-e $lingz);
-    $lin = catfile($flash_dir, LIN);
+    $lin = catfile(tmpdir, LIN);
     $rootfs = catfile($flash_dir, ROOTFS);
     mkdir $rootfs_dir or die "Can't create $rootfs_dir: $!\n"
 	if(!-d $rootfs_dir);
-    gunzip($lingz => $lin, BinModeOut => 1)
+#   This doesn't work in Cygwin perl 5.10.0
+#   gunzip($lingz => $lin, BinModeOut => 1)
+#	or die "gunzip of $lingz to $lin failed: $GunzipError\n";
+    mygunzip($lingz => $lin, BinModeOut => 1)
 	or die "gunzip of $lingz to $lin failed: $GunzipError\n";
-    system("bw_rootfs.pl$bw_rootfs_args"
-		. " $q$lin$q $q$rootfs$q") == 0
+    system({'perl'}
+	    'perl', '-S', 'bw_rootfs.pl', @bw_rootfs_args, $lin, $rootfs) == 0
 	or die "Extraction of $rootfs from $lin failed\n";
-    system("wiz_unpack$wrp_unpack_args -q -x $q$rootfs_dir$q $q$rootfs$q") == 0
+    system({'wiz_unpack'}
+	    'wiz_unpack'. @wrp_unpack_args, qw(-q -x),
+		$rootfs_dir, $rootfs) == 0
 	or die "wiz_unpack of $rootfs into $rootfs_dir failed\n";
 }
 

@@ -13,6 +13,12 @@ SYNOPSIS
     devices, so memory cards as well as USB thumb and hard drives can be
     used to enable hacks this way.
 
+    Not designed for use in combination with
+    "Beyonwiz::Hack::BwhackSupport". However,
+    "Beyonwiz::Hack::USBHackSupport" offers all the functionality available
+    through "Beyonwiz::Hack::BwhackSupport", except "httproot", and unlike
+    that patch, will work on the DP-H1.
+
     The hacks available for enabling (default is all disabled) are:
 
     S00enablevfd
@@ -41,24 +47,39 @@ SYNOPSIS
         installed in /tmp/config. Otherwise has no effect.
 
     S99removehacks
-        Removes the "/tmp/config/rc.local" file from the Beyonwiz. For this
-        to be effective, unmodified Beyonwiz firmware must be downloaded to
-        the Beyonwiz first. See
+        Removes the "/tmp/config/rc.local" and "/tmp/config/usb.local" files
+        from the Beyonwiz. For this to be effective, unmodified Beyonwiz
+        firmware must be downloaded to the Beyonwiz first. See "DISABLING
+        THE HACK".
+
+        This script can also be used in conjunction with the "usb" hack in
+        "Beyonwiz::Hack::BwhackSupport" to remove hacks installed by that
+        installer.
 
     The patching process modifies the Beyonwiz firmware startup script
-    "/etc/rc.sysinit" to copy the added firmware file
-    "/flash/hacks/rc.local" into "/tmp/config/rc.local" each time the
-    Beyonwiz starts. "/tmp/config/rc.local" is also copied into, and
-    restored from, non-volatile storage each time the Beyonwiz restarts.
-    "/etc/rc.sysinit" runs after this copy, so modifications to
-    "/tmp/config/rc.local" will be overwritten each time the Beyonwiz starts
-    (and before "/tmp/config/rc.local" has been run). However, this means
-    that even if you install an unmodified firmware package on the beyonwiz,
-    the patch will still be active, because running "/tmp/config/rc.local"
-    is part of normal firmware startup.
+    "/etc/rc.sysinit" to copy the added firmware file "/flash/opt/rc.local"
+    into "/tmp/config/rc.local" each time the Beyonwiz starts.
+    "/tmp/config/rc.local" is also copied into, and restored from,
+    non-volatile storage each time the Beyonwiz restarts. "/etc/rc.sysinit"
+    runs after this copy, so modifications to "/tmp/config/rc.local" will be
+    overwritten each time the Beyonwiz starts (and before
+    "/tmp/config/rc.local" has been run). However, this means that even if
+    you install an unmodified firmware package on the beyonwiz, the patch
+    will still be active, because running "/tmp/config/rc.local" is part of
+    normal firmware startup.
 
     The effect of this hack will *not* be undone if you load unmodified
     firmware onto the Beyonwiz.
+
+DISABLING THE HACK
+
+    If the Beyonwiz is not running an unmodified firmware package, download
+    unmodified firmware into the Beyonwiz and restart.
+
+    Remove the hacks by restarting the Beyonwiz with a USB device that has
+    (at least) "S99removehacks" in "beyonwiz/etc/init.d".
+
+    Then restart the Beyonwiz.
 
 PREPARING THE USB DEVICE OR MEMORY CARD
 
@@ -102,7 +123,7 @@ FOR ADVANCED USERS
     with "S".
 
     The startup code searches all USB devices connected to the Beyonwiz, and
-    runs scripts from any (and all) attched devices with the scripts in the
+    runs scripts from any (and all) attached devices with the scripts in the
     appropriate location.
 
     The USB defices are searched in the following order:
@@ -116,8 +137,8 @@ FOR ADVANCED USERS
             Lower rear USB port
             Upper rear USB port
 
-    If two cards are inserted on the DP-S1, the search order is uncertain,
-    if it works at all.
+    If two cards are inserted on the DP-S1 or DP-H1, the search order is
+    uncertain, if it works at all.
 
     If you want to create or modify scripts, you must use an editor that
     respects and preserves Unix-style LF line endings. Many Windows editors
@@ -146,9 +167,9 @@ FUNCTIONS
 
         Inserts the lines:
 
-            if [ ! -x /flash/hacks/rc.local ]; then
+            if [ ! -x /flash/opt/rc.local ]; then
                     rm -f "${CONFIG_DIR}/rc.local"
-                    cp /flash/hacks/rc.local "${CONFIG_DIR}/rc.local"
+                    cp /flash/opt/rc.local "${CONFIG_DIR}/rc.local"
             fi
 
         into the file that will be "/etc/rc.sysinit", the system startup
@@ -157,31 +178,49 @@ FUNCTIONS
 
             # rc.local
 
-        It also adds the new file "/flash/hacks/rc.local" to the firmware.
+        It also adds the new file "/flash/opt/rc.local" to the firmware.
         This file actually implements the hack.
 
-DISABLING THE HACK
+    "hackTag()"
+        Returns "usbhack" as the default suffix tag for the patch.
 
-    If the Beyonwiz is not running an unmodified firmware package, download
-    unmodified firmware into the Beyonwiz and restart.
+    "printHack()"
+        Prints the file that would be installed as "/tmp/config/rc.local" by
+        this installer.
 
-    Remove the hacks by restarting the Beyonwiz with a USB device that has
-    (at least) "S99removehacks" in "beyonwiz/etc/init.d".
+        It can be run standalone as:
 
-    Then restart the Beyonwiz.
+            perl -MBeyonwiz::Hack::USBHackSupport -e "Beyonwiz::Hack::USBHackSupport::printHack()"
 
 PREREQUSITES
 
-    Uses packages "Beyonwiz::Hack::Utils" "File::Spec::Functions".
+    Uses packages "Beyonwiz::Hack::Utils", "File::Spec::Functions"
+    "File::Path";
 
 BUGS
+
+    Using user extensions or hacks may make your Beyonwiz unable to operate
+    correctly, or even start. Some modifications are known to interfere with
+    the correct functioning of the Beyonwiz.
+
+    If your Beyonwiz cannot start after you load modified firmware, you may
+    need to use the procedures in the NOTICE - How to recover from FW update
+    failure <http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>
+    procedure on the Beyonwiz forum. It's not known whether that procedure
+    will fix all failures due to user modifications or "hacks".
+
+    If you run modified firmware on your Beyonwiz, and have problems with
+    its operation, try to reproduce any problems you do have on a Beyonwiz
+    running unmodified firmware, or at least mention the modifications you
+    use when reporting the problem to Beyonwiz support or on the Beyonwiz
+    Forum <http://www.beyonwiz.com.au/phpbb2/index.php>. Beyonwiz support
+    may not be able to assist if you are running anything other than
+    unmodified firmware from Beyonwiz. Forum contributers may be able to be
+    more flexible, but they will need to know what modifications you have
+    made.
 
     Waits 4 seconds before searching for USB devices. This may occasionally
     not be long enough. If you expect patches to run, and they don't, try
     restarting the Beyonwiz. With the limited scripting facilities
     available, this bug is fifficult to resolve.
-
-    Using *bw_patcher* (or any other method) to create a modified version of
-    the firmware for any Beyonwiz model can result in a firmware package
-    that can cause the Beyonwiz firmware to fail completely.
 

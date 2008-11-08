@@ -1,0 +1,63 @@
+NAME
+
+        Beyonwiz::Hack::BackgroundChanger;
+
+SYNOPSIS
+
+    A module to use as an argument to use with "bw_patcher". It modifies the
+    firmware to display a different background image in the full-screen
+    menus.
+
+    The image file must be a JPEG image, 1280x720 pixels for Beyonwiz
+    firmware 01.05.247 and earlier.
+
+    For firmware versions after 01.05.247, the image file must be a PNG
+    image, 1280x720 pixels. The Beyonwiz then simply adds the constant GUI
+    colour to that image, so greyscale images will probably come out best.
+    The maximum intensity of each pixel in the image needs to be limited,
+    otherwise the colour values can wrap around after adding the GUI
+    colouring and you get weird effects. The image in the original firmware
+    has no pixel with RGB values greater than (103, 103, 103) decimal (0x67,
+    0x67, 0x67). The Beyonwiz base image is greyscale, but it has a colour
+    map, so it's possible that coloured colour mapped images may also work.
+
+DISABLING THE HACK
+
+    Download unmodified firmware into the Beyonwiz and restart.
+
+FUNCTIONS
+
+    "hack($flash_dir, $root_dir, $image_file)"
+        Inserts $image_file into the firmware instead of the default
+        "wizdvp/guidata/bitmaps/wiz/total_image/Main-image-1.jpg"
+
+    "hackTag()"
+        Returns "bg" as the default suffix tag for the patch.
+
+PREREQUSITES
+
+    Uses packages "Image::Size", "Beyonwiz::Hack::PutFile"
+    "Beyonwiz::Hack::RemFile" .
+
+BUGS
+
+    Using user extensions or hacks may make your Beyonwiz unable to operate
+    correctly, or even start. Some modifications are known to interfere with
+    the correct functioning of the Beyonwiz.
+
+    If your Beyonwiz cannot start after you load modified firmware, you may
+    need to use the procedures in the NOTICE - How to recover from FW update
+    failure <http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>
+    procedure on the Beyonwiz forum. It's not known whether that procedure
+    will fix all failures due to user modifications or "hacks".
+
+    If you run modified firmware on your Beyonwiz, and have problems with
+    its operation, try to reproduce any problems you do have on a Beyonwiz
+    running unmodified firmware, or at least mention the modifications you
+    use when reporting the problem to Beyonwiz support or on the Beyonwiz
+    Forum <http://www.beyonwiz.com.au/phpbb2/index.php>. Beyonwiz support
+    may not be able to assist if you are running anything other than
+    unmodified firmware from Beyonwiz. Forum contributers may be able to be
+    more flexible, but they will need to know what modifications you have
+    made.
+

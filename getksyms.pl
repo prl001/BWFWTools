@@ -47,7 +47,7 @@ use strict;
 use warnings;
 
 use Beyonwiz::Kernel
-	qw(BASE check_magics get_words get_words_sym get_str);
+	qw(BASE check_magics check_sym get_words get_words_sym get_str);
 
 # Extract the symbols published by the kernel for the module interface.
 
@@ -82,6 +82,9 @@ open KERN, '<', $kern_fn or die "$0: $kern_fn - $!\n";
 # Check that the kernel symbols are OK
 
 check_magics($kern_fn, \*KERN);
+
+die "$0: $kern_fn does not appear to have a kernel symbols table\n"
+    unless(check_sym('__start___ksymtab') && check_sym('__stop___ksymtab'));
 
 # Extract the symbol table pointers, and the locations of the segment
 # boundaries

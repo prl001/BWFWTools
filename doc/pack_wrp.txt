@@ -47,9 +47,9 @@ ARGUMENTS
           --machtype=type
           -t type
 
-        Set the machine type in the ".wrp" firmware file header. *type* must
-        be one of s, p or h for the DP-S1, DP-P1 and DP-H1 Beyonwiz models
-        respectively.
+        Set the machine type in the ".wrp" firmware file header. *type*
+        should be one of "DP-S1", "DP-P1", "DP-P2", "DP-H1", "FT-P1",
+        "FT-H1", "FC-H1" or "FC-H1".
 
         If neither *machtype* nor *machcode* is specified, the name of the
         file in *flashdir*"/version" is checked for the machine type, and
@@ -69,8 +69,10 @@ ARGUMENTS
 
         Set the 16-digit hexadecimal System ID code
         (<http://www.openwiz.org/wiki/Hardware#System_IDs>) for the
-        firmware. Don't use the spaces that appear in the codes on the Web
-        page in the argument.
+        firmware. You can use spares or hyphens between bytes for
+        readability, so the spaces that appear in the codes on the Web page
+        can be used in the argument. Don't forget to quote the argument if
+        it contains spaces!
 
         One of either *machtype* or *machcode* must be specified.
 
@@ -167,8 +169,9 @@ ARGUMENTS
 
 PREREQUSITES
 
-    Uses packages "Getopt::Long", "IO::Compress::Gzip",
-    "IO::Uncompress::Gunzip" and "FindBin".
+    Uses packages "Beyonwiz::Hack::Utils", "Getopt::Long",
+    "IO::Compress::Gzip", "IO::Uncompress::Gunzip" and
+    "File::Spec::Functions".
 
     Uses "bw_rootfs".
 
@@ -179,9 +182,25 @@ PREREQUSITES
 
 BUGS
 
-    Using *pack_wrp* (or any other method) to create a modified version of
-    the firmware for any Beyonwiz model can result in a firmware package
-    that can cause the Beyonwiz firmware to fail completely.
+    Using modified firmware on your Beyonwiz may make it unable to operate
+    correctly, or even start. Some modifications are known to interfere with
+    the correct functioning of the Beyonwiz.
+
+    If your Beyonwiz cannot start after you load modified firmware, you may
+    need to use the procedures in the NOTICE - How to recover from FW update
+    failure <http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>
+    procedure on the Beyonwiz forum. It's not known whether that procedure
+    will fix all failures due to user modifications or "hacks".
+
+    If you run modified firmware on your Beyonwiz, and have problems with
+    its operation, try to reproduce any problems you do have on a Beyonwiz
+    running unmodified firmware, or at least mention the modifications you
+    use when reporting the problem to Beyonwiz support or on the Beyonwiz
+    Forum <http://www.beyonwiz.com.au/phpbb2/index.php>. Beyonwiz support
+    may not be able to assist if you are running anything other than
+    unmodified firmware from Beyonwiz. Forum contributers may be able to be
+    more flexible, but they will need to know what modifications you have
+    made.
 
     Tries to use some contextual information to find the root filesystem.
     They may fail and the updating of the root file system will fail.
@@ -193,7 +212,11 @@ BUGS
     into "linux.bin.gz" those changes will be lost in the three-argument
     form of "pack_wrp".
 
-    Using high compression levels for the kernel file is not yet tested.
-
     Has too many options.
+
+    In the three-argument form of "pack_wrp" is used on Windows, the
+    temporary copy of linux.bin cannot be deleted (it may be being kept open
+    internally by Perl). This is a fatal error on other systems, but on
+    Windows, a non-fatal warning is issued. You may want to clean the file
+    up manually.
 

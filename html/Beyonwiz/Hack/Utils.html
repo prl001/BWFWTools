@@ -32,7 +32,7 @@
 <pre>
     use Beyonwiz::Hack::Utils qw(
         findMatchingPath findNewFile
-        patchFile addFile
+        patchFile addFile copyFile
         insens
     );</pre>
 <p>
@@ -63,6 +63,19 @@ of path names that's done in case-insensitive mode.
 This is done using a file glob, so file name expansion will be done
 on any file name expansion characters in either part of the name.
 The case-insensitive encoding is only done on <code>$path</code>.</p>
+</dd>
+<dd>
+<p>If the returned list contains more than one path,
+it's up to the caller to determine what to do.</p>
+</dd>
+</li>
+<dt><strong><a name="item_makematchingdirectorypath"><code>makeMatchingDirectoryPath($fw_dir, $path)</code></a></strong>
+
+<dd>
+<p>Given a directory for the root of an unpacked firmware directory
+tree <code>$fw_dir</code> and a path within it <code>$path</code>,
+create a list of directories representing the complete path,
+taking into account any case-insensitive name mapping.</p>
 </dd>
 <dd>
 <p>If the returned list contains more than one path,
@@ -114,6 +127,14 @@ in a newline.</p>
 </dd>
 <dd>
 <p>Takes some care not to put DOS CRLF line endings in the file.</p>
+</dd>
+</li>
+<dt><strong><a name="item_pathtildeexpand"><code>pathTildeExpand()</code></a></strong>
+
+<dd>
+<p>Expands <code>~</code> and <code>~</code><em>username</em> home directory abbreviations in
+<code>$ENV{PATH}</code>. This is needed because Perl <code>system</code> and <code>exec</code>
+functions don't do tilde expansions.</p>
 </dd>
 </li>
 </dl>

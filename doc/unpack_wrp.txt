@@ -14,7 +14,7 @@ DESCRIPTION
     Beyonwix root file system is extracted from the kernel image in "/flash"
     into that directory.
 
-    The two-argument form does not hve any more functionality than Eric
+    The two-argument form does not have any more functionality than Eric
     Fry's "wiz_unpack".
 
 ARGUMENTS
@@ -48,8 +48,8 @@ ARGUMENTS
 
 PREREQUSITES
 
-    Uses packages "Getopt::Long", "File::Spec::Functions",
-    "IO::Uncompress::Gunzip" and "FindBin".
+    Uses packages "Beyonwiz::Hack::Utils", "Getopt::Long",
+    "File::Spec::Functions", "IO::Uncompress::Gunzip".
 
     Uses "bw_rootfs".
 

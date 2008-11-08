@@ -1,37 +1,32 @@
 NAME
 
-        Beyonwiz::Hack::Telnet;
+        Beyonwiz::Hack::PutFile;
 
 SYNOPSIS
 
-    A module to use as an argument to use with "bw_patcher" to patch
-    Beyonwiz firmware to start "telnetd" at startup to allow telnet
-    connections to the Beyonwiz.
-
-    The effect of this hack will be undone if you load unmodified firmware
-    onto the Beyonwiz.
-
-FUNCTIONS
-
-    "hack($flash_dir, $root_dir)"
-        Called by "bw_patcher" to perform the patch.
-
-        Inserts the line:
-
-            telnetd -l /bin/sh &
-
-        into the file that will be "/etc/rc.sysinit", the system startup
-        script, on the Beyonwiz. The line will be inserted just before the
-        comment line:
-
-            # rc.local
-
-    "hackTag()"
-        Returns "telnet" as the default suffix tag for the patch.
+    A module to use as an argument to use with "bw_patcher". Copies a file
+    into the required relative location in either the root or the flash file
+    system..
 
 DISABLING THE HACK
 
-    Simply download unmodified firmware into the Beyonwiz and restart.
+    Download unmodified firmware into the Beyonwiz and restart.
+
+FUNCTIONS
+
+    "hack($flash_dir, $root_dir, $filesystem, $src_file, $dest_file,
+    $dest_exec)"
+        Inserts $src_file into the firmware filesystem $filesystem in the
+        path $dest_file relative to the filesystem root. Force $dest_file to
+        be executable if it doesn't already exist.
+
+        $filesystem must be one of (root, flash).
+
+        The destination directory for the path must alteady exist in the
+        firmware. This is a bug.
+
+    "hackTag()"
+        Returns "bg" as the default suffix tag for the patch.
 
 PREREQUSITES
 
@@ -59,11 +54,6 @@ BUGS
     more flexible, but they will need to know what modifications you have
     made.
 
-POD ERRORS
-
-    Hey! The above document had some coding errors, which are explained
-    below:
-
-    Around line 9:
-        Deleting unknown formatting code D<>
+    The destination directory for the path must alteady exist in the
+    firmware.
 

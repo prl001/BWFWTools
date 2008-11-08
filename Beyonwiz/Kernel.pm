@@ -29,6 +29,7 @@ use strict;
 @Beyonwiz::Kernel::EXPORT_OK = qw(
 		    BASE
 		    sym_val
+		    check_sym
 		    check_magics
 		    read_or_die
 		    write_or_die
@@ -55,118 +56,252 @@ This is 64kB higher than the start of memory at 0x90080000.
 
 use constant BASE	=> 0x90090000;
 
+# Warn, but don't die if these symbols are missing
+
+my %optional_symbols = (
+    __start___ksymtab	=> 1,
+    __stop___ksymtab	=> 1,
+);
+
 my %kern_locs = (
     DRAM_BASE => [
-	{
-	    loc => 0x00000038,
-	    magics => [
-		 [ 0x90090028, 0xe59f1008 ],
-		 # Checks that the value for DRAM_BASE is correct (0x90080000)
-		 [ 0x90090038, 0x90080000 ],
-	     ]
-	},
+	[
+	    {
+		loc => 0x00000038,
+		magics => [
+		     [ 0x90090028, 0xe59f1008 ],
+		     # Checks that the value for DRAM_BASE
+		     # is correct (0x90080000)
+		     [ 0x90090038, 0x90080000 ],
+		 ]
+	    },
+	],
     ],
     _stext => [
-	{
-	    loc => 0x90090694,
-	    magics => [
-		[ 0x900905e0, 0xe59f20ac ],
-		# Checks that the value for _stext is correct (0x90090000)
-		[ 0x90090694, 0x90090000 ],
-	     ]
-	},
+	[   # before 01.05.261
+	    {
+		loc => 0x90090694,
+		magics => [
+		    [ 0x900905e0, 0xe59f20ac ],
+		    # Checks that the value for _stext is correct (0x90090000)
+		    [ 0x90090694, 0x90090000 ],
+		 ]
+	    },
+	],
+	[   # 01.05.269 and later
+	    {
+		loc => 0x90090690,
+		magics => [
+		    [ 0x900905dc, 0xe59f20ac ],
+		    # Checks that the value for _stext is correct (0x90090000)
+		    [ 0x90090690, 0x90090000 ],
+		 ]
+	    },
+	],
     ],
     _text => [
-	{
-	    loc => 0x900920f8,
-	    magics => [
-		[ 0x90092058, 0xe59f3098 ],
-	     ]
-	},
+	[   # before 01.05.261
+	    {
+		loc => 0x900920f8,
+		magics => [
+		    [ 0x90092058, 0xe59f3098 ],
+		 ]
+	    },
+	],
+	[   # 01.05.269 and later
+	    {
+		loc => 0x900920d8,
+		magics => [
+		    [ 0x90092038, 0xe59f3098 ],
+		 ]
+	    },
+	],
     ],
     _etext => [
-	{
-	    loc => 0x90090690,
-	    magics => [
-		[ 0x900905d8, 0xe59f30b0 ],
-	     ]
-	},
-	{
-	    loc => 0x900920fc,
-	    magics => [
-		[ 0x9009205c, 0xe59f2098 ],
-	     ]
-	},
+	[   # before 01.05.261
+	    {
+		loc => 0x90090690,
+		magics => [
+		    [ 0x900905d8, 0xe59f30b0 ],
+		 ]
+	    },
+	    {
+		loc => 0x900920fc,
+		magics => [
+		    [ 0x9009205c, 0xe59f2098 ],
+		 ]
+	    },
+	],
+	[   # 01.05.269 and later
+	    {
+		loc => 0x9009068c,
+		magics => [
+		    [ 0x900905d4, 0xe59f30b0 ],
+		 ]
+	    },
+	    {
+		loc => 0x900920dc,
+		magics => [
+		    [ 0x9009203c, 0xe59f2098 ],
+		 ]
+	    },
+	],
     ],
     _edata => [
-	{
-	    loc => 0x90092100,
-	    magics => [
-		[ 0x90092068, 0xe59f3090 ],
-	     ]
-	},
+	[   # before 01.05.261
+	    {
+		loc => 0x90092100,
+		magics => [
+		    [ 0x90092068, 0xe59f3090 ],
+		 ]
+	    },
+	],
+	[   # 01.05.269 and later
+	    {
+		loc => 0x900920e0,
+		magics => [
+		    [ 0x90092048, 0xe59f3090 ],
+		 ]
+	    },
+	],
     ],
     __bss_start => [
-	{
-	    loc => 0x90090074,
-	    magics => [
-		[ 0x900900c4, 0xe89321f4 ], # Actual reference instruction
-		[ 0x90090064, 0xe28fe020 ], # Additional context
-		[ 0x90090068, 0xe28af00c ],
-		[ 0x9009206c, 0xe59f2090 ],
-		[ 0x9009008c, 0xe51fe028 ],
-		[ 0x90090090, 0xee010f10 ],
-	     ]
-	},
+	[   # before 01.05.261
+	    {
+		loc => 0x90090074,
+		magics => [
+		    [ 0x900900c4, 0xe89321f4 ], # Actual reference instruction
+		    [ 0x90090064, 0xe28fe020 ], # Additional context
+		    [ 0x90090068, 0xe28af00c ],
+		    [ 0x9009206c, 0xe59f2090 ],
+		    [ 0x9009008c, 0xe51fe028 ],
+		    [ 0x90090090, 0xee010f10 ],
+		 ]
+	    },
+	],
+	[   # 01.05.269 and later
+	    {
+		loc => 0x90090074,
+		magics => [
+		    [ 0x900900c4, 0xe89321f4 ], # Actual reference instruction
+		    [ 0x90090064, 0xe28fe020 ], # Additional context
+		    [ 0x90090068, 0xe28af00c ],
+		    [ 0x9009204c, 0xe59f2090 ],
+		    [ 0x9009008c, 0xe51fe028 ],
+		    [ 0x90090090, 0xee010f10 ],
+		 ]
+	    },
+	],
     ],
     _end => [
-	{
-	    loc => 0x90090078,
-	    magics => [
-		[ 0x900900c4, 0xe89321f4 ], # Actual reference instruction
-		[ 0x90090064, 0xe28fe020 ], # Additional context
-		[ 0x90090068, 0xe28af00c ],
-		[ 0x9009206c, 0xe59f2090 ],
-		[ 0x9009008c, 0xe51fe028 ],
-		[ 0x90090090, 0xee010f10 ],
-	     ]
-	},
-	{
-	    loc => 0x90092104,
-	    magics => [
-		[ 0x9009206c, 0xe59f2090 ], # Actual reference instruction
-	     ]
-	},
+	[   # before 01.05.261
+	    {
+		loc => 0x90090078,
+		magics => [
+		    [ 0x900900c4, 0xe89321f4 ], # Actual reference instruction
+		    [ 0x90090064, 0xe28fe020 ], # Additional context
+		    [ 0x90090068, 0xe28af00c ],
+		    [ 0x9009206c, 0xe59f2090 ],
+		    [ 0x9009008c, 0xe51fe028 ],
+		    [ 0x90090090, 0xee010f10 ],
+		 ]
+	    },
+	    {
+		loc => 0x90092104,
+		magics => [
+		    [ 0x9009206c, 0xe59f2090 ], # Actual reference instruction
+		 ]
+	    },
+	],
+	[   # 01.05.269 and later
+	    {
+		loc => 0x90090078,
+		magics => [
+		    [ 0x900900c4, 0xe89321f4 ], # Actual reference instruction
+		    [ 0x90090064, 0xe28fe020 ], # Additional context
+		    [ 0x90090068, 0xe28af00c ],
+		    [ 0x9009204c, 0xe59f2090 ],
+		    [ 0x9009008c, 0xe51fe028 ],
+		    [ 0x90090090, 0xee010f10 ],
+		 ]
+	    },
+	    {
+		loc => 0x900920e4,
+		magics => [
+		    [ 0x9009204c, 0xe59f2090 ], # Actual reference instruction
+		 ]
+	    },
+	],
     ],
     __start___ksymtab => [
-	{
-	    loc => 0x90093d44,
-	    magics => [
-		[ 0x90093d24, 0xe59f2018 ],
-	     ]
-	},
+	[
+	    {
+		loc => 0x90093d44,
+		magics => [
+		    [ 0x90093d24, 0xe59f2018 ],
+		 ]
+	    },
+	],
     ],
     __stop___ksymtab => [
-	{
-	    loc => 0x90093d40,
-	    magics => [
-		[ 0x90093d24, 0xe59f2018 ],
-	     ]
-	},
+	[
+	    {
+		loc => 0x90093d40,
+		magics => [
+		    [ 0x90093d20, 0xe59f3018 ],
+		 ]
+	    },
+	],
     ],
     arena => [
-	{
-	    loc => 0x90097e58,
-	    magics => [
-		[ 0x90097bd4, 0xe59f927c ],
-	     ]
-	},
+	[
+	    {   # before 01.05.243
+		loc => 0x90097e58,
+		magics => [
+		    [ 0x90097bd4, 0xe59f927c ],
+		 ]
+	    },
+	],
+	[
+	    {   # 01.05.243 and before 01.05.269
+		loc => 0x90097e54,
+		magics => [
+		    [ 0x90097bd0, 0xe59f927c ],
+		 ]
+	    },
+	],
+	[
+	    {   # 01.05.269 and later
+		loc => 0x90097dcc,
+		magics => [
+		    [ 0x90097b48, 0xe59f927c ],
+		 ]
+	    },
+	],
     ],
 );
+
+my %matched_loc;
 
 =head1 FUNCTIONS
 
 =over
+
+=item C<check_sym($sym)>
+
+Looks up C<$sym> in an internal table, and returns true
+if the corresponding symbol has been found.
+
+=cut
+
+sub check_sym($) {
+    my ($sym) = @_;
+    return defined $kern_locs{$sym}
+	&& defined $matched_loc{$sym}
+	&& defined $kern_locs{$sym}[$matched_loc{$sym}]
+	&& defined $kern_locs{$sym}[$matched_loc{$sym}][0]
+	&& defined $kern_locs{$sym}[$matched_loc{$sym}][0]{loc};
+}
 
 =item C<sym_val($sym)>
 
@@ -189,13 +324,11 @@ Recognised symbols are:
 
 =cut
 
-sub sym_val($$$) {
+sub sym_val($) {
     my ($sym) = @_;
     die "Kernel symbol $sym not defined\n"
-	if(!defined $kern_locs{$sym}
-	|| !defined $kern_locs{$sym}[0]
-	|| !defined $kern_locs{$sym}[0]{loc});
-    return $kern_locs{$sym}[0]{loc};
+	if(!check_sym($sym));
+    return $kern_locs{$sym}[$matched_loc{$sym}][0]{loc};
 }
 
 =item C<get_words($fh, $addr, $n)>
@@ -250,7 +383,7 @@ sub get_words_sym($$$) {
     my ($fh, $sym, $n) = @_;
     die "Kernel symbol $sym not defined\n"
 	if(!$kern_locs{$sym});
-    return get_words($fh, $kern_locs{$sym}[0]{loc}, $n);
+    return get_words($fh, $kern_locs{$sym}[$matched_loc{$sym}][0]{loc}, $n);
 }
 
 =item C<get_str($fh, $addr)>
@@ -381,24 +514,54 @@ Fatal error if the checks fail.
 sub check_magics($$) {
     my ($kern_fn, $kern_fh) = @_;
     my @magics;
+    my $errs = 0;
     while(my ($sym, $data) = each %kern_locs) {
-	foreach my $loc (@$data) {
-	    foreach my $magic (@{$loc->{magics}}) {
-		push @magics, [ $magic->[0], $magic->[1], $sym ];
+	my $version;
+	foreach my $ver (0..$#$data) {
+	    my $ver_ok = 1;
+	    foreach my $loc (@{$data->[$ver]}) {
+		foreach my $magic (@{$loc->{magics}}) {
+		    my $val = get_words($kern_fh, $magic->[0], 1);
+		    $ver_ok = 0
+			if($val != $magic->[1]);
+		}
+	    }
+	    if($ver_ok) {
+		$version = $ver;
+		last;
+	    }
+	}
+	if(defined $version) {
+	    $matched_loc{$sym} = $version;
+	} else {
+	    foreach my $ver (0..$#$data) {
+		foreach my $loc (@{$data->[$ver]}) {
+		    foreach my $magic (@{$loc->{magics}}) {
+			my $val = get_words($kern_fh, $magic->[0], 1);
+			warn sprintf 'Context for %s'
+				. ' - Expected 0x%08x at 0x%08x in %s:'
+				. " got 0x%08x\n",
+				$sym,
+				$magic->[1], $magic->[0],
+				$kern_fn, $val
+			    if($magic->[1] != $val
+			    && !$optional_symbols{$sym});
+		    }
+		}
+	    }
+	    if(!$optional_symbols{$sym}) {
+	        $errs++;
 	    }
 	}
     }
-    foreach my $magic (@magics) {
-	my $val = get_words($kern_fh, $magic->[0], 1);
-	die sprintf 'Context for %s'
-		. " - Expected 0x%08x at 0x%08x in %s: got 0x%08x\n",
-		$magic->[2], $magic->[1], $magic->[0], $kern_fn, $val
-	    if($val != $magic->[1]);
-    }
     my $stext = get_words_sym($kern_fh, '_stext', 1);
-    die sprintf "In BASE (0x%08x) != _stext (0x%08x)\n",
-	    BASE, $stext, $kern_fn
-	if($stext != BASE);
+    if($stext != BASE) {
+	warn sprintf "In BASE (0x%08x) != _stext (0x%08x)\n",
+			BASE, $stext, $kern_fn;
+	$errs++;
+    }
+    die "$errs error", ($errs == 1 ? '' : 's'), " in finding kernel symbols\n"
+	if($errs);
 }
 
 =back

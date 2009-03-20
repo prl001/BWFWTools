@@ -55,9 +55,6 @@ for i in "$@"; do
 
 done
 
-# Still can't get the URLs right in links!
-find html -name '*.html' | xargs perl -pi -e 's,/html/(\./)?html/,/html/,g'
-
 # Header for index.html
 
 cat >> $index << '_EOF'

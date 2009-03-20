@@ -193,6 +193,7 @@ These options force the use of only one of the two compression mechanisms.
 
 Uses packages
 C<Beyonwiz::Hack::Utils>,
+C<Beyonwiz::SystemId>,
 C<Getopt::Long>,
 C<IO::Compress::Gzip>,
 C<IO::Uncompress::Gunzip> and
@@ -261,11 +262,11 @@ use Beyonwiz::Hack::Utils qw(pathTildeExpand);
 use IO::Uncompress::Gunzip qw(gunzip $GunzipError);
 use IO::Compress::Gzip qw(gzip $GzipError);
 use File::Spec::Functions qw(catfile tmpdir);
+use Beyonwiz::SystemId qw(flashSizefromModel flashSizefromSysIdStr);
 
 use Getopt::Long;
 
 Getopt::Long::Configure qw/no_ignore_case bundling/;
-
 
 sub usage() {
     die "Usage: $0\n"
@@ -293,9 +294,6 @@ sub on_exit() {
 use constant LINGZ     => 'linux.bin.gz';
 use constant LIN       => 'linux.bin' . $$;
 use constant ROOTFS    => 'root.romfs';
-
-# Flash is 8MB, but 5 x 64-kB segments are reserved for other uses
-use constant MAX_FLASH => 8 * 1024*1024 - 5 * 64 * 1024;
 
 sub system_redirect(@) {
     my @cmd = @_;
@@ -431,10 +429,16 @@ defined $machtype or defined $machcode
     or die "Machine type must be specified with -t/--machtype",
 	   " or -T/--machcode\n";
 
-my @wrp_pack_args;
-   push @wrp_pack_args, '-t', $machtype    if(defined $machtype);
-   push @wrp_pack_args, '-T', $machcode    if(defined $machcode);
-   push @wrp_pack_args, '-V', $version     if(defined $version);
+defined $machtype and defined $machcode
+    and die "Machine type may not be specified with both -t/--machtype",
+	   " and -T/--machcode\n";
+
+my $max_flash;
+
+my @wiz_pack_args;
+   push @wiz_pack_args, '-t', $machtype    if(defined $machtype);
+   push @wiz_pack_args, '-T', $machcode    if(defined $machcode);
+   push @wiz_pack_args, '-V', $version     if(defined $version);
 my @bw_rootfs_args;
    push @bw_rootfs_args, '-f'              if($force);
 my @wiz_genromfs_args = ('-V', $volname);
@@ -442,7 +446,17 @@ my @wiz_genromfs_args = ('-V', $volname);
 
 $SIG{$_} = \&on_exit foreach qw(HUP INT QUIT PIPE TERM __DIE__);
 
-pathTildeExpand();
+if(defined $machcode) {
+    $max_flash = flashSizefromSysIdStr($machcode);
+    die "Unrecognised Beyonwiz machine code $machcode\n"
+	if(!defined $max_flash);
+} else {
+    $max_flash = flashSizefromModel($machtype);
+    die "Unrecognised Beyonwiz machine type $machtype\n"
+	if(!defined $max_flash);
+}
+
+pathTildeExpand;
 
 if(defined $rootfs_dir) {
     print "Construct root file system from $rootfs_dir\n";
@@ -484,20 +498,20 @@ system({'wiz_genromfs'}
 	'-d', $flash_dir, '-f', $flashfs) == 0
     or die "Generation of $rootfs from $rootfs_dir failed\n";
 system({'wiz_pack'}
-	'wiz_pack', @wrp_pack_args, '-i', $flashfs, '-o', $wrp_fn) == 0
+	'wiz_pack', @wiz_pack_args, '-i', $flashfs, '-o', $wrp_fn) == 0
     or die "wiz_pack of $flashfs into $wrp_fn failed\n";
 
 my $root_size = (stat $flashfs)[7];
 defined $root_size
     or die "Can't get size of $flashfs: $!\n";
 
-if($root_size <= MAX_FLASH) {
-    print "$wrp_fn uses: $root_size bytes; available: ", MAX_FLASH,
-	"; spare: ", MAX_FLASH - $root_size, "\n";
+if($root_size <= $max_flash) {
+    print "$wrp_fn uses: $root_size bytes; available: ", $max_flash,
+	"; spare: ", $max_flash - $root_size, "\n";
 } else {
     unlink $wrp_fn if(!$keep);
     warn "$wrp_fn is too big to fit in BW flash memory: $root_size > ",
-	    MAX_FLASH, "\n",
+	    "$max_flash\n",
 	 ($keep ? '' : "	- firmware .wrp file not created\n");
 
 }

@@ -1,4 +1,4 @@
-Version 0.2
+Version 0.2.1
 
 Contents of the zip:
 
@@ -14,14 +14,20 @@ Contents of the zip:
     * bw_patcher - all-in-one tool to automatically apply Beyonwiz firmware patches
     * wrp_hdrs - print the header information in Beyonwiz .wrp firmware update files
     * svcdat - print the contents of Beyonwiz C<svc.dat> (service scan configuration) files
+    * dump_strings - extract useful GUI strings from Beyonwiz /dump.dat file
+    * lastplaypoint - print the Beyonwiz resume marker file lastplaypoint.dat
+    * getDvpStrings - extract useful GUI strings from the Beyonwiz wizdvp application
     * Beyonwiz::Kernel - Perl package of support routines for uncompressed Beyonwiz kernel images
     * Beyonwiz::Hack - contains patcher modules to use with bw_patcher
     * Beyonwiz::Hack::BackgroundChanger - change the background image used in the File Player and Setup screens
     * Beyonwiz::Hack::BwhackSupport - Support for hacks that can be turned on and off remotely using bwhack
+    * Beyonwiz::Hack::Dim - hack to dim the front display
     * Beyonwiz::Hack::PutFile - Put a single file into an existing directory in the firmware
     * Beyonwiz::Hack::RemFile - Remove a file from the firmware
     * Beyonwiz::Hack::Telnet - Enable the telnet daemon in the firmware (allows remote logins to the Beyonwiz using telnet)
     * Beyonwiz::Hack::USBHackSupport - Allows hacks to be run from a USB stick or memory card
+    * Beyonwiz::Hack::USBHackSupport - Allows hacks to be run from a USB stick or memory card
+    * Beyonwiz::SystemId - Perl package of usefunctions for Beyonwiz SystemIds and model names
     * make_doc.sh - Unix shell script to generate HTML and text documentation from embedded POD markup
     * doc\ - Automatically generated documentation in plain text
     * html\ - Automatically generated documentation in html (index in index.html)
@@ -33,13 +39,16 @@ Only extensively tested on Cygwin. Some testing on Mac OS X & Windows. Will prob
 WARNING: bw_rootfs, pack_wrp and bw_patcher can all easily create an unbootable system.
 
 Release notes
-bw_patcher: new tool
-svcdat: new tool
-getksyms: fails gracefully on firmware versions 01.05.269 beta and later, which don't have a kernel symbol table for module loading.
-wrp_headers: Print out system ids in the same way that they appear on the Beyonwiz.
-bw_rootfs: prints more information about free space in the firmware, updating code a bit more robust
 
-In several tools, the way that sub-tools are called has been changed to avoid possible problems with shell quoting, and a bug in Cygwin Perl 5.10.0 IO::Uncompress::Gunzip::gunzip() has bee worked around.
+dump_strings: new tool
+lastplaypoint: new tool
+getDvpStrings: new tool
+Beyonwiz::Hack::Dim: new patcher module
+Beyonwiz::SystemId: new utility module
+
+pack_wrp: now checks the firmware for the model number to find the appropriate flash size. The DP-P2 has a 16MB, rather than an 8MB flash, abd some of its firmware packages don't fit in the standard 8MiB-320kiB.
+wrp_hdrs: now prints the Beyonwiz model number corresponding to the SystemId in the firmware, and uses the SystemId to get the correct flash size to calculate spaceRemaining.
+Beyonwiz::Kernel: fixed kernel locations for firmware post 01.05.287.
 
 WARNING
 =======

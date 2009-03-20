@@ -20,23 +20,26 @@ Prints the header information in Beyonwiz .wrp firmware update files.
 Prints the contents of the header block in Beyonwiz B<.wrp>
 firmware update files.
 
-    ./wrp_hdrs.pl DPS1_Firmware_28Dec2007_ver_01.05.197.wrp 
-    DPS1_Firmware_28Dec2007_ver_01.05.197.wrp:
-	fileSize: 7768064
-	  offset: 0
-	   magic: WizFwPkgl
-       machMagic: [0x0e20be3e, 0x08080000]
-	 version: 01.05.197__Official.Version__
-	 md5file: [cb, 92, 7d, 43, fa, 16, 48, 59, 08, 35, ef, 97, 9d, 44, 9e, fd]
-	   count: 1
-	imageTag: [108, 32]
-       imageType: 2
-     imageOffset: 512
-     imageLength: 7767040
-	md5image: [24, 81, 0c, f0, 35, 53, ce, 2a, 56, 17, 8d, b4, 45, 90, 2c, 67]
-	  fsType: -rom1fs-
-	  fsSize: 7766032
-	   fsVol: mambo
+    ./wrp_hdrs.pl DPS1_Firmware_08Dec2008_ver_01.05.280.wrp 
+    DPS1_Firmware_08Dec2008_ver_01.05.280.wrp:
+          fileSize: 7983104
+            offset: 0
+             magic: WizFwPkgl
+         machMagic: [0808, 0000, 0e20, be3e]
+             model: DP-S1
+           version: 01.05.280__Official.Version__
+           md5file: [b4, 03, 9f, b5, 45, 9a, 0c, a5, 29, 17, 56, 87, 4e, 65, 01, 08]
+             count: 1
+          imageTag: [108, 32]
+         imageType: 2
+       imageOffset: 512
+       imageLength: 7982080
+    spaceRemaining: 78848
+          md5image: [36, c1, 37, 30, 91, 46, 56, 93, 0a, aa, 0a, 20, af, 96, f4, f1]
+            fsType: -rom1fs-
+            fsSize: 7981072
+             fsVol: mambo
+
 
 =over 4
 
@@ -61,6 +64,11 @@ Should always be C<WizFwPkgl>.
 
 The magic number that corresponds to the Beyonwiz System ID for the device.
 Used to ensure that the firmware is for the correct type of device.
+
+=item model
+
+Beyonwiz model designation (DP-S1, etc.) derived from C<machMagic>.
+C<Unknown> if a match is not found for the C<machMagic>.
 
 =item version
 
@@ -107,6 +115,13 @@ as I<floor>((imageLength + 1023) / 1024 ) * 1024.
 A zero-filled header block follows this allocated space as an empty header
 to indicate the end of the package.
 
+=item spaceRemaining
+
+The amount of free space remaining in the flash memory after
+loading the firmware.
+The flash memory size is determined from C<machMagic>.
+C<Unknown> if a match is not found for the C<machMagic>.
+
 =item md5image
 
 MD5 checksum of the payload (over exactly the given length).
@@ -127,6 +142,11 @@ File system volume label.
 
 =back
 
+=head1 PREREQUISITES
+
+Uses package
+L<C<Beyonwiz::SystemId>|Beyonwiz::SystemId>.
+
 =head1 BUGS
 
 The interpretation of some parts of the header is uncertain.
@@ -143,6 +163,8 @@ Beyonwiz Forum (L<http://www.beyonwiz.com.au/phpbb2/index.php>).
 
 use strict;
 use warnings;
+
+use Beyonwiz::SystemId qw(modelFromSysIdArray flashSizefromSysIdArray);
 
 # Read and unpack the .wrp file header from the current
 # file handle read location
@@ -200,7 +222,7 @@ my %formats = (
 sub printHdr($) {
     my ($hdr) = @_;
 
-    foreach my $fld (qw/fileSize offset magic machMagic version
+    foreach my $fld (qw/fileSize offset magic machMagic model version
 		    md5file
 		    count imageTag imageType imageOffset
 		    imageLength spaceRemaining
@@ -227,8 +249,13 @@ sub printHdr($) {
 
 foreach my $fn (@ARGV) {
     my $hdr = readHdrFile($fn);
-    $hdr->{spaceRemaining} = 0x7b0000 - $hdr->{imageLength};
     if($hdr) {
+	my $model_name = modelFromSysIdArray($hdr->{machMagic});
+	my $flash_size = flashSizefromSysIdArray($hdr->{machMagic});
+	$hdr->{model} = defined($model_name) ? $model_name : 'Unknown';
+	$hdr->{spaceRemaining} = defined($flash_size)
+				    ? $flash_size - $hdr->{imageLength}
+				    : 'Unknown';
 	print "$fn:\n";
 	printHdr($hdr);
     } else {

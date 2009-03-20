@@ -32,7 +32,7 @@ The B<-n> (or B<--numeric>) sorts by symbol value.
 =head1 PREREQUSITES
 
 Uses packages C<Getopt::Long>
-and L<C<Beyonwiz::Kernel>|Kernel>.
+and L<C<Beyonwiz::Kernel>|Beyonwiz::Kernel>.
 
 =head1 BUGS
 

@@ -64,7 +64,7 @@ first 64 bytes of the code.
 =head1 PREREQUSITES
 
 Uses package C<Getopt::Long>, C<POSIX>
-and L<C<Beyonwiz::Kernel>|Kernel>.
+and L<C<Beyonwiz::Kernel>|Beyonwiz::Kernel>.
 
 =head1 BUGS
 

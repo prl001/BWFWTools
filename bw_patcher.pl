@@ -4,8 +4,7 @@
 
 =head1 NAME
 
-bw_patcher - all-in-one tool to automatically apply Beyonwiz firm
-ware patches
+bw_patcher - all-in-one tool to automatically apply Beyonwiz firmware patches
 
 
 =head1 SYNOPSIS
@@ -119,10 +118,12 @@ The function typically modifies C<etc/rc.sysinit> in C<$root_dir>,
 and may add new files to, or overwrite files in, either firmware directory.
 
 The modules packaged with B<bw_patcher> are
-L<C<Beyonwiz::Hack::Telnet>|Telnet>,
-L<C<Beyonwiz::Hack::BwhackSupport>|BwhackSupport>
+L<C<Beyonwiz::Hack::Telnet>|Beyonwiz::Hack::Telnet>,
+L<C<Beyonwiz::Hack::Dim>|Beyonwiz::Hack::Dim>,
+L<C<Beyonwiz::Hack::BackgroundChanger>|Beyonwiz::Hack::BackgroundChanger>,
+L<C<Beyonwiz::Hack::BwhackSupport>|Beyonwiz::Hack::BwhackSupport>
 and
-L<C<Beyonwiz::Hack::USBHackSupport>|USBHackSupport>.
+L<C<Beyonwiz::Hack::USBHackSupport>|Beyonwiz::Hack::USBHackSupport>.
 
 =head1 DISABLING THE HACKS
 
@@ -134,8 +135,13 @@ actually disable the hack!>
 
 =head1 PREREQUSITES
 
-Uses packages C<Getopt::Long>,
-C<IO::Compress::Gzip>, C<IO::Uncompress::Gunzip> and C<POSIX>.
+Uses packages
+C<Getopt::Long>,
+C<File::Spec::Functions>,
+C<File::Path>,
+C<Carp>,
+and
+L<C<Beyonwiz::Hack::Utils>|Beyonwiz::Hack::Utils>.
 
 Uses L< C<unpack_wrp>|unpack_wrp/ >,
 L< C<pack_wrp>|pack_wrp/ >
@@ -145,12 +151,6 @@ L< C<bw_rootfs>|bw_rootfs/ >.
 Uses Eric Fry's wizfwtools programs C<wiz_pack>
 and C<wiz_genromfs>.
 
-C<Getopt::Long>,
-C<File::Spec::Functions>,
-C<File::Path>,
-C<Carp>,
-and
-L<C<Beyonwiz::Hack::Utils>|Utils>.
 
 =head1 BUGS
 

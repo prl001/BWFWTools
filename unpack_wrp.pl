@@ -142,7 +142,7 @@ GetOptions('i|insens' => \$insens,
 	   'k|keep' => \$keep
     ) or usage;
 
-my @wrp_unpack_args = $insens ? qw(-i) : ();
+my @wiz_unpack_args = $insens ? qw(-i) : ();
 my @bw_rootfs_args  = $force  ? qw(-f) : ();
 
 @ARGV == 2 or @ARGV == 3 or usage;
@@ -161,7 +161,7 @@ die "Target directory $rootfs_dir already exists\n"
     if(defined $rootfs_dir && -e $rootfs_dir);
 
 system({'wiz_unpack'}
-	'wiz_unpack', @wrp_unpack_args, qw(-q -x), $flash_dir, $wrp_fn) == 0
+	'wiz_unpack', @wiz_unpack_args, qw(-q -x), $flash_dir, $wrp_fn) == 0
     or die "wiz_unpack of $wrp_fn into $flash_dir failed\n";
 
 if(defined $rootfs_dir) {
@@ -182,7 +182,7 @@ if(defined $rootfs_dir) {
 	    'perl', '-S', 'bw_rootfs.pl', @bw_rootfs_args, $lin, $rootfs) == 0
 	or die "Extraction of $rootfs from $lin failed\n";
     system({'wiz_unpack'}
-	    'wiz_unpack'. @wrp_unpack_args, qw(-q -x),
+	    'wiz_unpack'. @wiz_unpack_args, qw(-q -x),
 		$rootfs_dir, $rootfs) == 0
 	or die "wiz_unpack of $rootfs into $rootfs_dir failed\n";
 }

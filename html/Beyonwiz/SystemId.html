@@ -1,0 +1,156 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SystemId</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:_www@b04.apple.com" />
+</head>
+
+<body style="background-color: white">
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;SystemId</span></strong></big>
+</td></tr>
+</table>
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#functions">FUNCTIONS</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>Beyonwiz::SystemId - Perl package of useful functions for Beyonwiz SystemIds and model names</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+    use Beyonwiz::SystemId;
+    
+or</pre>
+<pre>
+    use Beyonwiz::SystemId qw(
+                        normaliseModel
+                        flashSizefromModel
+                        flashSizefromSysIdArray
+                        flashSizefromSysIdStr
+                        modelFromSysIdArray
+                        parseSysIdStr
+                        modelFromSysIdStr
+                );</pre>
+<p>
+</p>
+<hr />
+<h1><a name="functions">FUNCTIONS</a></h1>
+<dl>
+<dt><strong><a name="item_normalisemodel"><code>normaliseModel($name);</code></a></strong>
+
+<dd>
+<p>Convert the Beyonwiz model name in either of <code>DP-S1</code> or <code>DPS1</code>
+forms to the <code>DP-S1</code> form.</p>
+</dd>
+<dd>
+<p>Returns the normalised model name, or <code>undef</code> if the name is not recognised.</p>
+</dd>
+<dd>
+<p>Also allows <code>S</code>, <code>P</code> and <code>H</code> to be used as arguments for
+<code>DP-S1</code>, <code>DP-P1</code> and <code>DP-H1</code>,
+but this usage is deprecated.</p>
+</dd>
+</li>
+<dt><strong><a name="item_parsesysidstr"><code>parseSysIdStr($id)</code></a></strong>
+
+<dd>
+<p>Given a 16 hexadecimal digit
+string, convert it into a reference
+to a 4-entry array of 16-bit integers.</p>
+</dd>
+<dd>
+<p>The 4-digit groups may be separated either by spaces or <code>-</code>.</p>
+</dd>
+<dd>
+<p>The following parse to the sysid array for the DP-S1
+(<code>[ 0x0808, 0x0000, 0x0E20, 0xBE3E ]</code>:</p>
+</dd>
+<dd>
+<pre>
+    0808 0000 0E20 BE3E
+    0808-0000-0e20-Be3e
+    080800000e20BE3E</pre>
+</dd>
+<dd>
+<p>Returns <code>undef</code> if the string is incorrectly formatted.</p>
+</dd>
+</li>
+<dt><strong><a name="item_modelfromsysidarray"><code>modelFromSysIdArray($id)</code></a></strong>
+
+<dd>
+<p>Returns the normalised name for a Beyonwiz device
+given a 4-entry sysid array (as returned from
+<a href="#item_parsesysidstr"><code>parseSysIdStr($id)</code></a>).</p>
+</dd>
+<dd>
+<p>Returns <code>undef</code> if the sysid is not recognised.</p>
+</dd>
+</li>
+<dt><strong><a name="item_modelfromsysidstr"><code>modelFromSysIdStr($id)</code></a></strong>
+
+<dd>
+<p>Returns the normalised name for a Beyonwiz device
+given a sysid string
+(in one of the forms recognised by
+<a href="#item_parsesysidstr"><code>parseSysIdStr($id)</code></a>).</p>
+</dd>
+<dd>
+<p>Returns <code>undef</code> if the sysid is not recognised.</p>
+</dd>
+</li>
+<dt><strong><a name="item_flashsizefrommodel"><code>flashSizefromModel($name)</code></a></strong>
+
+<dd>
+<p>Returns the flash memory size in bytes for the given model
+number named in normalised form.</p>
+</dd>
+<dd>
+<p>Returns <code>undef</code> for unrecognised model names.</p>
+</dd>
+</li>
+<dt><strong><a name="item_flashsizefromsysidarray"><code>flashSizefromSysIdArray($id)</code></a></strong>
+
+<dd>
+<p>Returns the flash memory size in bytes for the
+model sysid given as an array of 4 16-bit integers.</p>
+</dd>
+<dd>
+<p>Returns <code>undef</code> for unrecognised model sysids.</p>
+</dd>
+</li>
+<dt><strong><a name="item_flashsizefromsysidstr"><code>flashSizefromSysIdStr($id)</code></a></strong>
+
+<dd>
+<p>Returns the flash memory size in bytes for the
+model sysid given as a hexadecimal string.</p>
+</dd>
+<dd>
+<p>Returns <code>undef</code> for unrecognised model sysids.</p>
+</dd>
+</dl>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;SystemId</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>

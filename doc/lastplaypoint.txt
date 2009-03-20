@@ -1,0 +1,24 @@
+NAME
+
+    lastplaypoint - print the Beyonwiz resume marker file lastplaypoint.dat
+
+SYNOPSIS
+
+        dump_strings lastplaypoint.dat_files...
+
+DESCRIPTION
+
+    Prints the contents of the files in the format of the
+    "/tmp/config/lastplaypoint.dat" file on Beyonwiz PVRs.
+
+    The output is one line for each valid resume point in the media file or
+    recording, the resume offset in decimal, followed by the name of the
+    file.
+
+    It's not clear what the offset units are in the file. They appear to be
+    approx 0.5 sec.
+
+BUGS
+
+    The offset units are unknown.
+

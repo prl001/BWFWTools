@@ -1,0 +1,78 @@
+NAME
+
+    Beyonwiz::SystemId - Perl package of useful functions for Beyonwiz
+    SystemIds and model names
+
+SYNOPSIS
+
+        use Beyonwiz::SystemId;
+
+    or
+
+        use Beyonwiz::SystemId qw(
+                            normaliseModel
+                            flashSizefromModel
+                            flashSizefromSysIdArray
+                            flashSizefromSysIdStr
+                            modelFromSysIdArray
+                            parseSysIdStr
+                            modelFromSysIdStr
+                    );
+
+FUNCTIONS
+
+    "normaliseModel($name);"
+        Convert the Beyonwiz model name in either of "DP-S1" or "DPS1" forms
+        to the "DP-S1" form.
+
+        Returns the normalised model name, or "undef" if the name is not
+        recognised.
+
+        Also allows "S", "P" and "H" to be used as arguments for "DP-S1",
+        "DP-P1" and "DP-H1", but this usage is deprecated.
+
+    "parseSysIdStr($id)"
+        Given a 16 hexadecimal digit string, convert it into a reference to
+        a 4-entry array of 16-bit integers.
+
+        The 4-digit groups may be separated either by spaces or "-".
+
+        The following parse to the sysid array for the DP-S1 ("[ 0x0808,
+        0x0000, 0x0E20, 0xBE3E ]":
+
+            0808 0000 0E20 BE3E
+            0808-0000-0e20-Be3e
+            080800000e20BE3E
+
+        Returns "undef" if the string is incorrectly formatted.
+
+    "modelFromSysIdArray($id)"
+        Returns the normalised name for a Beyonwiz device given a 4-entry
+        sysid array (as returned from "parseSysIdStr($id)").
+
+        Returns "undef" if the sysid is not recognised.
+
+    "modelFromSysIdStr($id)"
+        Returns the normalised name for a Beyonwiz device given a sysid
+        string (in one of the forms recognised by "parseSysIdStr($id)").
+
+        Returns "undef" if the sysid is not recognised.
+
+    "flashSizefromModel($name)"
+        Returns the flash memory size in bytes for the given model number
+        named in normalised form.
+
+        Returns "undef" for unrecognised model names.
+
+    "flashSizefromSysIdArray($id)"
+        Returns the flash memory size in bytes for the model sysid given as
+        an array of 4 16-bit integers.
+
+        Returns "undef" for unrecognised model sysids.
+
+    "flashSizefromSysIdStr($id)"
+        Returns the flash memory size in bytes for the model sysid given as
+        a hexadecimal string.
+
+        Returns "undef" for unrecognised model sysids.
+

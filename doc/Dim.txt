@@ -1,0 +1,62 @@
+NAME
+
+    Beyonwiz::Hack::Dim - hack to dim the front display
+
+SYNOPSIS
+
+        Beyonwiz::Hack::Dim;
+
+    A module to use as an argument to use with "bw_patcher" to patch
+    Beyonwiz firmware to dim the front panel display at startup.
+
+    The effect of this hack will be undone if you load unmodified firmware
+    onto the Beyonwiz.
+
+FUNCTIONS
+
+    "hack($flash_dir, $root_dir)"
+        Called by "bw_patcher" to perform the patch.
+
+        Inserts the line:
+
+            micomparam -q -r 500101
+
+        into the file that will be "/etc/rc.sysinit", the system startup
+        script, on the Beyonwiz. The line will be inserted just before the
+        comment line:
+
+            # rc.local
+
+    "hackTag()"
+        Returns "dim" as the default suffix tag for the patch.
+
+DISABLING THE HACK
+
+    Simply download unmodified firmware into the Beyonwiz and restart.
+
+PREREQUSITES
+
+    Uses packages "Beyonwiz::Hack::Utils".
+
+BUGS
+
+    Using user extensions or hacks may make your Beyonwiz unable to operate
+    correctly, or even start. Some modifications are known to interfere with
+    the correct functioning of the Beyonwiz.
+
+    If your Beyonwiz cannot start after you load modified firmware, you may
+    need to use the procedures in the NOTICE - How to recover from FW update
+    failure <http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>
+    procedure on the Beyonwiz forum. It's not known whether that procedure
+    will fix all failures due to user modifications or "hacks".
+
+    If you run modified firmware on your Beyonwiz, and have problems with
+    its operation, try to reproduce any problems you do have on a Beyonwiz
+    running unmodified firmware, or at least mention the modifications you
+    use when reporting the problem to Beyonwiz support or on the Beyonwiz
+    Forum <http://www.beyonwiz.com.au/phpbb2/index.php>. Beyonwiz support
+    may not be able to assist if you are running anything other than
+    unmodified firmware from Beyonwiz. Forum contributers may be able to be
+    more flexible, but they will need to know what modifications you have
+    made.
+

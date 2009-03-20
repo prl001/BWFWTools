@@ -1,0 +1,30 @@
+NAME
+
+    getDvpStrings - extract useful GUI strings from the Beyonwiz wizdvp
+    application
+
+SYNOPSIS
+
+        getDvpStrings directory_containing_beyonwiz_application_firmware
+
+DESCRIPTION
+
+    Edits the strings extracted from the Beyonwiz "getDvpStrings"
+    application, eliminating strings that probably aren't GUI messages.
+
+    The directory argument is the root directory of an unpacked Beyonwiz
+    firmware .wrp file.
+
+    The intended use is:
+
+        getDvpStrings 01.05.123.unpacked | dump_strings
+
+PREREQUISITES
+
+    The Unix strings program, and the "gunzip_bflt" program in BWFWTools.
+
+BUGS
+
+    The filtering is imperfect, and some strings may be included that should
+    be excluded, and some excluded that should be included.
+

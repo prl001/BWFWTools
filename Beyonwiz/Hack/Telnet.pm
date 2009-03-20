@@ -2,9 +2,11 @@ package Beyonwiz::Hack::Telnet;
 
 =head1 NAME
 
-    Beyonwiz::Hack::Telnet;
+Beyonwiz::Hack::Telnet - hack to enable telnet access on the Beyonswz
 
 =head1 SYNOPSIS
+
+    Beyonwiz::Hack::Telnet;
 
 A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/ >
 to patch Beyonwiz firmware to start C<telnetd> at startup to allow

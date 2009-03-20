@@ -2,9 +2,11 @@ package Beyonwiz::Hack::RemFile;
 
 =head1 NAME
 
-    Beyonwiz::Hack::RemFile;
+    Beyonwiz::Hack::RemFile - delete a file in the Beyonwiz firmware
 
 =head1 SYNOPSIS
+
+    Beyonwiz::Hack::RemFile;
 
 A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/ >.
 Deletes a file at the given relative location in either the root or the

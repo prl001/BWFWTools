@@ -2,9 +2,11 @@ package Beyonwiz::Hack::USBHackSupport;
 
 =head1 NAME
 
-    Beyonwiz::Hack::USBHackSupport;
+Beyonwiz::Hack::USBHackSupport - hack to allow hacks to be run from a USB device
 
 =head1 SYNOPSIS
+
+    Beyonwiz::Hack::USBHackSupport;
 
 A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/ >.
 It modifies the firmware to start hack scripts that

@@ -2,9 +2,11 @@ package Beyonwiz::Hack::BackgroundChanger;
 
 =head1 NAME
 
-    Beyonwiz::Hack::BackgroundChanger;
+Beyonwiz::Hack::BackgroundChanger - hack Beyonwix screen background
 
 =head1 SYNOPSIS
+
+    Beyonwiz::Hack::BackgroundChanger;
 
 A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/ >.
 It modifies the firmware to display a different background image

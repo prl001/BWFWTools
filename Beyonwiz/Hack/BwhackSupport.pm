@@ -2,9 +2,11 @@ package Beyonwiz::Hack::BwhackSupport;
 
 =head1 NAME
 
-    Beyonwiz::Hack::BwhackSupport;
+Beyonwiz::Hack::BwhackSupport - support remote-controllable Beyonwiz function hacks
 
 =head1 SYNOPSIS
+
+    Beyonwiz::Hack::BwhackSupport;
 
 A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/ >.
 It modifies the firmware to start a user-selectable set of hacks

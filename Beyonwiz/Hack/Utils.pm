@@ -2,16 +2,16 @@ package Beyonwiz::Hack::Utils;
 
 =head1 NAME
 
+Beyonwiz::Hack::Utils - Some functions to help implement patch modules for
+Beyonwiz::Hack modules to use in bw_patcher.
+
+=head1 SYNOPSIS
+
     use Beyonwiz::Hack::Utils qw(
         findMatchingPath findNewFile
         patchFile addFile copyFile
 	insens
     );
-
-=head1 SYNOPSIS
-
-Some functions to help implement patch modules for
-C<Beyonwiz::Hack> modules to use in L< C<bw_patcher>|bw_patcher/ >.
 
 =head1 FUNCTIONS
 

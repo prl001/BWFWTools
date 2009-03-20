@@ -2,9 +2,11 @@ package Beyonwiz::Hack::PutFile;
 
 =head1 NAME
 
-    Beyonwiz::Hack::PutFile;
+Beyonwiz::Hack::PutFile - insert a hack file in the Beyonwiz firmware
 
 =head1 SYNOPSIS
+
+    Beyonwiz::Hack::PutFile;
 
 A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/ >.
 Copies a file into the required relative location in either the root or the

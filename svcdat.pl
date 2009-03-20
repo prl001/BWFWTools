@@ -25,6 +25,16 @@ The option B<-d> does a hexadecimal dump of the tables as 16-bit
 little-endian integers.
 The columns are headed by the interpretation of the values.
 
+=head1 PREREQUSITES
+
+Uses package C<Getopt::Long>.
+
+=head1 BUGS
+
+There are parts of the C<svc.dat> file whose function is unknown.
+The T1 and T2 parameters are believed to relate to the tuners,
+but that's uncertain, and the meaning of the parameters is unknown.
+
 =head1 ACKNOWLEDGEMENTS
 
 Most of the C<svc.dat> interpretation was done by
@@ -187,7 +197,9 @@ sub printTuner($$$$) {
     my ($fh, $name, $hdr, $tunerIndex) = @_;
     my $tuner = $hdr->{tuners}[$tunerIndex];
     printf " %s(%2d %2d)",
-	$name, $tuner->{p1}, $tuner->{p2};
+	$name,
+	(defined($tuner->{p1}) ? $tuner->{p1} : -1),
+	(defined($tuner->{p2}) ? $tuner->{p2} : -1);
 }
 
 # Print the contents of the header $hdr on standard output

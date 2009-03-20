@@ -1,15 +1,15 @@
 NAME
 
+    Beyonwiz::Hack::Utils - Some functions to help implement patch modules
+    for Beyonwiz::Hack modules to use in bw_patcher.
+
+SYNOPSIS
+
         use Beyonwiz::Hack::Utils qw(
             findMatchingPath findNewFile
             patchFile addFile copyFile
             insens
         );
-
-SYNOPSIS
-
-    Some functions to help implement patch modules for "Beyonwiz::Hack"
-    modules to use in "bw_patcher".
 
 FUNCTIONS
 

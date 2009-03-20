@@ -169,8 +169,8 @@ ARGUMENTS
 
 PREREQUSITES
 
-    Uses packages "Beyonwiz::Hack::Utils", "Getopt::Long",
-    "IO::Compress::Gzip", "IO::Uncompress::Gunzip" and
+    Uses packages "Beyonwiz::Hack::Utils", "Beyonwiz::SystemId",
+    "Getopt::Long", "IO::Compress::Gzip", "IO::Uncompress::Gunzip" and
     "File::Spec::Functions".
 
     Uses "bw_rootfs".

@@ -1,8 +1,10 @@
 NAME
 
-        Beyonwiz::Hack::Telnet;
+    Beyonwiz::Hack::Telnet - hack to enable telnet access on the Beyonswz
 
 SYNOPSIS
+
+        Beyonwiz::Hack::Telnet;
 
     A module to use as an argument to use with "bw_patcher" to patch
     Beyonwiz firmware to start "telnetd" at startup to allow telnet
@@ -64,6 +66,6 @@ POD ERRORS
     Hey! The above document had some coding errors, which are explained
     below:
 
-    Around line 9:
+    Around line 11:
         Deleting unknown formatting code D<>
 

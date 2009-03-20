@@ -1,6 +1,6 @@
 NAME
 
-    bw_patcher - all-in-one tool to automatically apply Beyonwiz firm ware
+    bw_patcher - all-in-one tool to automatically apply Beyonwiz firmware
     patches
 
 SYNOPSIS
@@ -88,6 +88,7 @@ PATCH MODULES
     files in, either firmware directory.
 
     The modules packaged with bw_patcher are "Beyonwiz::Hack::Telnet",
+    "Beyonwiz::Hack::Dim", "Beyonwiz::Hack::BackgroundChanger",
     "Beyonwiz::Hack::BwhackSupport" and "Beyonwiz::Hack::USBHackSupport".
 
 DISABLING THE HACKS
@@ -100,15 +101,12 @@ DISABLING THE HACKS
 
 PREREQUSITES
 
-    Uses packages "Getopt::Long", "IO::Compress::Gzip",
-    "IO::Uncompress::Gunzip" and "POSIX".
+    Uses packages "Getopt::Long", "File::Spec::Functions", "File::Path",
+    "Carp", and "Beyonwiz::Hack::Utils".
 
     Uses "unpack_wrp", "pack_wrp" and "bw_rootfs".
 
     Uses Eric Fry's wizfwtools programs "wiz_pack" and "wiz_genromfs".
-
-    "Getopt::Long", "File::Spec::Functions", "File::Path", "Carp", and
-    "Beyonwiz::Hack::Utils".
 
 BUGS
 

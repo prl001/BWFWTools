@@ -16,23 +16,25 @@ ARGUMENTS
     Prints the contents of the header block in Beyonwiz .wrp firmware update
     files.
 
-        ./wrp_hdrs.pl DPS1_Firmware_28Dec2007_ver_01.05.197.wrp 
-        DPS1_Firmware_28Dec2007_ver_01.05.197.wrp:
-            fileSize: 7768064
-              offset: 0
-               magic: WizFwPkgl
-           machMagic: [0x0e20be3e, 0x08080000]
-             version: 01.05.197__Official.Version__
-             md5file: [cb, 92, 7d, 43, fa, 16, 48, 59, 08, 35, ef, 97, 9d, 44, 9e, fd]
-               count: 1
-            imageTag: [108, 32]
-           imageType: 2
-         imageOffset: 512
-         imageLength: 7767040
-            md5image: [24, 81, 0c, f0, 35, 53, ce, 2a, 56, 17, 8d, b4, 45, 90, 2c, 67]
-              fsType: -rom1fs-
-              fsSize: 7766032
-               fsVol: mambo
+        ./wrp_hdrs.pl DPS1_Firmware_08Dec2008_ver_01.05.280.wrp 
+        DPS1_Firmware_08Dec2008_ver_01.05.280.wrp:
+              fileSize: 7983104
+                offset: 0
+                 magic: WizFwPkgl
+             machMagic: [0808, 0000, 0e20, be3e]
+                 model: DP-S1
+               version: 01.05.280__Official.Version__
+               md5file: [b4, 03, 9f, b5, 45, 9a, 0c, a5, 29, 17, 56, 87, 4e, 65, 01, 08]
+                 count: 1
+              imageTag: [108, 32]
+             imageType: 2
+           imageOffset: 512
+           imageLength: 7982080
+        spaceRemaining: 78848
+              md5image: [36, c1, 37, 30, 91, 46, 56, 93, 0a, aa, 0a, 20, af, 96, f4, f1]
+                fsType: -rom1fs-
+                fsSize: 7981072
+                 fsVol: mambo
 
         The example is for firmware release 1.05.197.
 
@@ -56,6 +58,11 @@ ARGUMENTS
         The magic number that corresponds to the Beyonwiz System ID for the
         device. Used to ensure that the firmware is for the correct type of
         device.
+
+        model
+
+        Beyonwiz model designation (DP-S1, etc.) derived from "machMagic".
+        "Unknown" if a match is not found for the "machMagic".
 
         version
 
@@ -99,6 +106,12 @@ ARGUMENTS
         block follows this allocated space as an empty header to indicate
         the end of the package.
 
+        spaceRemaining
+
+        The amount of free space remaining in the flash memory after loading
+        the firmware. The flash memory size is determined from "machMagic".
+        "Unknown" if a match is not found for the "machMagic".
+
         md5image
 
         MD5 checksum of the payload (over exactly the given length).
@@ -117,6 +130,10 @@ ARGUMENTS
 
         File system volume label.
 
+PREREQUISITES
+
+    Uses package "Beyonwiz::SystemId".
+
 BUGS
 
     The interpretation of some parts of the header is uncertain.
@@ -134,7 +151,7 @@ POD ERRORS
     Hey! The above document had some coding errors, which are explained
     below:
 
-    Around line 41:
-        You can't have =items (as at line 47) unless the first thing after
+    Around line 44:
+        You can't have =items (as at line 50) unless the first thing after
         the =over is an =item
 

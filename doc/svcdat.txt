@@ -20,6 +20,16 @@ DESCRIPTION
     little-endian integers. The columns are headed by the interpretation of
     the values.
 
+PREREQUSITES
+
+    Uses package "Getopt::Long".
+
+BUGS
+
+    There are parts of the "svc.dat" file whose function is unknown. The T1
+    and T2 parameters are believed to relate to the tuners, but that's
+    uncertain, and the meaning of the parameters is unknown.
+
 ACKNOWLEDGEMENTS
 
     Most of the "svc.dat" interpretation was done by efry (Eric Fry) and

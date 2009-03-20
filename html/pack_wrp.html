@@ -4,7 +4,7 @@
 <head>
 <title>pack_wrp</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:root@omen.apple.com" />
+<link rev="made" href="mailto:_www@b04.apple.com" />
 </head>
 
 <body style="background-color: white">
@@ -53,11 +53,11 @@ into <em>firmware_file</em> (Beyonwiz <code>.wrp</code> file).</p>
 <p>If the <em>root_directory</em> file is given, <code>linux.bin.gz</code> in
 <em>flash_directory</em> is unzipped and the ROMFS root filesystem constructed
 from <em>root_directory</em> is patched into the kernel.
-See <a href=".././html/bw_rootfs.html"> <code>bw_rootfs</code></a> for more details.</p>
+See <a href=".././html/./html/bw_rootfs.html"> <code>bw_rootfs</code></a> for more details.</p>
 <p>The root file system can only be updated if there is enough spare space for
 it in the kernel.
 There will never be more than 4080 bytes spare, usually less.
-See <a href=".././html/bw_rootfs.html"> <code>bw_rootfs</code></a> for more details.</p>
+See <a href=".././html/./html/bw_rootfs.html"> <code>bw_rootfs</code></a> for more details.</p>
 <p>
 </p>
 <hr />
@@ -76,7 +76,7 @@ See <a href=".././html/bw_rootfs.html"> <code>bw_rootfs</code></a> for more deta
 so that files that only differ by the case of the characters in their name
 (eg. <code>Abc</code> vs <code>abc</code>) are guaranteed to remain as distinct files.
 If <em>flash_directory</em> and <em>root_directory</em> haven't been constructed using
-the case-insensitive modes of <a href=".././html/unpack_wrp.html"> <code>unpack_wrp</code></a>, using
+the case-insensitive modes of <a href=".././html/./html/unpack_wrp.html"> <code>unpack_wrp</code></a>, using
 this option is likely to result in badly mangled filenames and
 a <code>.wrp</code> file that will cause a Beyonwiz to be unbootable.</p>
 </dd>
@@ -144,7 +144,7 @@ Beyonwiz unbootable if the firmware is installed.</p>
   -f</pre>
 </dd>
 <dd>
-<p>Passed through to <a href=".././html/bw_rootfs.html"> <code>bw_rootfs</code></a>.
+<p>Passed through to <a href=".././html/./html/bw_rootfs.html"> <code>bw_rootfs</code></a>.
 Forces update of the root file system in some cases where it
 would otherwise fail.</p>
 </dd>
@@ -264,11 +264,12 @@ GNU <code>gzip</code> program, then if that fails, by using the Perl
 <h1><a name="prerequsites">PREREQUSITES</a></h1>
 <p>Uses packages
 <code>Beyonwiz::Hack::Utils</code>,
+<code>Beyonwiz::SystemId</code>,
 <code>Getopt::Long</code>,
 <code>IO::Compress::Gzip</code>,
 <code>IO::Uncompress::Gunzip</code> and
 <code>File::Spec::Functions</code>.</p>
-<p>Uses <a href=".././html/bw_rootfs.html"> <code>bw_rootfs</code></a>.</p>
+<p>Uses <a href=".././html/./html/bw_rootfs.html"> <code>bw_rootfs</code></a>.</p>
 <p>Uses Eric Fry's wizfwtools programs <code>wiz_pack</code>
 and <code>wiz_genromfs</code>.</p>
 <p>Tries GNU <code>gzip</code>, <code>IO::Compress::Gzip</code> to compress the kernel

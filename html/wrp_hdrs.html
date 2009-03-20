@@ -4,7 +4,7 @@
 <head>
 <title>wrp_hdrs</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:root@omen.apple.com" />
+<link rev="made" href="mailto:_www@b04.apple.com" />
 </head>
 
 <body style="background-color: white">
@@ -23,6 +23,7 @@
 	<li><a href="#synopsis">SYNOPSIS</a></li>
 	<li><a href="#description">DESCRIPTION</a></li>
 	<li><a href="#arguments">ARGUMENTS</a></li>
+	<li><a href="#prerequisites">PREREQUISITES</a></li>
 	<li><a href="#bugs">BUGS</a></li>
 	<li><a href="#acknowledgements">ACKNOWLEDGEMENTS</a></li>
 </ul>
@@ -52,23 +53,25 @@
 <p>Prints the contents of the header block in Beyonwiz <strong>.wrp</strong>
 firmware update files.</p>
 <pre>
-    ./wrp_hdrs.pl DPS1_Firmware_28Dec2007_ver_01.05.197.wrp 
-    DPS1_Firmware_28Dec2007_ver_01.05.197.wrp:
-        fileSize: 7768064
-          offset: 0
-           magic: WizFwPkgl
-       machMagic: [0x0e20be3e, 0x08080000]
-         version: 01.05.197__Official.Version__
-         md5file: [cb, 92, 7d, 43, fa, 16, 48, 59, 08, 35, ef, 97, 9d, 44, 9e, fd]
-           count: 1
-        imageTag: [108, 32]
-       imageType: 2
-     imageOffset: 512
-     imageLength: 7767040
-        md5image: [24, 81, 0c, f0, 35, 53, ce, 2a, 56, 17, 8d, b4, 45, 90, 2c, 67]
-          fsType: -rom1fs-
-          fsSize: 7766032
-           fsVol: mambo</pre>
+    ./wrp_hdrs.pl DPS1_Firmware_08Dec2008_ver_01.05.280.wrp 
+    DPS1_Firmware_08Dec2008_ver_01.05.280.wrp:
+          fileSize: 7983104
+            offset: 0
+             magic: WizFwPkgl
+         machMagic: [0808, 0000, 0e20, be3e]
+             model: DP-S1
+           version: 01.05.280__Official.Version__
+           md5file: [b4, 03, 9f, b5, 45, 9a, 0c, a5, 29, 17, 56, 87, 4e, 65, 01, 08]
+             count: 1
+          imageTag: [108, 32]
+         imageType: 2
+       imageOffset: 512
+       imageLength: 7982080
+    spaceRemaining: 78848
+          md5image: [36, c1, 37, 30, 91, 46, 56, 93, 0a, aa, 0a, 20, af, 96, f4, f1]
+            fsType: -rom1fs-
+            fsSize: 7981072
+             fsVol: mambo</pre>
 <p>The example is for firmware release 1.05.197.</p>
 <p>The output fields are:</p>
 <dl>
@@ -96,6 +99,13 @@ Should always be <code>WizFwPkgl</code>.</p>
 <dd>
 <p>The magic number that corresponds to the Beyonwiz System ID for the device.
 Used to ensure that the firmware is for the correct type of device.</p>
+</dd>
+</li>
+<dt><strong><a name="item_model">model</a></strong>
+
+<dd>
+<p>Beyonwiz model designation (DP-S1, etc.) derived from <a href="#item_machmagic"><code>machMagic</code></a>.
+<code>Unknown</code> if a match is not found for the <a href="#item_machmagic"><code>machMagic</code></a>.</p>
 </dd>
 </li>
 <dt><strong><a name="item_version">version</a></strong>
@@ -160,6 +170,15 @@ A zero-filled header block follows this allocated space as an empty header
 to indicate the end of the package.</p>
 </dd>
 </li>
+<dt><strong><a name="item_spaceremaining">spaceRemaining</a></strong>
+
+<dd>
+<p>The amount of free space remaining in the flash memory after
+loading the firmware.
+The flash memory size is determined from <a href="#item_machmagic"><code>machMagic</code></a>.
+<code>Unknown</code> if a match is not found for the <a href="#item_machmagic"><code>machMagic</code></a>.</p>
+</dd>
+</li>
 <dt><strong><a name="item_md5image">md5image</a></strong>
 
 <dd>
@@ -187,6 +206,12 @@ For ROMFS file systems always an integer multiple of 16.</p>
 </dd>
 </li>
 </dl>
+<p>
+</p>
+<hr />
+<h1><a name="prerequisites">PREREQUISITES</a></h1>
+<p>Uses package
+<a href=".././html/./Beyonwiz/SystemId.html"><code>Beyonwiz::SystemId</code></a>.</p>
 <p>
 </p>
 <hr />

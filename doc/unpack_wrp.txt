@@ -49,7 +49,8 @@ ARGUMENTS
 PREREQUSITES
 
     Uses packages "Beyonwiz::Hack::Utils", "Getopt::Long",
-    "File::Spec::Functions", "IO::Uncompress::Gunzip".
+    "File::Spec::Functions", "IO::Uncompress::Gunzip" (minimum version 2.017
+    on Cygwin).
 
     Uses "bw_rootfs".
 

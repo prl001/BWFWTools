@@ -48,8 +48,8 @@ ARGUMENTS
           -t type
 
         Set the machine type in the ".wrp" firmware file header. *type*
-        should be one of "DP-S1", "DP-P1", "DP-P2", "DP-H1", "FT-P1",
-        "FT-H1", "FC-H1" or "FC-H1".
+        should be one of "DP-S1", "DP-P1", "DP-P2", "DP-H1", "FV-L1",
+        "FT-P1", "FT-H1", "FC-H1" or "FC-H1".
 
         If neither *machtype* nor *machcode* is specified, the name of the
         file in *flashdir*"/version" is checked for the machine type, and
@@ -170,8 +170,8 @@ ARGUMENTS
 PREREQUSITES
 
     Uses packages "Beyonwiz::Hack::Utils", "Beyonwiz::SystemId",
-    "Getopt::Long", "IO::Compress::Gzip", "IO::Uncompress::Gunzip" and
-    "File::Spec::Functions".
+    "Getopt::Long", "IO::Compress::Gzip", "IO::Uncompress::Gunzip" (minimum
+    version 2.017 on Cygwin) and "File::Spec::Functions".
 
     Uses "bw_rootfs".
 

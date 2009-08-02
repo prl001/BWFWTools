@@ -4,7 +4,7 @@
 <head>
 <title>pack_wrp</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:_www@b04.apple.com" />
+<link rev="made" href="mailto:_www@b02.apple.com" />
 </head>
 
 <body style="background-color: white">
@@ -92,8 +92,8 @@ a <code>.wrp</code> file that will cause a Beyonwiz to be unbootable.</p>
 </dd>
 <dd>
 <p>Set the machine type in the <code>.wrp</code> firmware file header.
-<em>type</em> should be one of <code>DP-S1</code>, <code>DP-P1</code>, <code>DP-P2</code>, <code>DP-H1</code>, 
-<code>FT-P1</code>, <code>FT-H1</code>,  <code>FC-H1</code> or <code>FC-H1</code>.</p>
+<em>type</em> should be one of <code>DP-S1</code>, <code>DP-P1</code>, <code>DP-P2</code>, <code>DP-H1</code>,
+<code>FV-L1</code>, <code>FT-P1</code>, <code>FT-H1</code>,  <code>FC-H1</code> or <code>FC-H1</code>.</p>
 </dd>
 <dd>
 <p>If neither <em>machtype</em> nor <em>machcode</em> is specified, the name of the file
@@ -267,7 +267,7 @@ GNU <code>gzip</code> program, then if that fails, by using the Perl
 <code>Beyonwiz::SystemId</code>,
 <code>Getopt::Long</code>,
 <code>IO::Compress::Gzip</code>,
-<code>IO::Uncompress::Gunzip</code> and
+<code>IO::Uncompress::Gunzip</code> (minimum version 2.017 on Cygwin) and
 <code>File::Spec::Functions</code>.</p>
 <p>Uses <a href=".././html/./html/bw_rootfs.html"> <code>bw_rootfs</code></a>.</p>
 <p>Uses Eric Fry's wizfwtools programs <code>wiz_pack</code>

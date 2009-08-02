@@ -95,6 +95,8 @@ Returns C<undef> for unrecognised model sysids.
 
 use strict;
 
+use Exporter;
+
 @Beyonwiz::SystemId::ISA = qw(Exporter);
 @Beyonwiz::SystemId::EXPORT_OK = qw(
 			normaliseModel
@@ -106,11 +108,11 @@ use strict;
 			modelFromSysIdStr
 		);
 
-# The DP-P2 flash is 8MB, but 5 x 64-kB segments are reserved for other uses
-use constant MAX_FLASH_P2    => 16 * 1024*1024 - 5 * 64 * 1024;
+# The DP-P2 flash is 8MB, but 4 x 128-kB segments are reserved for other uses
+use constant MAX_FLASH_P2    => 16 * 1024*1024 - 4 * 128 * 1024;
 
 # On other models, flash is 8MB,
-# and the same 5 x 64-kB segments are reserved for other uses
+# and 5 x 64-kB segments are reserved for other uses
 use constant MAX_FLASH_OTHER =>  8 * 1024*1024 - 5 * 64 * 1024;
 
 my @machCodeMap = (
@@ -120,6 +122,7 @@ my @machCodeMap = (
     [ [ 0x0808, 0x0000, 0x0A22, 0xBE3C ], 'DP-P1' ],
     [ [ 0x0908, 0x0000, 0x0A22, 0x9E3C ], 'DP-P2' ],
     [ [ 0x0408, 0x0000, 0x0022, 0x7E3C ], 'DP-H1' ],
+    [ [ 0x0808, 0x0002, 0x0A22, 0x9E3C ], 'FV-L1' ],
 
     # Finnish terrestrial models
 
@@ -137,6 +140,7 @@ my %modelMap = (
     'DPP1' => 'DP-P1',
     'DPP2' => 'DP-P2',
     'DPH1' => 'DP-H1',
+    'FVL1' => 'FV-L1',
     'S'    => 'DP-S1',
     'P'    => 'DP-P1',
     'H'    => 'DP-H1',
@@ -157,6 +161,7 @@ my %flashMap = (
     'DP-P1' => MAX_FLASH_OTHER,
     'DP-P2' => MAX_FLASH_P2,
     'DP-H1' => MAX_FLASH_OTHER,
+    'FV-L1' => MAX_FLASH_OTHER,
 
     # Finnish terrestrial models
 

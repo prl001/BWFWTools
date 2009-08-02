@@ -24,6 +24,9 @@ or
 =cut
 
 use strict;
+use warnings;
+
+use Exporter;
 
 @Beyonwiz::Kernel::ISA = qw(Exporter);
 @Beyonwiz::Kernel::EXPORT_OK = qw(
@@ -59,8 +62,9 @@ use constant BASE	=> 0x90090000;
 # Warn, but don't die if these symbols are missing
 
 my %optional_symbols = (
-    __start___ksymtab	=> 1,
-    __stop___ksymtab	=> 1,
+    __start___ksymtab		=> 1,
+    __stop___ksymtab		=> 1,
+    em86xxmap_partitions	=> 1,
 );
 
 my %kern_locs = (
@@ -255,7 +259,7 @@ my %kern_locs = (
     ],
     arena => [
 	[
-	    {   # before 01.05.243
+	    {   # before 01.05.243, and FV-L1 01.07.12 and earlier
 		loc => 0x90097e58,
 		magics => [
 		    [ 0x90097bd4, 0xe59f927c ],
@@ -287,6 +291,32 @@ my %kern_locs = (
 	    },
 	],
     ],
+    em86xxmap_partitions => [
+	[
+	    {   # DP-x1, 01.05.283 and later?
+		loc => 0x9009c5e8,
+		magics => [
+		    [ 0x9009c5ac, 0xe59f1034 ],
+		 ]
+	    },
+	],
+	[
+	    {   # DP-P2, 01.05.283 and later?
+		loc => 0x9009c604,
+		magics => [
+		    [ 0x9009c5c8, 0xe59f1034 ],
+		 ]
+	    },
+	],
+	[
+	    {   # FV-L1 series, 01.07.010 and later?
+		loc => 0x9009c764,
+		magics => [
+		    [ 0x9009c728, 0xe59f1034 ],
+		 ]
+	    },
+	],
+    ]
 );
 
 my %matched_loc;

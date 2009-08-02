@@ -64,7 +64,7 @@ Uses packages
 C<Beyonwiz::Hack::Utils>,
 C<Getopt::Long>,
 C<File::Spec::Functions>,
-C<IO::Uncompress::Gunzip>.
+C<IO::Uncompress::Gunzip> (minimum version 2.017 on Cygwin).
 
 Uses L< C<bw_rootfs>|bw_rootfs/>.
 
@@ -80,6 +80,8 @@ They may fail and the extraction of the root file system will fail.
 use strict;
 use warnings;
 
+my $minGunzVersion = 2.017;
+
 use Beyonwiz::Hack::Utils qw(pathTildeExpand);
 
 use IO::Uncompress::Gunzip qw(gunzip $GunzipError) ;
@@ -88,6 +90,10 @@ use File::Spec::Functions qw(catfile tmpdir);
 
 Getopt::Long::Configure qw/no_ignore_case bundling/;
 
+die "You must upgrade IO::Uncompress::Gunzip to at least\n",
+	"version $minGunzVersion to use $0 on Cygwin\n"
+    if($IO::Uncompress::Gunzip::VERSION < $minGunzVersion
+    && $^O eq 'cygwin');
 
 sub usage() {
     die "Usage: $0 [-i|--insens] [-f|--force] [-k|--keep]\n"
@@ -101,32 +107,6 @@ sub on_exit() {
     foreach my $f ($lin, $rootfs) {
 	unlink $f if(!$keep && defined $f);
     }
-}
-
-# Work around a bug in Gunzip::gunzip() in Cygwin perl 5.10.0
-
-sub mygunzip($$@) {
-    my ($infile, $outfile, @opts) = @_;
-    my $gz = new IO::Uncompress::Gunzip $infile;
-    return undef if(!$gz);
-    unless(open OUT, '>', $outfile) {
-	$GunzipError = $!;
-	return undef;
-    }
-    binmode OUT;
-
-    my $buffer;
-    my $nread;
-
-    while (($nread = $gz->read($buffer, 16 * 1024)) > 0)
-    {
-	if(!defined syswrite(OUT, $buffer)) {
-	    $GunzipError = $!;
-	    return undef;
-	}
-    }
-
-    return 1;
 }
 
 use constant LINGZ  => 'linux.bin.gz';
@@ -173,10 +153,7 @@ if(defined $rootfs_dir) {
     $rootfs = catfile($flash_dir, ROOTFS);
     mkdir $rootfs_dir or die "Can't create $rootfs_dir: $!\n"
 	if(!-d $rootfs_dir);
-#   This doesn't work in Cygwin perl 5.10.0
-#   gunzip($lingz => $lin, BinModeOut => 1)
-#	or die "gunzip of $lingz to $lin failed: $GunzipError\n";
-    mygunzip($lingz => $lin, BinModeOut => 1)
+    gunzip($lingz => $lin, BinModeOut => 1)
 	or die "gunzip of $lingz to $lin failed: $GunzipError\n";
     system({'perl'}
 	    'perl', '-S', 'bw_rootfs.pl', @bw_rootfs_args, $lin, $rootfs) == 0

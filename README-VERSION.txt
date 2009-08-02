@@ -1,4 +1,4 @@
-Version 0.2.1
+Version 0.2.2
 
 Contents of the zip:
 
@@ -34,21 +34,19 @@ Contents of the zip:
     * etc\ - Beyonwiz firmware patches that can be used in conjunction with Beyonwiz::Hack::USBHackSupport and Beyonwiz::Hack::BwhackSupport
 
 
-Only extensively tested on Cygwin. Some testing on Mac OS X & Windows. Will probably work on Linux and other Unix variants.
+Should work on Windows (user needs to have Perl installed), Cygwin under Windows, OS X and Linux.
 
-WARNING: bw_rootfs, pack_wrp and bw_patcher can all easily create an unbootable system.
+WARNING: bw_rootfs, pack_wrp and bw_patcher can all easily create an unbootable system. bw_rootfs, pack_wrp and bw_patcher are untested on FV-L1 PVRs.
 
 Release notes
 
-dump_strings: new tool
-lastplaypoint: new tool
-getDvpStrings: new tool
-Beyonwiz::Hack::Dim: new patcher module
-Beyonwiz::SystemId: new utility module
+pack_wrp: Uses fixes to Gunzip in 2.00.17; requires Gunzip version >= 2.017. Extracts FV-L1 machine type from version file name.
+unpack_wrp: Uses fixes to Gunzip in 2.00.17; requires Gunzip version >= 2.017.
+Beyonwiz::Kernel: Added locations for the MTD partition map.
+Beyonwiz::SystemId: Added support for FV-L1. Corrected firmware flash size for DP-P2.
 
-pack_wrp: now checks the firmware for the model number to find the appropriate flash size. The DP-P2 has a 16MB, rather than an 8MB flash, abd some of its firmware packages don't fit in the standard 8MiB-320kiB.
-wrp_hdrs: now prints the Beyonwiz model number corresponding to the SystemId in the firmware, and uses the SystemId to get the correct flash size to calculate spaceRemaining.
-Beyonwiz::Kernel: fixed kernel locations for firmware post 01.05.287.
+Bugs:
+pack_wrp cannot delete one of its temporary files on Windows sometimes. A warning is pinted, and the file can be deleted manually.
 
 WARNING
 =======

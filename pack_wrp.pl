@@ -58,8 +58,8 @@ This mode is automatically invoked on systems that normally have case-insensitiv
   -t type
 
 Set the machine type in the C<.wrp> firmware file header.
-I<type> should be one of C<DP-S1>, C<DP-P1>, C<DP-P2>, C<DP-H1>, 
-C<FT-P1>, C<FT-H1>,  C<FC-H1> or C<FC-H1>.
+I<type> should be one of C<DP-S1>, C<DP-P1>, C<DP-P2>, C<DP-H1>,
+C<FV-L1>, C<FT-P1>, C<FT-H1>,  C<FC-H1> or C<FC-H1>.
 
 If neither I<machtype> nor I<machcode> is specified, the name of the file
 in I<flashdir>C</version> is checked for the machine type, and I<machtype>
@@ -196,7 +196,7 @@ C<Beyonwiz::Hack::Utils>,
 C<Beyonwiz::SystemId>,
 C<Getopt::Long>,
 C<IO::Compress::Gzip>,
-C<IO::Uncompress::Gunzip> and
+C<IO::Uncompress::Gunzip> (minimum version 2.017 on Cygwin) and
 C<File::Spec::Functions>.
 
 Uses L< C<bw_rootfs>|bw_rootfs/ >.
@@ -257,6 +257,8 @@ file up manually.
 use strict;
 use warnings;
 
+my $minGunzVersion = 2.017;
+
 use Beyonwiz::Hack::Utils qw(pathTildeExpand);
 
 use IO::Uncompress::Gunzip qw(gunzip $GunzipError);
@@ -267,6 +269,11 @@ use Beyonwiz::SystemId qw(flashSizefromModel flashSizefromSysIdStr);
 use Getopt::Long;
 
 Getopt::Long::Configure qw/no_ignore_case bundling/;
+
+die "You must upgrade IO::Uncompress::Gunzip to at least\n",
+	"version $minGunzVersion to use $0 on Cygwin\n"
+    if($IO::Uncompress::Gunzip::VERSION < $minGunzVersion
+    && $^O eq 'cygwin');
 
 sub usage() {
     die "Usage: $0\n"
@@ -413,7 +420,7 @@ if(!defined $machtype && !defined $machcode
 					"*-romfs.bin"))) {
 	if(!defined $machtype
 	&& !defined $machcode
-	&& $ver =~ /-(DP[SPH][12]|F[TC][PH]1)-/) {
+	&& $ver =~ /-(DP[SPH][12]|F[TCV][PHL]1)-/) {
 	    $machtype = $1;
 	    print "Using default machine type $machtype",
 		" (--machtype=$machtype)\n";
@@ -470,7 +477,7 @@ if(defined $rootfs_dir) {
 	    '-d', $rootfs_dir, '-f', $rootfs) == 0
 	or die "Generation of $rootfs from $rootfs_dir failed\n";
     print "Insert the root file system into the kernel image $lingz\n";
-    mygunzip($lingz => $lin, BinModeOut => 1)
+    gunzip($lingz => $lin, BinModeOut => 1)
 	or die "gunzip of $lingz to $lin failed: $GunzipError\n";
     system({'perl'}
 	    'perl', '-S', 'bw_rootfs.pl', @bw_rootfs_args,

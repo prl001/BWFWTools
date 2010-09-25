@@ -8,7 +8,7 @@ Beyonwiz::Hack::PutFile - insert a hack file in the Beyonwiz firmware
 
     Beyonwiz::Hack::PutFile;
 
-A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/ >.
+A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/>.
 Copies a file into the required relative location in either the root or the
 flash file system..
 

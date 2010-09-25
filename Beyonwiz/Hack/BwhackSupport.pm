@@ -8,9 +8,9 @@ Beyonwiz::Hack::BwhackSupport - support remote-controllable Beyonwiz function ha
 
     Beyonwiz::Hack::BwhackSupport;
 
-A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/ >.
+A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/>.
 It modifies the firmware to start a user-selectable set of hacks
-that can be enabled/disabled using L< C<bwhack>|bwhack/ >.
+that can be enabled/disabled using L< C<bwhack>|bwhack/>.
 
 B<Not suitable for use on a Beyonwiz DP-H1>. See L</BUGS>.
 
@@ -50,7 +50,7 @@ The Beyonwiz HTTP server doesn't allow directory
 listing, so you have to know where you're navigating.
 
 This hack is not available on firmware versions 01.05.271 (beta) and later.
-See L< C<bwhack>|bwhack/ > for details.
+See L< C<bwhack>|bwhack/> for details.
 
 =item usb
 
@@ -75,7 +75,7 @@ However, this means that even if you install an unmodified firmware package
 on the beyonwiz, the patch will still be active, because running
 C</tmp/config/rc.local> is part of normal firmware startup.
 
-If the C<usb> hack is enabled by L< C<bwhack>|bwhack/ >,
+If the C<usb> hack is enabled by L< C<bwhack>|bwhack/>,
 C</tmp/config/usb.local>
 is run from C</tmp/config/rc.local> to implement the ability
 to run hacks from a USB drive (or memory card on an S1 or P1).
@@ -97,7 +97,7 @@ Then, either:
 
 =item 1
 
-Enable only the C<telnet> hack using L< C<bwhack>|bwhack/ >
+Enable only the C<telnet> hack using L< C<bwhack>|bwhack/>
 (installing unmodified firmware has not disabled the hacks):
 
     bwhack.pl --host=my.BW.IP.addr all off
@@ -147,7 +147,7 @@ Then restart the Beyonwiz (again, if you used the c<usb> hack).
 
 =item C<< hack($flash_dir, $root_dir) >>
 
-Called by L< C<bw_patcher>|bw_patcher/ > to perform the patch.
+Called by L< C<bw_patcher>|bw_patcher/> to perform the patch.
 
 Inserts the lines:
 

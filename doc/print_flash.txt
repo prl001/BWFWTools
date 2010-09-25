@@ -1,0 +1,40 @@
+NAME
+
+    print_flash - extract the memory file device data from an uncompressed
+    Beyonwiz kernel
+
+SYNOPSIS
+
+        print_flash beyonwiz_uncompressed_kernel
+
+DESCRIPTION
+
+    Extract the memory file device data from an uncompressed Beyonwiz
+    kernel.
+
+    The memory device arena containing the location of complete memory
+    devices and the MTD (Memory Technology Device) table, which contains the
+    partitions of the Beyonwiz flash memory are decoded and printed.
+
+    Sizes with the notation "From ROMFS" indicate that the size of the
+    device is taken from the header of the ROMFS file system that the device
+    contains.
+
+    Useful for checking the size of the flash memory device in a Beyonwiz
+    (or at least the size the kernel expects it to be).
+
+ARGUMENTS
+
+    The only argument is the name of an uncompressed Beyonwiz kernal.
+
+PREREQUSITES
+
+    Uses package "Beyonwiz::Kernel".
+
+BUGS
+
+    Tries to use some contextual information to ensure that the correct
+    values for the location of the symbol table and the segment boundaries
+    have been found. These heuristics may fail and the program may produce
+    garbage.
+

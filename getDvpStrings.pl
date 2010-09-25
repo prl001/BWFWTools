@@ -25,7 +25,7 @@ The intended use is:
 =head1 PREREQUISITES
 
 The Unix B<strings> program, and the
-L< C<gunzip_bflt>|gunzip_bflt/ >
+L< C<gunzip_bflt>|gunzip_bflt/>
 program in B<BWFWTools>.
 
 =head1 BUGS
@@ -47,7 +47,7 @@ sub usage() {
 my $bwDir = $ARGV[0];
 
 my $wizDvpZip = $bwDir . '/001x_wizdvp/001x_wizdvp';
-$wizDvpZip = $bwDir . '/wizdvp/wizdvp' if(!-d $wizDvpZip);
+$wizDvpZip = $bwDir . '/wizdvp/wizdvp' if(!-f $wizDvpZip);
 
 my $wizDvp = $wizDvpZip . '.unz';
 

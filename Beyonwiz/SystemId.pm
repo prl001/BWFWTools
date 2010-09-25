@@ -122,6 +122,7 @@ my @machCodeMap = (
     [ [ 0x0808, 0x0000, 0x0A22, 0xBE3C ], 'DP-P1' ],
     [ [ 0x0908, 0x0000, 0x0A22, 0x9E3C ], 'DP-P2' ],
     [ [ 0x0408, 0x0000, 0x0022, 0x7E3C ], 'DP-H1' ],
+    [ [ 0x0808, 0x0000, 0x0002, 0x9E3C ], 'DP-Lite' ],
     [ [ 0x0808, 0x0002, 0x0A22, 0x9E3C ], 'FV-L1' ],
 
     # Finnish terrestrial models
@@ -136,47 +137,49 @@ my @machCodeMap = (
 );
 
 my %modelMap = (
-    'DPS1' => 'DP-S1',
-    'DPP1' => 'DP-P1',
-    'DPP2' => 'DP-P2',
-    'DPH1' => 'DP-H1',
-    'FVL1' => 'FV-L1',
-    'S'    => 'DP-S1',
-    'P'    => 'DP-P1',
-    'H'    => 'DP-H1',
+    'DPS1'   => 'DP-S1',
+    'DPP1'   => 'DP-P1',
+    'DPP2'   => 'DP-P2',
+    'DPH1'   => 'DP-H1',
+    'DPLite' => 'DP-Lite',
+    'FVL1'   => 'FV-L1',
+    'S'      => 'DP-S1',
+    'P'      => 'DP-P1',
+    'H'      => 'DP-H1',
 
     # Finnish terrestrial models
 
-    'FTP1' => 'FT-P1',     # not confirmed
-    'FTH1' => 'FT-H1',     # not confirmed 
+    'FTP1'   => 'FT-P1',     # not confirmed
+    'FTH1'   => 'FT-H1',     # not confirmed 
 
     # Finnish cable models
 
-    'FCP1' => 'FC-P1',     # not confirmed
-    'FCH1' => 'FC-H1',     # not confirmed 
+    'FCP1'   => 'FC-P1',     # not confirmed
+    'FCH1'   => 'FC-H1',     # not confirmed 
 );
 
 my %flashMap = (
-    'DP-S1' => MAX_FLASH_OTHER,
-    'DP-P1' => MAX_FLASH_OTHER,
-    'DP-P2' => MAX_FLASH_P2,
-    'DP-H1' => MAX_FLASH_OTHER,
-    'FV-L1' => MAX_FLASH_OTHER,
+    'DP-S1'   => MAX_FLASH_OTHER,
+    'DP-P1'   => MAX_FLASH_OTHER,
+    'DP-P2'   => MAX_FLASH_P2,
+    'DP-H1'   => MAX_FLASH_OTHER,
+    'FV-L1'   => MAX_FLASH_OTHER,
+    'DP-Lite' => MAX_FLASH_OTHER,
 
     # Finnish terrestrial models
 
-    'FT-P1' => MAX_FLASH_OTHER,     # not confirmed
-    'FT-H1' => MAX_FLASH_OTHER,     # not confirmed 
+    'FT-P1'   => MAX_FLASH_OTHER,     # not confirmed
+    'FT-H1'   => MAX_FLASH_OTHER,     # not confirmed 
 
     # Finnish cable models
 
-    'FC-P1' => MAX_FLASH_OTHER,     # not confirmed
-    'FC-H1' => MAX_FLASH_OTHER,     # not confirmed 
+    'FC-P1'   => MAX_FLASH_OTHER,     # not confirmed
+    'FC-H1'   => MAX_FLASH_OTHER,     # not confirmed 
 );
 
 sub normaliseModel($) {
     my ($name) = @_;
-    $name =~ s/^(..)-(..)$/$1$2/;
+    $name =~ s/^(..)-(.+)$/$1$2/;
     return $modelMap{$name};
 }
 

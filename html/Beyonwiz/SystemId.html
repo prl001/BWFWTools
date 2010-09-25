@@ -4,7 +4,7 @@
 <head>
 <title>SystemId</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:_www@b02.apple.com" />
+<link rev="made" href="mailto:_postfix@neige.apple.com" />
 </head>
 
 <body style="background-color: white">
@@ -14,8 +14,10 @@
 </td></tr>
 </table>
 
-<p><a name="__index__"></a></p>
+
 <!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
 
 <ul>
 
@@ -23,9 +25,11 @@
 	<li><a href="#synopsis">SYNOPSIS</a></li>
 	<li><a href="#functions">FUNCTIONS</a></li>
 </ul>
+
+<hr name="index" />
+</div>
 <!-- INDEX END -->
 
-<hr />
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
@@ -53,7 +57,7 @@ or</pre>
 <hr />
 <h1><a name="functions">FUNCTIONS</a></h1>
 <dl>
-<dt><strong><a name="item_normalisemodel"><code>normaliseModel($name);</code></a></strong>
+<dt><strong><a name="normalisemodel" class="item"><code>normaliseModel($name);</code></a></strong>
 
 <dd>
 <p>Convert the Beyonwiz model name in either of <code>DP-S1</code> or <code>DPS1</code>
@@ -68,7 +72,7 @@ forms to the <code>DP-S1</code> form.</p>
 but this usage is deprecated.</p>
 </dd>
 </li>
-<dt><strong><a name="item_parsesysidstr"><code>parseSysIdStr($id)</code></a></strong>
+<dt><strong><a name="parsesysidstr" class="item"><code>parseSysIdStr($id)</code></a></strong>
 
 <dd>
 <p>Given a 16 hexadecimal digit
@@ -92,30 +96,30 @@ to a 4-entry array of 16-bit integers.</p>
 <p>Returns <code>undef</code> if the string is incorrectly formatted.</p>
 </dd>
 </li>
-<dt><strong><a name="item_modelfromsysidarray"><code>modelFromSysIdArray($id)</code></a></strong>
+<dt><strong><a name="modelfromsysidarray" class="item"><code>modelFromSysIdArray($id)</code></a></strong>
 
 <dd>
 <p>Returns the normalised name for a Beyonwiz device
 given a 4-entry sysid array (as returned from
-<a href="#item_parsesysidstr"><code>parseSysIdStr($id)</code></a>).</p>
+<a href="#parsesysidstr"><code>parseSysIdStr($id)</code></a>).</p>
 </dd>
 <dd>
 <p>Returns <code>undef</code> if the sysid is not recognised.</p>
 </dd>
 </li>
-<dt><strong><a name="item_modelfromsysidstr"><code>modelFromSysIdStr($id)</code></a></strong>
+<dt><strong><a name="modelfromsysidstr" class="item"><code>modelFromSysIdStr($id)</code></a></strong>
 
 <dd>
 <p>Returns the normalised name for a Beyonwiz device
 given a sysid string
 (in one of the forms recognised by
-<a href="#item_parsesysidstr"><code>parseSysIdStr($id)</code></a>).</p>
+<a href="#parsesysidstr"><code>parseSysIdStr($id)</code></a>).</p>
 </dd>
 <dd>
 <p>Returns <code>undef</code> if the sysid is not recognised.</p>
 </dd>
 </li>
-<dt><strong><a name="item_flashsizefrommodel"><code>flashSizefromModel($name)</code></a></strong>
+<dt><strong><a name="flashsizefrommodel" class="item"><code>flashSizefromModel($name)</code></a></strong>
 
 <dd>
 <p>Returns the flash memory size in bytes for the given model
@@ -125,7 +129,7 @@ number named in normalised form.</p>
 <p>Returns <code>undef</code> for unrecognised model names.</p>
 </dd>
 </li>
-<dt><strong><a name="item_flashsizefromsysidarray"><code>flashSizefromSysIdArray($id)</code></a></strong>
+<dt><strong><a name="flashsizefromsysidarray" class="item"><code>flashSizefromSysIdArray($id)</code></a></strong>
 
 <dd>
 <p>Returns the flash memory size in bytes for the
@@ -135,7 +139,7 @@ model sysid given as an array of 4 16-bit integers.</p>
 <p>Returns <code>undef</code> for unrecognised model sysids.</p>
 </dd>
 </li>
-<dt><strong><a name="item_flashsizefromsysidstr"><code>flashSizefromSysIdStr($id)</code></a></strong>
+<dt><strong><a name="flashsizefromsysidstr" class="item"><code>flashSizefromSysIdStr($id)</code></a></strong>
 
 <dd>
 <p>Returns the flash memory size in bytes for the

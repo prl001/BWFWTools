@@ -4,7 +4,7 @@
 <head>
 <title>bwhack</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:_www@b02.apple.com" />
+<link rev="made" href="mailto:_postfix@neige.apple.com" />
 </head>
 
 <body style="background-color: white">
@@ -14,8 +14,10 @@
 </td></tr>
 </table>
 
-<p><a name="__index__"></a></p>
+
 <!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
 
 <ul>
 
@@ -26,14 +28,16 @@
 	<li><a href="#prerequsites">PREREQUSITES</a></li>
 	<li><a href="#bugs">BUGS</a></li>
 </ul>
+
+<hr name="index" />
+</div>
 <!-- INDEX END -->
 
-<hr />
 <p>
 </p>
 <hr />
 <h1><a name="name">NAME</a></h1>
-<p>bwhack - remotely enable and disable Beyonwiz ``hacks''</p>
+<p>bwhack - remotely enable and disable Beyonwiz &quot;hacks&quot;</p>
 <p>
 </p>
 <hr />
@@ -46,7 +50,7 @@
 <hr />
 <h1><a name="description">DESCRIPTION</a></h1>
 <p>Uses the presence and absence of files on the Beyonwiz HDD
-to enable or disable various user extensions (``hacks'') on the Beyonwiz
+to enable or disable various user extensions (&quot;hacks&quot;) on the Beyonwiz
 at startup time.</p>
 <p>Must be used with a suitable <code>rc.local</code> file installed
 as executable in the Beyonwiz <code>/tmp/config</code>.
@@ -73,24 +77,24 @@ and a suitable editor.</p>
 <h1><a name="arguments">ARGUMENTS</a></h1>
 <p>The main arguments allow the known hacks to be enabled (<code>on</code>)
 or disabled (<code>off</code>).</p>
-<p>If no ``hack'' arguments are given, prints which are enabled and which
+<p>If no &quot;hack&quot; arguments are given, prints which are enabled and which
 are disbled.</p>
 <p>The known hacks are, in execution order:</p>
 <dl>
-<dt><strong><a name="item_dim">dim</a></strong>
+<dt><strong><a name="dim" class="item">dim</a></strong>
 
 <dd>
 <p>The front panel display is run in a dimmer mode (as it is when on standby).</p>
 </dd>
 </li>
-<dt><strong><a name="item_telnetd">telnetd</a></strong>
+<dt><strong><a name="telnetd" class="item">telnetd</a></strong>
 
 <dd>
 <p>Run <em>telnetd</em> to allow login to the Beyonwiz using the <em>telnet</em>
 protocol.</p>
 </dd>
 </li>
-<dt><strong><a name="item_wizremote">wizremote</a></strong>
+<dt><strong><a name="wizremote" class="item">wizremote</a></strong>
 
 <dd>
 <p>Enable Eric Fry's <em>wizremote</em>
@@ -98,7 +102,7 @@ protocol.</p>
 on the Beyonwiz.</p>
 </dd>
 </li>
-<dt><strong><a name="item_httproot">httproot</a></strong>
+<dt><strong><a name="httproot" class="item">httproot</a></strong>
 
 <dd>
 <p>Enable HTTP access to whole BW.</p>
@@ -117,7 +121,7 @@ and without it the Beyonwiz cannot create the soft link
 necessary to impement <em>httproot</em>.</p>
 </dd>
 </li>
-<dt><strong><a name="item_usb">usb</a></strong>
+<dt><strong><a name="usb" class="item">usb</a></strong>
 
 <dd>
 <p>Enable the use of hacks loaded from a USB drive or memory stick.
@@ -128,7 +132,7 @@ for details.</p>
 </dl>
 <p>The options to <em>bwhack</em> are:</p>
 <dl>
-<dt><strong><a name="item_host">host</a></strong>
+<dt><strong><a name="host" class="item">host</a></strong>
 
 <dd>
 <pre>
@@ -138,7 +142,7 @@ for details.</p>
 <dd>
 <p>Sets the host name or IP address of the Beyonwiz to connect to.</p>
 </dd>
-<dt><strong><a name="item_port">port</a></strong>
+<dt><strong><a name="port" class="item">port</a></strong>
 
 <dd>
 <pre>
@@ -151,7 +155,7 @@ to connect to.
 Must match the WizPnP port value set in <code>SETUP&gt;Network&gt;WizPnP</code>
 on the Beyonwiz.</p>
 </dd>
-<dt><strong><a name="item_verbose">verbose</a></strong>
+<dt><strong><a name="verbose" class="item">verbose</a></strong>
 
 <dd>
 <pre>
@@ -161,7 +165,7 @@ on the Beyonwiz.</p>
 <dd>
 <p>Prints which hacks have been turned on or off.</p>
 </dd>
-<dt><strong><a name="item_help">help</a></strong>
+<dt><strong><a name="help" class="item">help</a></strong>
 
 <dd>
 <pre>
@@ -194,7 +198,7 @@ you may need to use the procedures in the
 <a href="http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298">http://www.beyonwiz.com.au/phpbb2/viewtopic.php</a>
 procedure on the Beyonwiz forum.
 It's not known whether that procedure will fix all 
-failures due to user modifications or ``hacks''.</p>
+failures due to user modifications or &quot;hacks&quot;.</p>
 <p>If you run modified firmware on your Beyonwiz, and have
 problems with its operation, try to reproduce
 any problems you do have on a Beyonwiz running unmodified firmware,

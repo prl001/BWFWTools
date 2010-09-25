@@ -4,7 +4,7 @@ NAME
 
 SYNOPSIS
 
-        dump_strings [extracted_GUI_strings_files...]
+        dump_strings [-s|--sort] [-i|--ignorecase] [-h|--help] [extracted_GUI_strings_files...]
 
 DESCRIPTION
 
@@ -20,7 +20,27 @@ DESCRIPTION
 
         strings dump.dat | dump_strings
 
+    sort
+          --sort
+          -s
+
+        Sort the output strings.
+
+    insens
+          --insens
+          -i
+
+        When sorting case is ignored (case-insensitive sort).
+
+    help
+          --help
+          -h
+
+        Print a brief help message.
+
 PREREQUISITES
+
+    Uses package "Getopt::Long".
 
     A tool like the Unix strings program that can extract printable strings
     from a binary file.
@@ -29,4 +49,12 @@ BUGS
 
     The filtering is imperfect, and some strings may be included that should
     be excluded, and some excluded that should be included.
+
+POD ERRORS
+
+    Hey! The above document had some coding errors, which are explained
+    below:
+
+    Around line 51:
+        You forgot a '=back' before '=head1'
 

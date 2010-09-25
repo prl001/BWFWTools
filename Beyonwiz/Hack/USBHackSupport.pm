@@ -8,7 +8,7 @@ Beyonwiz::Hack::USBHackSupport - hack to allow hacks to be run from a USB device
 
     Beyonwiz::Hack::USBHackSupport;
 
-A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/ >.
+A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/>.
 It modifies the firmware to start hack scripts that
 are in the directory C<beyonwiz/etc/init.d> any USB device connected
 at startup.
@@ -197,7 +197,7 @@ system by running
 
 =item C<< hack($flash_dir, $root_dir) >>
 
-Called by L< C<bw_patcher>|bw_patcher/ > to perform the patch.
+Called by L< C<bw_patcher>|bw_patcher/> to perform the patch.
 
 Inserts the lines:
 

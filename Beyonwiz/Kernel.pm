@@ -102,6 +102,16 @@ my %kern_locs = (
 		 ]
 	    },
 	],
+	[   # 01.07.036 and later
+	    {
+		loc => 0x90090694,
+		magics => [
+		    [ 0x900905dc, 0xe59f20b0 ],
+		    # Checks that the value for _stext is correct (0x90090000)
+		    [ 0x90090694, 0x90090000 ],
+		 ]
+	    },
+	],
     ],
     _text => [
 	[   # before 01.05.261
@@ -147,6 +157,20 @@ my %kern_locs = (
 		loc => 0x900920dc,
 		magics => [
 		    [ 0x9009203c, 0xe59f2098 ],
+		 ]
+	    },
+	],
+	[   # 01.07.036 and later
+	    {
+		loc => 0x90090690,
+		magics => [
+		    [ 0x900905d4, 0xe59f30b4 ],
+		 ]
+	    },
+	    {
+		loc => 0x900920fc,
+		magics => [
+		    [ 0x9009205c, 0xe59f2098 ],
 		 ]
 	    },
 	],
@@ -287,6 +311,14 @@ my %kern_locs = (
 		loc => 0x90097de8,
 		magics => [
 		    [ 0x90097b64, 0xe59f927c ],
+		 ]
+	    },
+	],
+	[
+	    {   # 01.07.036 and later
+		loc => 0x90097fe8,
+		magics => [
+		    [ 0x90097d64, 0xe59f927c ],
 		 ]
 	    },
 	],

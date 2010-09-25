@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>getksyms</title>
+<title>print_flash</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rev="made" href="mailto:_postfix@neige.apple.com" />
 </head>
@@ -10,7 +10,7 @@
 <body style="background-color: white">
 <table border="0" width="100%" cellspacing="0" cellpadding="3">
 <tr><td class="block" style="background-color: #cccccc" valign="middle">
-<big><strong><span class="block">&nbsp;getksyms</span></strong></big>
+<big><strong><span class="block">&nbsp;print_flash</span></strong></big>
 </td></tr>
 </table>
 
@@ -37,37 +37,35 @@
 </p>
 <hr />
 <h1><a name="name">NAME</a></h1>
-<p>getksyms - extract the kernel module symbol table from an uncompressed Beyonwiz kernel</p>
+<p>print_flash - extract the memory file device data from an uncompressed Beyonwiz kernel</p>
 <p>
 </p>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <pre>
-    getksyms [-n|--numeric] beyonwiz_uncompressed_kernel</pre>
+    print_flash beyonwiz_uncompressed_kernel</pre>
 <p>
 </p>
 <hr />
 <h1><a name="description">DESCRIPTION</a></h1>
-<p>Extract the kernel module symbol table from an uncompressed Beyonwiz kernel.</p>
-<p>The Beyonwiz kernel contains a symbol table for all the functions and data
-in the kernel module interface (used, for example, for runtime loadable
-device drivers). This tool extracts and prints the symbol table
-from a gunzipped Beyonwiz kernel image.</p>
-<p>The symbols are flagged by <strong>t</strong>, <strong>d</strong> and <strong>b</strong> for the
-text (executable code), initialised data and bss (unitialised data)
-segments respectively.</p>
+<p>Extract the memory file device data from an uncompressed Beyonwiz kernel.</p>
+<p>The memory device arena containing the location of complete memory devices
+and the MTD (Memory Technology Device) table, which contains the partitions of
+the Beyonwiz flash memory are decoded and printed.</p>
+<p>Sizes with the notation <code>From ROMFS</code> indicate that the size of the device
+is taken from the header of the ROMFS file system that the device contains.</p>
+<p>Useful for checking the size of the flash memory device in a Beyonwiz
+(or at least the size the kernel expects it to be).</p>
 <p>
 </p>
 <hr />
 <h1><a name="arguments">ARGUMENTS</a></h1>
-<p>The default is to print the symbols sorted by name.
-The <strong>-n</strong> (or <strong>--numeric</strong>) sorts by symbol value.</p>
+<p>The only argument is the name of an uncompressed Beyonwiz kernal.</p>
 <p>
 </p>
 <hr />
 <h1><a name="prerequsites">PREREQUSITES</a></h1>
-<p>Uses packages <code>Getopt::Long</code>
-and <a href=".././html/./Beyonwiz/Kernel.html"><code>Beyonwiz::Kernel</code></a>.</p>
+<p>Uses package <a href=".././html/./Beyonwiz/Kernel.html"><code>Beyonwiz::Kernel</code></a>.</p>
 <p>
 </p>
 <hr />
@@ -78,7 +76,7 @@ and the segment boundaries have been found. These heuristics may fail
 and the program may produce garbage.</p>
 <table border="0" width="100%" cellspacing="0" cellpadding="3">
 <tr><td class="block" style="background-color: #cccccc" valign="middle">
-<big><strong><span class="block">&nbsp;getksyms</span></strong></big>
+<big><strong><span class="block">&nbsp;print_flash</span></strong></big>
 </td></tr>
 </table>
 

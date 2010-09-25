@@ -1,15 +1,17 @@
-Version 0.2.2
+Version 0.2.3
 
 Contents of the zip:
 
     * Makefile - Unix make file for install/uninstall/build documentation
     * README.txt - some useful information about installing BWFWTools on Unix-like systems
+    * README-VERSION.txt - Release notes for the version
     * bw_rootfs - extract or update the root filesystem romfs image in an uncompressed Beyonwiz kernel
     * bwhack - remotely enable and disable Beyonwiz "hacks"
     * getksyms - extract the kernel module symbol table from an uncompressed Beyonwiz kernel
     * gunzip_bflt - convert gzip-compressed bFLT executable files into uncompressed bFLT
     * make_kernel_bflt - convert a Beyonwiz kernel image into a bFLT executable
     * pack_wrp - pack a Beyonwiz firmware update file
+    * print_flash - extract the memory file device data from an uncompressed Beyonwiz kernel
     * unpack_wrp - unpack a Beyonwiz firmware update file
     * bw_patcher - all-in-one tool to automatically apply Beyonwiz firmware patches
     * wrp_hdrs - print the header information in Beyonwiz .wrp firmware update files
@@ -40,13 +42,19 @@ WARNING: bw_rootfs, pack_wrp and bw_patcher can all easily create an unbootable 
 
 Release notes
 
-pack_wrp: Uses fixes to Gunzip in 2.00.17; requires Gunzip version >= 2.017. Extracts FV-L1 machine type from version file name.
-unpack_wrp: Uses fixes to Gunzip in 2.00.17; requires Gunzip version >= 2.017.
-Beyonwiz::Kernel: Added locations for the MTD partition map.
-Beyonwiz::SystemId: Added support for FV-L1. Corrected firmware flash size for DP-P2.
+dump_strings.pl: Add options to sort the output.
+pack_wrp.pl: Suppress warnings about Windows style path separators coming from the new cygwin1.dll. Fixed recognition of default system type with longer name for DP-Lite.
+unpack_wrp.pl: Suppress warnings about Windows style path separators coming from the new cygwin1.dll
+bw_patcher.pl: Suppress warnings about Windows style path separators coming from the new cygwin1.dll
+svcdat.pl: Attempt to improve operation after the firmware changes for Dynamic Channel Management.
+Makefile: add installation of print_flash.
+print_flash.pl: New tool. Extracts the memory file device data from an uncompressed Beyonwiz kernel
+Beyonwiz::Kernel: Added kernel location information for versions 01.07.036+.
+Beyonwiz::SystemId: Added system ids for DP-Lite.
 
 Bugs:
 pack_wrp cannot delete one of its temporary files on Windows sometimes. A warning is pinted, and the file can be deleted manually.
+The decoding of the T1 and T2 fields in svcdat seems to be incorrect, and a correct decoding doesn't appear to be obvious.
 
 WARNING
 =======

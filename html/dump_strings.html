@@ -4,7 +4,7 @@
 <head>
 <title>dump_strings</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:_www@b02.apple.com" />
+<link rev="made" href="mailto:_postfix@neige.apple.com" />
 </head>
 
 <body style="background-color: white">
@@ -14,8 +14,10 @@
 </td></tr>
 </table>
 
-<p><a name="__index__"></a></p>
+
 <!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
 
 <ul>
 
@@ -25,9 +27,11 @@
 	<li><a href="#prerequisites">PREREQUISITES</a></li>
 	<li><a href="#bugs">BUGS</a></li>
 </ul>
+
+<hr name="index" />
+</div>
 <!-- INDEX END -->
 
-<hr />
 <p>
 </p>
 <hr />
@@ -38,7 +42,7 @@
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <pre>
-    dump_strings [extracted_GUI_strings_files...]</pre>
+    dump_strings [-s|--sort] [-i|--ignorecase] [-h|--help] [extracted_GUI_strings_files...]</pre>
 <p>
 </p>
 <hr />
@@ -52,10 +56,44 @@ in the output.</p>
 <p>The intended use is:</p>
 <pre>
     strings dump.dat | dump_strings</pre>
+<dl>
+<dt><strong><a name="sort" class="item">sort</a></strong>
+
+<dd>
+<pre>
+  --sort
+  -s</pre>
+</dd>
+<dd>
+<p>Sort the output strings.</p>
+</dd>
+<dt><strong><a name="insens" class="item">insens</a></strong>
+
+<dd>
+<pre>
+  --insens
+  -i</pre>
+</dd>
+<dd>
+<p>When sorting case is ignored (case-insensitive sort).</p>
+</dd>
+<dt><strong><a name="help" class="item">help</a></strong>
+
+<dd>
+<pre>
+  --help
+  -h</pre>
+</dd>
+<dd>
+<p>Print a brief help message.</p>
+</dd>
+</dl>
 <p>
 </p>
 <hr />
 <h1><a name="prerequisites">PREREQUISITES</a></h1>
+<p>Uses package
+<code>Getopt::Long</code>.</p>
 <p>A tool like the Unix <strong>strings</strong> program that can extract
 printable strings from a binary file.</p>
 <p>

@@ -4,7 +4,7 @@
 <head>
 <title>USBHackSupport</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:_www@b02.apple.com" />
+<link rev="made" href="mailto:_postfix@neige.apple.com" />
 </head>
 
 <body style="background-color: white">
@@ -14,8 +14,10 @@
 </td></tr>
 </table>
 
-<p><a name="__index__"></a></p>
+
 <!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
 
 <ul>
 
@@ -29,9 +31,11 @@
 	<li><a href="#prerequsites">PREREQUSITES</a></li>
 	<li><a href="#bugs">BUGS</a></li>
 </ul>
+
+<hr name="index" />
+</div>
 <!-- INDEX END -->
 
-<hr />
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
@@ -59,27 +63,27 @@ except <a href="../../../html/./Beyonwiz/Hack/BwhackSupport.html#item_httproot">
 and unlike that patch, will work on the DP-H1.</p>
 <p>The hacks available for enabling (default is all disabled) are:</p>
 <dl>
-<dt><strong><a name="item_s00enablevfd">S00enablevfd</a></strong>
+<dt><strong><a name="s00enablevfd" class="item">S00enablevfd</a></strong>
 
 <dd>
 <p>Enables display of progress through the hack startup on the
 front panel VFD (Vacuum Fluorescent Display).</p>
 </dd>
 </li>
-<dt><strong><a name="item_s01dimvfd">S01dimvfd</a></strong>
+<dt><strong><a name="s01dimvfd" class="item">S01dimvfd</a></strong>
 
 <dd>
 <p>The front panel display is run in a dimmer mode (as it is when on standby).</p>
 </dd>
 </li>
-<dt><strong><a name="item_s02telnet">S02telnet</a></strong>
+<dt><strong><a name="s02telnet" class="item">S02telnet</a></strong>
 
 <dd>
 <p>Run <em>telnetd</em> to allow login to the Beyonwiz using the <em>telnet</em>
 protocol.</p>
 </dd>
 </li>
-<dt><strong><a name="item_s08recfixer">S08recfixer</a></strong>
+<dt><strong><a name="s08recfixer" class="item">S08recfixer</a></strong>
 
 <dd>
 <p>A version of tonymy01's <em>Error loading media file</em> fixer.
@@ -87,11 +91,11 @@ Copies a <code>stat</code> file from an existing recording into recordings
 that are missing them, so that they become playable again.
 Unlike tonymy01's version, which only repairs recordings
 on the DP-S1 and DP-P1 internal drive, this version will also look
-on any ``registered for recording'' drive on any Beyonwiz model
+on any &quot;registered for recording&quot; drive on any Beyonwiz model
 and repair recordings there.</p>
 </dd>
 </li>
-<dt><strong><a name="item_s09wizremote">S09wizremote</a></strong>
+<dt><strong><a name="s09wizremote" class="item">S09wizremote</a></strong>
 
 <dd>
 <p>Starts Eric Fry's (efry) <em>wizremote</em> server
@@ -100,7 +104,7 @@ if it is installed in
 /tmp/config. Otherwise has no effect.</p>
 </dd>
 </li>
-<dt><strong><a name="item_s99removehacks">S99removehacks</a></strong>
+<dt><strong><a name="s99removehacks" class="item">S99removehacks</a></strong>
 
 <dd>
 <p>Removes the <code>/tmp/config/rc.local</code>
@@ -137,7 +141,7 @@ unmodified firmware onto the Beyonwiz.</p>
 download unmodified firmware into the Beyonwiz and
 restart.</p>
 <p>Remove the hacks by restarting the Beyonwiz with a USB device
-that has (at least) <a href="#item_s99removehacks"><code>S99removehacks</code></a> in <code>beyonwiz/etc/init.d</code>.</p>
+that has (at least) <a href="#s99removehacks"><code>S99removehacks</code></a> in <code>beyonwiz/etc/init.d</code>.</p>
 <p>Then restart the Beyonwiz.</p>
 <p>
 </p>
@@ -160,10 +164,10 @@ the corresponding hacks will be started.</p>
 (or memory card),
 simply plug the device into an appropriate port on the Beyonwiz,
 and (re)start it.</p>
-<p>If you've included the <a href="#item_s00enablevfd"><code>S00enablevfd</code></a> hack on the device when you
+<p>If you've included the <a href="#s00enablevfd"><code>S00enablevfd</code></a> hack on the device when you
 set it up, the progress of running the hack scripts will be shown on the
 Beyonwiz front panel display.</p>
-<p>If you've included <a href="#item_s08recfixer"><code>S08recfixer</code></a> on the device, it will display
+<p>If you've included <a href="#s08recfixer"><code>S08recfixer</code></a> on the device, it will display
 <code>Fixed recording</code> on the front panel if any recordings were repaired
 by the script.
 It will also create a fake recording in the recording device's
@@ -184,7 +188,7 @@ and runs scripts from any (and all) attached devices with the scripts in the
 appropriate location.</p>
 <p>The USB defices are searched in the following order:</p>
 <dl>
-<dt><strong><a name="item_dp_2ds1">DP-S1</a></strong>
+<dt><strong><a name="dp_s1" class="item">DP-S1</a></strong>
 
 <dd>
 <pre>
@@ -192,7 +196,7 @@ appropriate location.</p>
     Front panel USB port
     Rear USB port</pre>
 </dd>
-<dt><strong><a name="item_dp_2dp1_and_dp_2dh1">DP-P1 and DP-H1</a></strong>
+<dt><strong><a name="dp_p1_and_dp_h1" class="item">DP-P1 and DP-H1</a></strong>
 
 <dd>
 <pre>
@@ -226,7 +230,7 @@ system by running</p>
 <hr />
 <h1><a name="functions">FUNCTIONS</a></h1>
 <dl>
-<dt><strong><a name="item_hack"><code>hack($flash_dir, $root_dir)</code></a></strong>
+<dt><strong><a name="hack" class="item"><code>hack($flash_dir, $root_dir)</code></a></strong>
 
 <dd>
 <p>Called by <a href="../../../html/./html/bw_patcher.html"> <code>bw_patcher</code></a> to perform the patch.</p>
@@ -255,13 +259,13 @@ The line will be inserted just before the comment line:</p>
 This file actually implements the hack.</p>
 </dd>
 </li>
-<dt><strong><a name="item_hacktag"><code>hackTag()</code></a></strong>
+<dt><strong><a name="hacktag" class="item"><code>hackTag()</code></a></strong>
 
 <dd>
 <p>Returns <code>usbhack</code> as the default suffix tag for the patch.</p>
 </dd>
 </li>
-<dt><strong><a name="item_printhack"><code>printHack()</code></a></strong>
+<dt><strong><a name="printhack" class="item"><code>printHack()</code></a></strong>
 
 <dd>
 <p>Prints the file that would be installed as
@@ -299,7 +303,7 @@ you may need to use the procedures in the
 <a href="http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298">http://www.beyonwiz.com.au/phpbb2/viewtopic.php</a>
 procedure on the Beyonwiz forum.
 It's not known whether that procedure will fix all 
-failures due to user modifications or ``hacks''.</p>
+failures due to user modifications or &quot;hacks&quot;.</p>
 <p>If you run modified firmware on your Beyonwiz, and have
 problems with its operation, try to reproduce
 any problems you do have on a Beyonwiz running unmodified firmware,

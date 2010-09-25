@@ -4,7 +4,7 @@
 <head>
 <title>Utils</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:_www@b02.apple.com" />
+<link rev="made" href="mailto:_postfix@neige.apple.com" />
 </head>
 
 <body style="background-color: white">
@@ -14,8 +14,10 @@
 </td></tr>
 </table>
 
-<p><a name="__index__"></a></p>
+
 <!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
 
 <ul>
 
@@ -23,9 +25,11 @@
 	<li><a href="#synopsis">SYNOPSIS</a></li>
 	<li><a href="#functions">FUNCTIONS</a></li>
 </ul>
+
+<hr name="index" />
+</div>
 <!-- INDEX END -->
 
-<hr />
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
@@ -46,14 +50,14 @@ Beyonwiz::Hack modules to use in bw_patcher.</p>
 <hr />
 <h1><a name="functions">FUNCTIONS</a></h1>
 <dl>
-<dt><strong><a name="item_insens"><code>insens($insens)</code></a></strong>
+<dt><strong><a name="insens" class="item"><code>insens($insens)</code></a></strong>
 
 <dd>
 <p>Use the case-insensitive encoding of file/directory path names if
 <code>$insens</code> is non-zero, otherwise paths are used as-is.</p>
 </dd>
 </li>
-<dt><strong><a name="item_findmatchingpath"><code>findMatchingPath($fw_dir, $path)</code></a></strong>
+<dt><strong><a name="findmatchingpath" class="item"><code>findMatchingPath($fw_dir, $path)</code></a></strong>
 
 <dd>
 <p>Given a directory for the root of an unpacked firmware directory
@@ -69,7 +73,7 @@ The case-insensitive encoding is only done on <code>$path</code>.</p>
 it's up to the caller to determine what to do.</p>
 </dd>
 </li>
-<dt><strong><a name="item_makematchingdirectorypath"><code>makeMatchingDirectoryPath($fw_dir, $path)</code></a></strong>
+<dt><strong><a name="makematchingdirectorypath" class="item"><code>makeMatchingDirectoryPath($fw_dir, $path)</code></a></strong>
 
 <dd>
 <p>Given a directory for the root of an unpacked firmware directory
@@ -82,54 +86,54 @@ taking into account any case-insensitive name mapping.</p>
 it's up to the caller to determine what to do.</p>
 </dd>
 </li>
-<dt><strong><a name="item_findnewfile"><code>findNewFile($fw_dir, $path, $exec)</code></a></strong>
+<dt><strong><a name="findnewfile" class="item"><code>findNewFile($fw_dir, $path, $exec)</code></a></strong>
 
 <dd>
 <p>Given a directory for the root of an unpacked firmware directory
 tree <code>$fw_dir</code>, a path within it <code>$path</code> and a flag to set
 whether the file should be executable return either a list of matching paths
-found using <a href="#item_findmatchingpath"><code>findMatchingPath($fw_dir, $path)</code></a>, or if none match
+found using <a href="#findmatchingpath"><code>findMatchingPath($fw_dir, $path)</code></a>, or if none match
 the path name of a new file (the file is not created), again
 taking into account the path-name encoding in case-insensitive mode
 and doing a file glob.</p>
 </dd>
 </li>
-<dt><strong><a name="item_patchfile"><code>patchFile($file, $pattern, $patch, $after)</code></a></strong>
+<dt><strong><a name="patchfile" class="item"><code>patchFile($file, $pattern, $patch, $after)</code></a></strong>
 
 <dd>
 <p>Given a <code>$file</code>, a path to an existing file in the firmware
-(probably generated using <a href="#item_findmatchingpath"><code>findMatchingPath($fw_dir, $path)</code></a>,
+(probably generated using <a href="#findmatchingpath"><code>findMatchingPath($fw_dir, $path)</code></a>,
 add the text in the string <code>$patch</code> after (<code>$after == 1</code>)
 or before (<code>$after == 0</code>) the line matching the Perl regular expression
 in <code>$match</code>.</p>
 </dd>
 <dd>
 <p><code>$patch</code> must have the newlines and any indenting in the correct position
-to ``fit'' properly in the file; in particular it probably should end
+to &quot;fit&quot; properly in the file; in particular it probably should end
 in a newline.</p>
 </dd>
 <dd>
 <p>Takes some care not to put DOS CRLF line endings in the file.</p>
 </dd>
 </li>
-<dt><strong><a name="item_addfile"><code>addFile($file, $patch, $exec)</code></a></strong>
+<dt><strong><a name="addfile" class="item"><code>addFile($file, $patch, $exec)</code></a></strong>
 
 <dd>
 <p>Add a new file <code>$file</code>, a path to an existing file in the firmware
-(probably generated using <a href="#item_findmatchingpath"><code>findMatchingPath($fw_dir, $path)</code></a>,
+(probably generated using <a href="#findmatchingpath"><code>findMatchingPath($fw_dir, $path)</code></a>,
 containing the tezt in <code>$patch</code>. The file will be marked as executable
 in the firmware if <code>$exec</code> is non-zero.</p>
 </dd>
 <dd>
 <p><code>$patch</code> must have the newlines and any indenting in the correct position
-to ``fit'' properly in the file; in particular it probably should end
+to &quot;fit&quot; properly in the file; in particular it probably should end
 in a newline.</p>
 </dd>
 <dd>
 <p>Takes some care not to put DOS CRLF line endings in the file.</p>
 </dd>
 </li>
-<dt><strong><a name="item_pathtildeexpand"><code>pathTildeExpand()</code></a></strong>
+<dt><strong><a name="pathtildeexpand" class="item"><code>pathTildeExpand()</code></a></strong>
 
 <dd>
 <p>Expands <code>~</code> and <code>~</code><em>username</em> home directory abbreviations in

@@ -8,7 +8,7 @@ Beyonwiz::Hack::BackgroundChanger - hack Beyonwix screen background
 
     Beyonwiz::Hack::BackgroundChanger;
 
-A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/ >.
+A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/>.
 It modifies the firmware to display a different background image
 in the full-screen menus.
 

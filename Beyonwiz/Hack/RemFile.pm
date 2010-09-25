@@ -8,7 +8,7 @@ package Beyonwiz::Hack::RemFile;
 
     Beyonwiz::Hack::RemFile;
 
-A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/ >.
+A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/>.
 Deletes a file at the given relative location in either the root or the
 flash file system..
 

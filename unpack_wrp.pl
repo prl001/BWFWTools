@@ -90,6 +90,8 @@ use File::Spec::Functions qw(catfile tmpdir);
 
 Getopt::Long::Configure qw/no_ignore_case bundling/;
 
+$ENV{CYGWIN} = 'nodosfilewarning' if($^O eq 'MSWin32');
+
 die "You must upgrade IO::Uncompress::Gunzip to at least\n",
 	"version $minGunzVersion to use $0 on Cygwin\n"
     if($IO::Uncompress::Gunzip::VERSION < $minGunzVersion

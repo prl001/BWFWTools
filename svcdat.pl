@@ -257,28 +257,29 @@ sub printHdr($) {
 sub dumpHdr($$) {
     my ($hdr, $buf) = @_;
 
-    print "                    PMT       video audio   PCR tunerParams   svc        chan                     lcn      \n";
-    print "radio valid chanX   PID svcId   PID   PID   PID CONST CONST nameX CONST nameX CONST    t1    t2   lcn xxxxx\n";
+    print "                       PMT       video audio   PCR tunerParams   svc        chan                     lcn      \n";
+    print "   radio valid chanX   PID svcId   PID   PID   PID CONST CONST nameX CONST nameX CONST    t1    t2   lcn xxxxx\n";
     my $off = 62 + $hdr->{svcNameLen} + $hdr->{chanNameLen}
             + 12 + $hdr->{ntuner} * 4;
     for(my $i = 0; $i < $hdr->{nsvc}; $i++) {
  	my $svc = $hdr->{svcs}[$i];
 	my $svcName = getName($hdr->{svcNames}, $svc->{svcNameIndex});
 	my @vals = unpack '@' . $off . 'v18', $buf;
-	print ' ', join('  ', map( {sprintf "%04x", $_} @vals), $svcName), "\n";
-	print join(' ', map {sprintf "%5d", $_} @vals), "\n";
+	print sprintf('%2d ', $i), join(' ',
+			    map( {sprintf " %04x", $_} @vals), $svcName), "\n";
+	print '   ', join(' ', map {sprintf "%5d", $_} @vals), "\n";
 	$off += 36;
     }
 
     $off += 40;
     print "\n";
-    print " chan\n";
-    print "   BW CONST  freq (kHz)  onit  tsid\n";
+    print "    chan\n";
+    print "    BW | CONST  freq (kHz)  onit  tsid\n";
     for(my $i = 0; $i < $hdr->{nchan}; $i++) {
 	my @vals = unpack '@' . $off . 'v6', $buf;
 	last if(($vals[0] & 0xff) == 0xff);
-	print ' ', join('  ', map( {sprintf "%04x", $_} @vals)), "\n";
-	print join(' ', map {sprintf "%5d", $_} @vals), "\n";
+	print sprintf('%2d  ', $i), join('  ', map( {sprintf "%04x", $_} @vals)), "\n";
+	print '   ', join(' ', map {sprintf "%5d", $_} @vals), "\n";
 	$off += 12;
     }
 

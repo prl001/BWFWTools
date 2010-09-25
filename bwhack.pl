@@ -37,8 +37,8 @@ by a Beyonwiz I<Factory Settings> reset.
 Alternatively the C</etc/rc.sysinit> file in any
 firmware distribution can be modified in a similar
 way to the modification in I<Telnet patch>,
-using L< C<unpack_wrp>|unpack_wrp/ >,
-L< C<pack_wrp>|pack_wrp/ >
+using L< C<unpack_wrp>|unpack_wrp/>,
+L< C<pack_wrp>|pack_wrp/>
 and a suitable editor.
 
 =head1 ARGUMENTS

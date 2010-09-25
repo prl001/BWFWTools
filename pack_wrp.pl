@@ -24,12 +24,12 @@ into I<firmware_file> (Beyonwiz C<.wrp> file).
 If the I<root_directory> file is given, C<linux.bin.gz> in
 I<flash_directory> is unzipped and the ROMFS root filesystem constructed
 from I<root_directory> is patched into the kernel.
-See L< C<bw_rootfs>|bw_rootfs/ > for more details.
+See L< C<bw_rootfs>|bw_rootfs/> for more details.
 
 The root file system can only be updated if there is enough spare space for
 it in the kernel.
 There will never be more than 4080 bytes spare, usually less.
-See L< C<bw_rootfs>|bw_rootfs/ > for more details.
+See L< C<bw_rootfs>|bw_rootfs/> for more details.
 
 =head1 ARGUMENTS
 
@@ -46,7 +46,7 @@ Packs in a mode that strips a prefix added to file and directory names
 so that files that only differ by the case of the characters in their name
 (eg. C<Abc> vs C<abc>) are guaranteed to remain as distinct files.
 If I<flash_directory> and I<root_directory> haven't been constructed using
-the case-insensitive modes of L< C<unpack_wrp>|unpack_wrp/ >, using
+the case-insensitive modes of L< C<unpack_wrp>|unpack_wrp/>, using
 this option is likely to result in badly mangled filenames and
 a C<.wrp> file that will cause a Beyonwiz to be unbootable.
 
@@ -98,7 +98,7 @@ See I<machtype> above about the automatic detection of the machine type.
   --force
   -f
 
-Passed through to L< C<bw_rootfs>|bw_rootfs/ >.
+Passed through to L< C<bw_rootfs>|bw_rootfs/>.
 Forces update of the root file system in some cases where it
 would otherwise fail.
 
@@ -199,7 +199,7 @@ C<IO::Compress::Gzip>,
 C<IO::Uncompress::Gunzip> (minimum version 2.017 on Cygwin) and
 C<File::Spec::Functions>.
 
-Uses L< C<bw_rootfs>|bw_rootfs/ >.
+Uses L< C<bw_rootfs>|bw_rootfs/>.
 
 Uses Eric Fry's wizfwtools programs C<wiz_pack>
 and C<wiz_genromfs>.
@@ -269,6 +269,8 @@ use Beyonwiz::SystemId qw(flashSizefromModel flashSizefromSysIdStr);
 use Getopt::Long;
 
 Getopt::Long::Configure qw/no_ignore_case bundling/;
+
+$ENV{CYGWIN} = 'nodosfilewarning' if($^O eq 'MSWin32');
 
 die "You must upgrade IO::Uncompress::Gunzip to at least\n",
 	"version $minGunzVersion to use $0 on Cygwin\n"
@@ -420,7 +422,7 @@ if(!defined $machtype && !defined $machcode
 					"*-romfs.bin"))) {
 	if(!defined $machtype
 	&& !defined $machcode
-	&& $ver =~ /-(DP[SPH][12]|F[TCV][PHL]1)-/) {
+	&& $ver =~ /-(DP[SPH]1|DPP2|FVL1|DPLite|F[TC][PH]1)-/) {
 	    $machtype = $1;
 	    print "Using default machine type $machtype",
 		" (--machtype=$machtype)\n";

@@ -4,7 +4,7 @@
 <head>
 <title>Kernel</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:_www@b02.apple.com" />
+<link rev="made" href="mailto:_postfix@neige.apple.com" />
 </head>
 
 <body style="background-color: white">
@@ -14,8 +14,10 @@
 </td></tr>
 </table>
 
-<p><a name="__index__"></a></p>
+
 <!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
 
 <ul>
 
@@ -24,9 +26,11 @@
 	<li><a href="#constants">CONSTANTS</a></li>
 	<li><a href="#functions">FUNCTIONS</a></li>
 </ul>
+
+<hr name="index" />
+</div>
 <!-- INDEX END -->
 
-<hr />
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
@@ -55,7 +59,7 @@ or</pre>
 <hr />
 <h1><a name="constants">CONSTANTS</a></h1>
 <dl>
-<dt><strong><a name="item_base"><code>BASE</code></a></strong>
+<dt><strong><a name="base" class="item"><code>BASE</code></a></strong>
 
 <dd>
 <p>The memory address corresponding to the start of the kernel image file.
@@ -69,14 +73,14 @@ This is 64kB higher than the start of memory at 0x90080000.</p>
 <hr />
 <h1><a name="functions">FUNCTIONS</a></h1>
 <dl>
-<dt><strong><a name="item_check_sym"><code>check_sym($sym)</code></a></strong>
+<dt><strong><a name="check_sym" class="item"><code>check_sym($sym)</code></a></strong>
 
 <dd>
 <p>Looks up <code>$sym</code> in an internal table, and returns true
 if the corresponding symbol has been found.</p>
 </dd>
 </li>
-<dt><strong><a name="item_sym_val"><code>sym_val($sym)</code></a></strong>
+<dt><strong><a name="sym_val" class="item"><code>sym_val($sym)</code></a></strong>
 
 <dd>
 <p>Looks up <code>$sym</code> in an internal table, and returns the address of a word
@@ -100,7 +104,7 @@ Fatal error if the symbol is not defined.</p>
     rootROMFS         Start of the embedded ROMFS root file system (in initialised data segment)</pre>
 </dd>
 </li>
-<dt><strong><a name="item_get_words"><code>get_words($fh, $addr, $n)</code></a></strong>
+<dt><strong><a name="get_words" class="item"><code>get_words($fh, $addr, $n)</code></a></strong>
 
 <dd>
 <p>In an array context, returns an array of <code>$n</code> words (32-bit integers)
@@ -120,11 +124,11 @@ In a scalar context, returns the first element of the array, so</p>
 to the native order of the machine running the perl script.</p>
 </dd>
 </li>
-<dt><strong><a name="item_get_words_sym"><code>get_words_sym($fh, $sym, $n)</code></a></strong>
+<dt><strong><a name="get_words_sym" class="item"><code>get_words_sym($fh, $sym, $n)</code></a></strong>
 
 <dd>
 <p>Looks up <code>$sym</code> in an internal table, and uses the symbol's location
-as the <code>$addr</code> and returns the result of <a href="#item_get_words"><code>get_words($fh, $addr, $n)</code></a>.</p>
+as the <code>$addr</code> and returns the result of <a href="#get_words"><code>get_words($fh, $addr, $n)</code></a>.</p>
 </dd>
 <dd>
 <p>Equivalent to (and implemented as)</p>
@@ -144,7 +148,7 @@ as the <code>$addr</code> and returns the result of <a href="#item_get_words"><c
 <p>to return the value of the symbol.</p>
 </dd>
 </li>
-<dt><strong><a name="item_get_str"><code>get_str($fh, $addr)</code></a></strong>
+<dt><strong><a name="get_str" class="item"><code>get_str($fh, $addr)</code></a></strong>
 
 <dd>
 <p>Returns a a null-terminated ASCII string starting ar 
@@ -156,7 +160,7 @@ Beyonwiz kernel image referenced by the file handle reference <code>$fh</code>.<
 This probably should be a parameter, or made unlimited.</p>
 </dd>
 </li>
-<dt><strong><a name="item_read_or_die"><code>read_or_die($fn, $fh, $loc, $buf, $n, $die)</code></a></strong>
+<dt><strong><a name="read_or_die" class="item"><code>read_or_die($fn, $fh, $loc, $buf, $n, $die)</code></a></strong>
 
 <dd>
 <p>Seek to <code>$loc</code> in file handle reference <code>$fh</code>, and read <code>$n</code>
@@ -171,7 +175,7 @@ otherwise returns false on these conditions.</p>
 <p>Returns true on success.</p>
 </dd>
 </li>
-<dt><strong><a name="item_write_or_die"><code>write_or_die($fn, $fh, $loc, $buf, $n, $die)</code></a></strong>
+<dt><strong><a name="write_or_die" class="item"><code>write_or_die($fn, $fh, $loc, $buf, $n, $die)</code></a></strong>
 
 <dd>
 <p>Seek to <code>$loc</code> in file handle reference <code>$fh</code>, and write <code>$n</code>
@@ -187,7 +191,7 @@ otherwise returns false on these conditions.</p>
 <p>Returns true on success.</p>
 </dd>
 </li>
-<dt><strong><a name="item_check_magics"><code>check_magics($kern_fn, $kern_fh)</code></a></strong>
+<dt><strong><a name="check_magics" class="item"><code>check_magics($kern_fn, $kern_fh)</code></a></strong>
 
 <dd>
 <p>Checks context information in the internal symbol location table

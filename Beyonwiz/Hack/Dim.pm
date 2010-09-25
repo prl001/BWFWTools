@@ -8,7 +8,7 @@ Beyonwiz::Hack::Dim - hack to dim the front display
 
     Beyonwiz::Hack::Dim;
 
-A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/ >
+A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/>
 to patch Beyonwiz firmware to dim the front panel display at startup.
 
 The effect of this hack will be undone if you load
@@ -20,7 +20,7 @@ unmodified firmware onto the Beyonwiz.
 
 =item C<< hack($flash_dir, $root_dir) >>
 
-Called by L< C<bw_patcher>|bw_patcher/ > to perform the patch.
+Called by L< C<bw_patcher>|bw_patcher/> to perform the patch.
 
 Inserts the line:
 

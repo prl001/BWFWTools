@@ -21,9 +21,9 @@ bw_patcher - all-in-one tool to automatically apply Beyonwiz firmware patches
 Applies the firmware patches in the I<patch_modules> to I<firmware_file>
 and creates a new version of the firmware in I<patched_firmware_file>.
 
-Uses BWFWTools L< C<unpack_wrp>|unpack_wrp/ >
+Uses BWFWTools L< C<unpack_wrp>|unpack_wrp/>
 and
-L< C<pack_wrp>|pack_wrp/ >
+L< C<pack_wrp>|pack_wrp/>
 to unpack and re-pack the firmware file after applting the patches.
 Most of the options to B<bw_patcher> are passed through to those
 programs as applicable.
@@ -87,9 +87,9 @@ B<Bw_patcher> takes the following arguments:
   -g
 
 All the above options are passed through as the corresponding options to
-L< C<unpack_wrp>|unpack_wrp/ >
+L< C<unpack_wrp>|unpack_wrp/>
 and
-L< C<pack_wrp>|pack_wrp/ >
+L< C<pack_wrp>|pack_wrp/>
 as appropriate.
 
 =item keep
@@ -99,9 +99,9 @@ as appropriate.
 
 Keep the unpacked firmware directories in the system temporary directory.
 Not passed through to 
-L< C<unpack_wrp>|unpack_wrp/ >
+L< C<unpack_wrp>|unpack_wrp/>
 or
-L< C<pack_wrp>|pack_wrp/ >.
+L< C<pack_wrp>|pack_wrp/>.
 
 =back
 
@@ -143,10 +143,10 @@ C<Carp>,
 and
 L<C<Beyonwiz::Hack::Utils>|Beyonwiz::Hack::Utils>.
 
-Uses L< C<unpack_wrp>|unpack_wrp/ >,
-L< C<pack_wrp>|pack_wrp/ >
+Uses L< C<unpack_wrp>|unpack_wrp/>,
+L< C<pack_wrp>|pack_wrp/>
 and
-L< C<bw_rootfs>|bw_rootfs/ >.
+L< C<bw_rootfs>|bw_rootfs/>.
 
 Uses Eric Fry's wizfwtools programs C<wiz_pack>
 and C<wiz_genromfs>.
@@ -196,6 +196,7 @@ use Beyonwiz::Hack::Utils qw(insens pathTildeExpand);
 
 Getopt::Long::Configure qw/no_ignore_case bundling/;
 
+$ENV{CYGWIN} = 'nodosfilewarning' if($^O eq 'MSWin32');
 
 sub usage() {
     die "Usage: $0\n"

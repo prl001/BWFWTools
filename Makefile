@@ -7,7 +7,8 @@ HACKMODULEDIR=$(BWMODULEDIR)/Hack
 
 SCRIPTS=bw_patcher.pl bw_rootfs.pl bwhack.pl dump_strings.pl \
 	getDvpStrings.pl getksyms.pl gunzip_bflt.pl lastplaypoint.pl \
-	make_kern_bflt.pl pack_wrp.pl svcdat.pl unpack_wrp.pl wrp_hdrs.pl
+	make_kern_bflt.pl pack_wrp.pl print_flash.pl svcdat.pl \
+	unpack_wrp.pl wrp_hdrs.pl
 
 EXE=wiz_genromfs.exe wiz_pack.exe wiz_unpack.exe
 

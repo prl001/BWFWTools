@@ -8,7 +8,7 @@ dump_strings - extract useful GUI strings from Beyonwiz /dump.dat file
 
 =head1 SYNOPSIS
 
-    dump_strings [extracted_GUI_strings_files...]
+    dump_strings [-s|--sort] [-i|--ignorecase] [-h|--help] [extracted_GUI_strings_files...]
 
 =head1 DESCRIPTION
 
@@ -24,7 +24,35 @@ The intended use is:
 
     strings dump.dat | dump_strings
 
+=over 4
+
+=item sort
+
+  --sort
+  -s
+
+Sort the output strings.
+
+=item insens
+
+  --insens
+  -i
+
+When sorting case is ignored (case-insensitive sort).
+
+=item help
+
+  --help
+  -h
+
+Print a brief help message.
+
+=back
+
 =head1 PREREQUISITES
+
+Uses package
+C<Getopt::Long>.
 
 A tool like the Unix B<strings> program that can extract
 printable strings from a binary file.
@@ -39,6 +67,11 @@ be excluded, and some excluded that should be included.
 use strict;
 use warnings;
 
+use Getopt::Long;
+
+my $sort;
+my $ignorecase;
+my $help;
 my $last = '';
 my %rep;
 my @strs;
@@ -47,7 +80,24 @@ my %frags;
 
 use constant FRAGLEN => 10;
 
-use strict;
+sub usage($) {
+    my ($die) = @_;
+    my $usage = "Usage: $0 [-s|--sort] [-i|--ignorecase] [-h|--help] [extracted_GUI_strings_files...]\n";
+    if($die) {
+	die $usage;
+    } else {
+	warn $usage;
+	exit 0;
+    }
+}
+
+GetOptions(
+	's|sort' => \$sort,
+	'i|ignorecase', \$ignorecase,
+	'h|help' => \$help,
+    ) or usage(1);
+
+usage(0) if($help);
 
 while(<>) {
     chomp;
@@ -64,6 +114,10 @@ while(<>) {
     $last = $_;
 
     push @strs, $_ if($rep{$_} == 1);
+}
+
+if($sort) {
+    @strs = $ignorecase ? sort { uc($a) cmp uc($b) } @strs : sort @strs;
 }
 
 foreach my $str (@strs) {

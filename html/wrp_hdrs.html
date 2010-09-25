@@ -4,7 +4,7 @@
 <head>
 <title>wrp_hdrs</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:_www@b02.apple.com" />
+<link rev="made" href="mailto:_postfix@neige.apple.com" />
 </head>
 
 <body style="background-color: white">
@@ -14,8 +14,10 @@
 </td></tr>
 </table>
 
-<p><a name="__index__"></a></p>
+
 <!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
 
 <ul>
 
@@ -27,9 +29,11 @@
 	<li><a href="#bugs">BUGS</a></li>
 	<li><a href="#acknowledgements">ACKNOWLEDGEMENTS</a></li>
 </ul>
+
+<hr name="index" />
+</div>
 <!-- INDEX END -->
 
-<hr />
 <p>
 </p>
 <hr />
@@ -75,53 +79,53 @@ firmware update files.</p>
 <p>The example is for firmware release 1.05.197.</p>
 <p>The output fields are:</p>
 <dl>
-<dt><strong><a name="item_filesize">fileSize</a></strong>
+<dt><strong><a name="filesize" class="item">fileSize</a></strong>
 
 <dd>
 <p>Size of the .wrp file.</p>
 </dd>
 </li>
-<dt><strong><a name="item_offset">offset</a></strong>
+<dt><strong><a name="offset" class="item">offset</a></strong>
 
 <dd>
 <p>Offset of the start of the header in the file.</p>
 </dd>
 </li>
-<dt><strong><a name="item_magic">magic</a></strong>
+<dt><strong><a name="magic" class="item">magic</a></strong>
 
 <dd>
 <p>The magic string that indicates that the file is a Beyonwiz firmware update.
 Should always be <code>WizFwPkgl</code>.</p>
 </dd>
 </li>
-<dt><strong><a name="item_machmagic">machMagic</a></strong>
+<dt><strong><a name="machmagic" class="item">machMagic</a></strong>
 
 <dd>
 <p>The magic number that corresponds to the Beyonwiz System ID for the device.
 Used to ensure that the firmware is for the correct type of device.</p>
 </dd>
 </li>
-<dt><strong><a name="item_model">model</a></strong>
+<dt><strong><a name="model" class="item">model</a></strong>
 
 <dd>
-<p>Beyonwiz model designation (DP-S1, etc.) derived from <a href="#item_machmagic"><code>machMagic</code></a>.
-<code>Unknown</code> if a match is not found for the <a href="#item_machmagic"><code>machMagic</code></a>.</p>
+<p>Beyonwiz model designation (DP-S1, etc.) derived from <a href="#machmagic"><code>machMagic</code></a>.
+<code>Unknown</code> if a match is not found for the <a href="#machmagic"><code>machMagic</code></a>.</p>
 </dd>
 </li>
-<dt><strong><a name="item_version">version</a></strong>
+<dt><strong><a name="version" class="item">version</a></strong>
 
 <dd>
 <p>The version string that is printed in the verification popup window on the
 beyonwiz when the firmware is uploaded for verification.</p>
 </dd>
 </li>
-<dt><strong><a name="item_md5file">md5file</a></strong>
+<dt><strong><a name="md5file" class="item">md5file</a></strong>
 
 <dd>
 <p>Checksum over the file, with this field set to zeros.</p>
 </dd>
 </li>
-<dt><strong><a name="item_count">count</a></strong>
+<dt><strong><a name="count" class="item">count</a></strong>
 
 <dd>
 <p>Count of the remaining payloads to process.
@@ -129,14 +133,14 @@ This interpretation is uncertain.
 The value has only ever been observed to be 1.</p>
 </dd>
 </li>
-<dt><strong><a name="item_imagetag">imageTag</a></strong>
+<dt><strong><a name="imagetag" class="item">imageTag</a></strong>
 
 <dd>
 <p>Uncertain interpretation.
 Has always been observed to be [108, 32].</p>
 </dd>
 </li>
-<dt><strong><a name="item_imagetype">imageType</a></strong>
+<dt><strong><a name="imagetype" class="item">imageType</a></strong>
 
 <dd>
 <p>Type of firmware payload.</p>
@@ -153,13 +157,13 @@ Has always been observed to be [108, 32].</p>
 <p>Has only been observed to have value 2.</p>
 </dd>
 </li>
-<dt><strong><a name="item_imageoffset">imageOffset</a></strong>
+<dt><strong><a name="imageoffset" class="item">imageOffset</a></strong>
 
 <dd>
 <p>Offset of the start of the payload for this header.</p>
 </dd>
 </li>
-<dt><strong><a name="item_imagelength">imageLength</a></strong>
+<dt><strong><a name="imagelength" class="item">imageLength</a></strong>
 
 <dd>
 <p>Length of the payload.
@@ -170,36 +174,36 @@ A zero-filled header block follows this allocated space as an empty header
 to indicate the end of the package.</p>
 </dd>
 </li>
-<dt><strong><a name="item_spaceremaining">spaceRemaining</a></strong>
+<dt><strong><a name="spaceremaining" class="item">spaceRemaining</a></strong>
 
 <dd>
 <p>The amount of free space remaining in the flash memory after
 loading the firmware.
-The flash memory size is determined from <a href="#item_machmagic"><code>machMagic</code></a>.
-<code>Unknown</code> if a match is not found for the <a href="#item_machmagic"><code>machMagic</code></a>.</p>
+The flash memory size is determined from <a href="#machmagic"><code>machMagic</code></a>.
+<code>Unknown</code> if a match is not found for the <a href="#machmagic"><code>machMagic</code></a>.</p>
 </dd>
 </li>
-<dt><strong><a name="item_md5image">md5image</a></strong>
+<dt><strong><a name="md5image" class="item">md5image</a></strong>
 
 <dd>
 <p>MD5 checksum of the payload (over exactly the given length).</p>
 </dd>
 </li>
-<dt><strong><a name="item_fstype">fsType</a></strong>
+<dt><strong><a name="fstype" class="item">fsType</a></strong>
 
 <dd>
 <p>Payload file system type.
 Only <strong>-rom1fs-</strong> for a Linux ROMFS file system has been observed.</p>
 </dd>
 </li>
-<dt><strong><a name="item_fssize">fsSize</a></strong>
+<dt><strong><a name="fssize" class="item">fsSize</a></strong>
 
 <dd>
 <p>File system size.
 For ROMFS file systems always an integer multiple of 16.</p>
 </dd>
 </li>
-<dt><strong><a name="item_fsvol">fsVol</a></strong>
+<dt><strong><a name="fsvol" class="item">fsVol</a></strong>
 
 <dd>
 <p>File system volume label.</p>

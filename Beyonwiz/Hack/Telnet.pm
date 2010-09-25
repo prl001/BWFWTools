@@ -8,7 +8,7 @@ Beyonwiz::Hack::Telnet - hack to enable telnet access on the Beyonswz
 
     Beyonwiz::Hack::Telnet;
 
-A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/ >
+A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/>
 to patch Beyonwiz firmware to start C<telnetd> at startup to allow
 D<telnet> connections to the Beyonwiz.
 
@@ -21,7 +21,7 @@ unmodified firmware onto the Beyonwiz.
 
 =item C<< hack($flash_dir, $root_dir) >>
 
-Called by L< C<bw_patcher>|bw_patcher/ > to perform the patch.
+Called by L< C<bw_patcher>|bw_patcher/> to perform the patch.
 
 Inserts the line:
 

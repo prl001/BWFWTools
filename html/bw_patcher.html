@@ -56,9 +56,9 @@
 <h1><a name="description">DESCRIPTION</a></h1>
 <p>Applies the firmware patches in the <em>patch_modules</em> to <em>firmware_file</em>
 and creates a new version of the firmware in <em>patched_firmware_file</em>.</p>
-<p>Uses BWFWTools <a href=".././html/./html/unpack_wrp.html"> <code>unpack_wrp</code></a>
+<p>Uses BWFWTools <a href="../html/unpack_wrp.html"> <code>unpack_wrp</code></a>
 and
-<a href=".././html/./html/pack_wrp.html"> <code>pack_wrp</code></a>
+<a href="../html/pack_wrp.html"> <code>pack_wrp</code></a>
 to unpack and re-pack the firmware file after applting the patches.
 Most of the options to <strong>bw_patcher</strong> are passed through to those
 programs as applicable.</p>
@@ -142,9 +142,9 @@ programs as applicable.</p>
 </dd>
 <dd>
 <p>All the above options are passed through as the corresponding options to
-<a href=".././html/./html/unpack_wrp.html"> <code>unpack_wrp</code></a>
+<a href="../html/unpack_wrp.html"> <code>unpack_wrp</code></a>
 and
-<a href=".././html/./html/pack_wrp.html"> <code>pack_wrp</code></a>
+<a href="../html/pack_wrp.html"> <code>pack_wrp</code></a>
 as appropriate.</p>
 </dd>
 <dt><strong>keep</strong>
@@ -157,9 +157,9 @@ as appropriate.</p>
 <dd>
 <p>Keep the unpacked firmware directories in the system temporary directory.
 Not passed through to 
-<a href=".././html/./html/unpack_wrp.html"> <code>unpack_wrp</code></a>
+<a href="../html/unpack_wrp.html"> <code>unpack_wrp</code></a>
 or
-<a href=".././html/./html/pack_wrp.html"> <code>pack_wrp</code></a>.</p>
+<a href="../html/pack_wrp.html"> <code>pack_wrp</code></a>.</p>
 </dd>
 </dl>
 <p>
@@ -176,12 +176,13 @@ The two arguments are the directories holding the <code>/flash</code> and
 The function typically modifies <code>etc/rc.sysinit</code> in <code>$root_dir</code>,
 and may add new files to, or overwrite files in, either firmware directory.</p>
 <p>The modules packaged with <strong>bw_patcher</strong> are
-<a href=".././html/./Beyonwiz/Hack/Telnet.html"><code>Beyonwiz::Hack::Telnet</code></a>,
-<a href=".././html/./Beyonwiz/Hack/Dim.html"><code>Beyonwiz::Hack::Dim</code></a>,
-<a href=".././html/./Beyonwiz/Hack/BackgroundChanger.html"><code>Beyonwiz::Hack::BackgroundChanger</code></a>,
-<a href=".././html/./Beyonwiz/Hack/BwhackSupport.html"><code>Beyonwiz::Hack::BwhackSupport</code></a>
+<a href="../html/./Beyonwiz/Hack/Telnet.html"><code>Beyonwiz::Hack::Telnet</code></a>,
+<a href="../html/./Beyonwiz/Hack/Codeset.html"><code>Beyonwiz::Hack::Codeset</code></a>,
+<a href="../html/./Beyonwiz/Hack/Dim.html"><code>Beyonwiz::Hack::Dim</code></a>,
+<a href="../html/./Beyonwiz/Hack/BackgroundChanger.html"><code>Beyonwiz::Hack::BackgroundChanger</code></a>,
+<a href="../html/./Beyonwiz/Hack/BwhackSupport.html"><code>Beyonwiz::Hack::BwhackSupport</code></a>
 and
-<a href=".././html/./Beyonwiz/Hack/USBHackSupport.html"><code>Beyonwiz::Hack::USBHackSupport</code></a>.</p>
+<a href="../html/./Beyonwiz/Hack/USBHackSupport.html"><code>Beyonwiz::Hack::USBHackSupport</code></a>.</p>
 <p>
 </p>
 <hr />
@@ -200,11 +201,11 @@ actually disable the hack!</strong></p>
 <code>File::Path</code>,
 <code>Carp</code>,
 and
-<a href=".././html/./Beyonwiz/Hack/Utils.html"><code>Beyonwiz::Hack::Utils</code></a>.</p>
-<p>Uses <a href=".././html/./html/unpack_wrp.html"> <code>unpack_wrp</code></a>,
-<a href=".././html/./html/pack_wrp.html"> <code>pack_wrp</code></a>
+<a href="../html/./Beyonwiz/Hack/Utils.html"><code>Beyonwiz::Hack::Utils</code></a>.</p>
+<p>Uses <a href="../html/unpack_wrp.html"> <code>unpack_wrp</code></a>,
+<a href="../html/pack_wrp.html"> <code>pack_wrp</code></a>
 and
-<a href=".././html/./html/bw_rootfs.html"> <code>bw_rootfs</code></a>.</p>
+<a href="../html/bw_rootfs.html"> <code>bw_rootfs</code></a>.</p>
 <p>Uses Eric Fry's wizfwtools programs <code>wiz_pack</code>
 and <code>wiz_genromfs</code>.</p>
 <p>

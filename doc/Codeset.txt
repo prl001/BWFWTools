@@ -1,0 +1,93 @@
+NAME
+
+    Beyonwiz::Hack::Codeset - hack to enable telnet access on the Beyonswz
+
+SYNOPSIS
+
+        Beyonwiz::Hack::Codeset;
+
+    A module to use as an argument to use with "bw_patcher" to patch
+    Beyonwiz firmware to make the Beyonwiz select a non-default remote
+    control codeset (so that multiple Beyonwizes in the same room won't all
+    respond to the one remote control.
+
+    The effect of this hack will be undone if you load unmodified firmware
+    onto the Beyonwiz.
+
+USE IN BW_PATCHER
+
+        Beyonwiz::Hack::Codeset codeset
+
+    The *codeset* argument is an integer 0..7.
+
+    An unmodified Beyonwiz DP-P2 uses codeset 1. Other Beyonwiz models use
+    codeset 0. These two codesets are the most convenient to use if you have
+    Beyonwiz BR-01 or BR-02 remote controls, or a programmable remote that
+    is restricted to codes from those two remotes.
+
+FUNCTIONS
+
+    "hack($flash_dir, $root_dir, $codeset)"
+        Called by "bw_patcher" to perform the patch.
+
+        Add the argument "-rc $codeset" to all occurances of the *wizdvp*
+        command in the file that will be "/etc/rc.sysinit", the system
+        startup script, on the Beyonwiz.
+
+        $codeset must be in the range 0-7. An unmodified Beyonwiz DP-P2 uses
+        codeset 1. Other Beyonwiz models use codeset 0. These two codesets
+        are the most convenient to use if you have Beyonwiz BR-01 or BR-02
+        remote controls, or a programmable remote that is restricted to
+        codes from those two remotes.
+
+        If you have a programmable remote that can accept hexcodes, then any
+        codeset can be used. Beyonwiz codesets have the form "0xBE0cxxxx"
+        where "BE0" is fixed, "c" is the codeset (0..7, not 0..F) and "xxxx"
+        is the command code. For, example, with codeset 0 (all models except
+        DP-P2), the OK command is 0xBE001FE0, with codeset 1 (DP-P2), it's
+        0xBE011FE0. With codeset 5, it would be 0xBE051FE0, but no Beyonwiz
+        remote will operate that codeset.
+
+    "hackTag()"
+        Returns "codeset" as the default suffix tag for the patch.
+
+DISABLING THE HACK
+
+    Simply download unmodified firmware into the Beyonwiz and restart.
+
+PREREQUSITES
+
+    Uses packages "Beyonwiz::Hack::Utils".
+
+BUGS
+
+    This hack cannot change the codeset for POWERTOGGLE for startup (though
+    the shut-down POWERTOGGLE will work) or the codes for the POWERTOGGLE
+    1+2+3+4, because these codes are interpreted in the front panel
+    mictocontroller, not by the main frimware.
+
+    If you set a codeset for which you do not have a remote, then no remote
+    codes except POWERTOGGLE for startup (but not shutdown) and the
+    POWERTOGGLE 1+2+3+4 firmware recovery remote sequence will work on the
+    Beyonwiz.
+
+    Using user extensions or hacks may make your Beyonwiz unable to operate
+    correctly, or even start. Some modifications are known to interfere with
+    the correct functioning of the Beyonwiz.
+
+    If your Beyonwiz cannot start after you load modified firmware, you may
+    need to use the procedures in the NOTICE - How to recover from FW update
+    failure <http://www.beyonwiz.com.au/phpbb2/viewtopic.php?t=1298>
+    procedure on the Beyonwiz forum. It's not known whether that procedure
+    will fix all failures due to user modifications or "hacks".
+
+    If you run modified firmware on your Beyonwiz, and have problems with
+    its operation, try to reproduce any problems you do have on a Beyonwiz
+    running unmodified firmware, or at least mention the modifications you
+    use when reporting the problem to Beyonwiz support or on the Beyonwiz
+    Forum <http://www.beyonwiz.com.au/phpbb2/index.php>. Beyonwiz support
+    may not be able to assist if you are running anything other than
+    unmodified firmware from Beyonwiz. Forum contributers may be able to be
+    more flexible, but they will need to know what modifications you have
+    made.
+

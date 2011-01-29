@@ -14,6 +14,10 @@ to patch Beyonwiz firmware to dim the front panel display at startup.
 The effect of this hack will be undone if you load
 unmodified firmware onto the Beyonwiz.
 
+=head1 USE IN BW_PATCHER
+
+    Beyonwiz::Hack::Dim
+
 =head1 FUNCTIONS
 
 =over

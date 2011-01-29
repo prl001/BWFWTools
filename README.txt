@@ -78,6 +78,14 @@ message, just run:
 
 	cpan IO::Uncompress::Gunzip
 
+Running:
+	make install
+also checks whether the installation needs any modules that aren't available,
+and won't complete the installation unless the modules are installed.
+
+You can just run this check by running
+	make check
+
 
 Windows
 =======
@@ -115,3 +123,21 @@ message, just run:
 This particular module is part of the ActivePerl 5.10.0.1003
 distribution, but you may need to apply the same procedure for other
 Perl modules if they are missing.
+
+pack_wrp.pl will compress the Linux image in the firmware after
+patching the root file system into the uncompressed kernel. It will
+first try to use the executable gzip, and if that fails, it will
+print a warning, and then use the Perl module IO::Compress::Gzip.
+Currently, the gzip executable does a better job of compression
+than the Perl module. If you don't already have it installed, it's
+highly recommended to install gzip for Windows, and put it in ypur
+PATH variable.
+
+You can download gzip for Windows from
+http://gnuwin32.sourceforge.net/packages/gzip.htm
+The "Complete package, except sources", as a Setup executable is
+probably the most convenient form.
+
+Running:
+	@checkModules
+checks whether the installation needs any Perl modules that aren't available.

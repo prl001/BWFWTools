@@ -23,6 +23,7 @@
 
 	<li><a href="#name">NAME</a></li>
 	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#use_in_bw_patcher">USE IN BW_PATCHER</a></li>
 	<li><a href="#disabling_the_hack">DISABLING THE HACK</a></li>
 	<li><a href="#functions">FUNCTIONS</a></li>
 	<li><a href="#prerequsites">PREREQUSITES</a></li>
@@ -43,15 +44,10 @@
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <pre>
     Beyonwiz::Hack::BwhackSupport;</pre>
-<p>A module to use as an argument to use with <a href="../../../html/./html/bw_patcher.html"> <code>bw_patcher</code></a>.
+<p>A module to use as an argument to use with <a href="../../../html/bw_patcher.html"> <code>bw_patcher</code></a>.
 It modifies the firmware to start a user-selectable set of hacks
-that can be enabled/disabled using <a href="../../../html/./html/bwhack.html"> <code>bwhack</code></a>.</p>
+that can be enabled/disabled using <a href="../../../html/bwhack.html"> <code>bwhack</code></a>.</p>
 <p><strong>Not suitable for use on a Beyonwiz DP-H1</strong>. See <a href="#bugs">BUGS</a>.</p>
-<p><strong>Not designed for use in combination with
-<a href="../../../html/./Beyonwiz/Hack/USBHackSupport.html"><code>Beyonwiz::Hack::USBHackSupport</code></a></strong>.
-However, the <a href="#usb"><code>usb</code></a> hack that can be enabled through this
-firmware patch contains all the functionality of
-<a href="../../../html/./Beyonwiz/Hack/USBHackSupport.html"><code>Beyonwiz::Hack::USBHackSupport</code></a>.</p>
 <p>The hacks available for enabling (default is all disabled) are,
 in execution order:</p>
 <dl>
@@ -89,7 +85,7 @@ listing, so you have to know where you're navigating.</p>
 </dd>
 <dd>
 <p>This hack is not available on firmware versions 01.05.271 (beta) and later.
-See <a href="../../../html/./html/bwhack.html"> <code>bwhack</code></a> for details.</p>
+See <a href="../../../html/bwhack.html"> <code>bwhack</code></a> for details.</p>
 </dd>
 </li>
 <dt><strong><a name="usb" class="item">usb</a></strong>
@@ -115,7 +111,7 @@ Beyonwiz starts (and before <code>/tmp/config/rc.local</code> has been run).
 However, this means that even if you install an unmodified firmware package
 on the beyonwiz, the patch will still be active, because running
 <code>/tmp/config/rc.local</code> is part of normal firmware startup.</p>
-<p>If the <a href="#usb"><code>usb</code></a> hack is enabled by <a href="../../../html/./html/bwhack.html"> <code>bwhack</code></a>,
+<p>If the <a href="#usb"><code>usb</code></a> hack is enabled by <a href="../../../html/bwhack.html"> <code>bwhack</code></a>,
 <code>/tmp/config/usb.local</code>
 is run from <code>/tmp/config/rc.local</code> to implement the ability
 to run hacks from a USB drive (or memory card on an S1 or P1).
@@ -126,6 +122,17 @@ unmodified firmware onto the Beyonwiz.</p>
 <p>
 </p>
 <hr />
+<h1><a name="use_in_bw_patcher">USE IN BW_PATCHER</a></h1>
+<pre>
+    Beyonwiz::Hack::BwhackSupport</pre>
+<p><strong>Not designed for use in combination with
+<a href="../../../html/./Beyonwiz/Hack/USBHackSupport.html"><code>Beyonwiz::Hack::USBHackSupport</code></a></strong>.
+However, the <a href="#usb"><code>usb</code></a> hack that can be enabled through this
+firmware patch contains all the functionality of
+<a href="../../../html/./Beyonwiz/Hack/USBHackSupport.html"><code>Beyonwiz::Hack::USBHackSupport</code></a>.</p>
+<p>
+</p>
+<hr />
 <h1><a name="disabling_the_hack">DISABLING THE HACK</a></h1>
 <p>If the Beyonwiz is not running an unmodified firmware package,
 download unmodified firmware into the Beyonwiz and
@@ -133,7 +140,7 @@ restart.</p>
 <p>Then, either:</p>
 <ol>
 <li>
-<p>Enable only the <code>telnet</code> hack using <a href="../../../html/./html/bwhack.html"> <code>bwhack</code></a>
+<p>Enable only the <code>telnet</code> hack using <a href="../../../html/bwhack.html"> <code>bwhack</code></a>
 (installing unmodified firmware has not disabled the hacks):</p>
 <pre>
     bwhack.pl --host=my.BW.IP.addr all off
@@ -175,7 +182,7 @@ remove all the files installed by this installer.</p>
 <dt><strong><a name="hack" class="item"><code>hack($flash_dir, $root_dir)</code></a></strong>
 
 <dd>
-<p>Called by <a href="../../../html/./html/bw_patcher.html"> <code>bw_patcher</code></a> to perform the patch.</p>
+<p>Called by <a href="../../../html/bw_patcher.html"> <code>bw_patcher</code></a> to perform the patch.</p>
 </dd>
 <dd>
 <p>Inserts the lines:</p>
@@ -244,7 +251,7 @@ by running:</p>
 <p>Uses packages
 <code>File::Spec::Functions</code>,
 <code>File::Path</code>,
-<a href="../../../html/./Beyonwiz/Hack/USBHackSupport.html"><code>Beyonwiz::Hack::USBHackSupport</code></a>
+<a href="../../../html/./Beyonwiz/Hack/USBHackSupport.html"><code>Beyonwiz::Hack::USBHackSupport</code></a>,
 <a href="../../../html/./Beyonwiz/Hack/Utils.html"><code>Beyonwiz::Hack::Utils</code></a>.</p>
 <p>
 </p>

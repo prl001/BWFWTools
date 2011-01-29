@@ -10,7 +10,32 @@ package Beyonwiz::Hack::RemFile;
 
 A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/>.
 Deletes a file at the given relative location in either the root or the
-flash file system..
+flash file system.
+
+=head1 USE IN BW_PATCHER
+
+    Beyonwiz::Hack::RemFile filesystem del_file
+
+The I<filesystem> argument is either C<root> or C<flash>
+for the root file system (C</>) or the flash filesystem (C</flash>.
+I<del_file> is the pathname of the file within the Beyonwiz
+file system named in I<filesystem>.
+
+For example, to delete file C<rc.sysinit> in C</etc> on the Beyonwiz, use:
+
+    Beyonwiz::Hack::RemFile root etc/rc.sysinit
+
+To delete file C</flash/wizdvp/wizdvp> on the Beyonwiz, use:
+
+    Beyonwiz::Hack::RemFile flash wizdvp/wizdvp
+
+Don't actually download firmware patched with either of those examples.
+The Beyonwiz will not start up, and will need the firmware recovery process
+to get it working again.
+
+This module is mainly intended for use by other
+L< C<bw_patcher>|bw_patcher/>
+modules, but it can be useful if you really know what you're doing.
 
 =head1 DISABLING THE HACK
 

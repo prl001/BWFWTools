@@ -23,6 +23,7 @@
 
 	<li><a href="#name">NAME</a></li>
 	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#use_in_bw_patcher">USE IN BW_PATCHER</a></li>
 	<li><a href="#disabling_the_hack">DISABLING THE HACK</a></li>
 	<li><a href="#functions">FUNCTIONS</a></li>
 	<li><a href="#prerequsites">PREREQUSITES</a></li>
@@ -43,9 +44,15 @@
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <pre>
     Beyonwiz::Hack::BackgroundChanger;</pre>
-<p>A module to use as an argument to use with <a href="../../../html/./html/bw_patcher.html"> <code>bw_patcher</code></a>.
+<p>A module to use as an argument to use with <a href="../../../html/bw_patcher.html"> <code>bw_patcher</code></a>.
 It modifies the firmware to display a different background image
 in the full-screen menus.</p>
+<p>
+</p>
+<hr />
+<h1><a name="use_in_bw_patcher">USE IN BW_PATCHER</a></h1>
+<pre>
+    Beyonwiz::Hack::BackgroundChanger imageFile</pre>
 <p>The image file must be a JPEG image, 1280x720 pixels for Beyonwiz firmware
 01.05.247 and earlier.</p>
 <p>For firmware versions after 01.05.247, the image file must be a PNG
@@ -90,9 +97,8 @@ default <code>wizdvp/guidata/bitmaps/wiz/total_image/Main-image-1.jpg</code></p>
 <h1><a name="prerequsites">PREREQUSITES</a></h1>
 <p>Uses packages
 <code>Image::Size</code>,
-<a href="../../../html/./Beyonwiz/Hack/PutFile.html"><code>Beyonwiz::Hack::PutFile</code></a>
-<a href="../../../html/./Beyonwiz/Hack/RemFile.html"><code>Beyonwiz::Hack::RemFile</code></a>
-.</p>
+<a href="../../../html/./Beyonwiz/Hack/PutFile.html"><code>Beyonwiz::Hack::PutFile</code></a>,
+<a href="../../../html/./Beyonwiz/Hack/RemFile.html"><code>Beyonwiz::Hack::RemFile</code></a>.</p>
 <p>
 </p>
 <hr />

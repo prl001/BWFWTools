@@ -13,11 +13,6 @@ SYNOPSIS
 
     Not suitable for use on a Beyonwiz DP-H1. See "BUGS".
 
-    Not designed for use in combination with
-    "Beyonwiz::Hack::USBHackSupport". However, the "usb" hack that can be
-    enabled through this firmware patch contains all the functionality of
-    "Beyonwiz::Hack::USBHackSupport".
-
     The hacks available for enabling (default is all disabled) are, in
     execution order:
 
@@ -66,6 +61,15 @@ SYNOPSIS
 
     The effect of this hack will *not* be undone if you load unmodified
     firmware onto the Beyonwiz.
+
+USE IN BW_PATCHER
+
+        Beyonwiz::Hack::BwhackSupport
+
+    Not designed for use in combination with
+    "Beyonwiz::Hack::USBHackSupport". However, the "usb" hack that can be
+    enabled through this firmware patch contains all the functionality of
+    "Beyonwiz::Hack::USBHackSupport".
 
 DISABLING THE HACK
 
@@ -148,7 +152,7 @@ FUNCTIONS
 PREREQUSITES
 
     Uses packages "File::Spec::Functions", "File::Path",
-    "Beyonwiz::Hack::USBHackSupport" "Beyonwiz::Hack::Utils".
+    "Beyonwiz::Hack::USBHackSupport", "Beyonwiz::Hack::Utils".
 
 BUGS
 

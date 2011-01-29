@@ -12,6 +12,10 @@ A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/>.
 It modifies the firmware to display a different background image
 in the full-screen menus.
 
+=head1 USE IN BW_PATCHER
+
+    Beyonwiz::Hack::BackgroundChanger imageFile
+
 The image file must be a JPEG image, 1280x720 pixels for Beyonwiz firmware
 01.05.247 and earlier.
 
@@ -51,9 +55,8 @@ Returns C<bg> as the default suffix tag for the patch.
 
 Uses packages
 C<Image::Size>,
-L<C<Beyonwiz::Hack::PutFile>|Beyonwiz::Hack::PutFile>
-L<C<Beyonwiz::Hack::RemFile>|Beyonwiz::Hack::RemFile>
-.
+L<C<Beyonwiz::Hack::PutFile>|Beyonwiz::Hack::PutFile>,
+L<C<Beyonwiz::Hack::RemFile>|Beyonwiz::Hack::RemFile>.
 
 =head1 BUGS
 

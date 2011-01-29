@@ -88,8 +88,9 @@ PATCH MODULES
     files in, either firmware directory.
 
     The modules packaged with bw_patcher are "Beyonwiz::Hack::Telnet",
-    "Beyonwiz::Hack::Dim", "Beyonwiz::Hack::BackgroundChanger",
-    "Beyonwiz::Hack::BwhackSupport" and "Beyonwiz::Hack::USBHackSupport".
+    "Beyonwiz::Hack::Codeset", "Beyonwiz::Hack::Dim",
+    "Beyonwiz::Hack::BackgroundChanger", "Beyonwiz::Hack::BwhackSupport" and
+    "Beyonwiz::Hack::USBHackSupport".
 
 DISABLING THE HACKS
 

@@ -14,12 +14,6 @@ that can be enabled/disabled using L< C<bwhack>|bwhack/>.
 
 B<Not suitable for use on a Beyonwiz DP-H1>. See L</BUGS>.
 
-B<Not designed for use in combination with
-L<C<Beyonwiz::Hack::USBHackSupport>|Beyonwiz::Hack::USBHackSupport>>.
-However, the C<usb> hack that can be enabled through this
-firmware patch contains all the functionality of
-L<C<Beyonwiz::Hack::USBHackSupport>|Beyonwiz::Hack::USBHackSupport>.
-
 The hacks available for enabling (default is all disabled) are,
 in execution order:
 
@@ -84,6 +78,16 @@ for details.
 
 The effect of this hack will I<not> be undone if you load
 unmodified firmware onto the Beyonwiz.
+
+=head1 USE IN BW_PATCHER
+
+    Beyonwiz::Hack::BwhackSupport
+
+B<Not designed for use in combination with
+L<C<Beyonwiz::Hack::USBHackSupport>|Beyonwiz::Hack::USBHackSupport>>.
+However, the C<usb> hack that can be enabled through this
+firmware patch contains all the functionality of
+L<C<Beyonwiz::Hack::USBHackSupport>|Beyonwiz::Hack::USBHackSupport>.
 
 =head1 DISABLING THE HACK
 
@@ -198,7 +202,7 @@ perl -MBeyonwiz::Hack::USBHackSupport -e "Beyonwiz::Hack::USBHackSupport::printH
 Uses packages
 C<File::Spec::Functions>,
 C<File::Path>,
-L<C<Beyonwiz::Hack::USBHackSupport>|Beyonwiz::Hack::USBHackSupport>
+L<C<Beyonwiz::Hack::USBHackSupport>|Beyonwiz::Hack::USBHackSupport>,
 L<C<Beyonwiz::Hack::Utils>|Beyonwiz::Hack::Utils>.
 
 =head1 BUGS

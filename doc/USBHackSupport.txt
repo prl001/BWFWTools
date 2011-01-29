@@ -74,6 +74,10 @@ SYNOPSIS
     The effect of this hack will *not* be undone if you load unmodified
     firmware onto the Beyonwiz.
 
+USE IN BW_PATCHER
+
+        Beyonwiz::Hack::USBHackSupport
+
 DISABLING THE HACK
 
     If the Beyonwiz is not running an unmodified firmware package, download
@@ -129,7 +133,7 @@ FOR ADVANCED USERS
     runs scripts from any (and all) attached devices with the scripts in the
     appropriate location.
 
-    The USB defices are searched in the following order:
+    The USB devices are searched in the following order:
 
     DP-S1
             Front panel memory card
@@ -197,8 +201,8 @@ FUNCTIONS
 
 PREREQUSITES
 
-    Uses packages "Beyonwiz::Hack::Utils", "File::Spec::Functions"
-    "File::Path";
+    Uses packages "Beyonwiz::Hack::Utils", "File::Spec::Functions",
+    "File::Path".
 
 BUGS
 

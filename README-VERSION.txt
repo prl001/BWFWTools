@@ -1,4 +1,4 @@
-Version 0.2.3
+Version 0.2.4
 
 Contents of the zip:
 
@@ -19,10 +19,13 @@ Contents of the zip:
     * dump_strings - extract useful GUI strings from Beyonwiz /dump.dat file
     * lastplaypoint - print the Beyonwiz resume marker file lastplaypoint.dat
     * getDvpStrings - extract useful GUI strings from the Beyonwiz wizdvp application
+    * checkModules.pl - check that all modules needed for the scrips have been installed. Intended for use by make check and checkModules.bat
+    * checkModules.pl - check that all modules needed for the scrips have been installed. Intended for use on Windows.
     * Beyonwiz::Kernel - Perl package of support routines for uncompressed Beyonwiz kernel images
     * Beyonwiz::Hack - contains patcher modules to use with bw_patcher
     * Beyonwiz::Hack::BackgroundChanger - change the background image used in the File Player and Setup screens
     * Beyonwiz::Hack::BwhackSupport - Support for hacks that can be turned on and off remotely using bwhack
+    * Beyonwiz::Hack::Codeset - hack to change the remote control codeset accepted by the firmware.
     * Beyonwiz::Hack::Dim - hack to dim the front display
     * Beyonwiz::Hack::PutFile - Put a single file into an existing directory in the firmware
     * Beyonwiz::Hack::RemFile - Remove a file from the firmware
@@ -42,19 +45,24 @@ WARNING: bw_rootfs, pack_wrp and bw_patcher can all easily create an unbootable 
 
 Release notes
 
-dump_strings.pl: Add options to sort the output.
-pack_wrp.pl: Suppress warnings about Windows style path separators coming from the new cygwin1.dll. Fixed recognition of default system type with longer name for DP-Lite.
-unpack_wrp.pl: Suppress warnings about Windows style path separators coming from the new cygwin1.dll
-bw_patcher.pl: Suppress warnings about Windows style path separators coming from the new cygwin1.dll
-svcdat.pl: Attempt to improve operation after the firmware changes for Dynamic Channel Management.
-Makefile: add installation of print_flash.
-print_flash.pl: New tool. Extracts the memory file device data from an uncompressed Beyonwiz kernel
-Beyonwiz::Kernel: Added kernel location information for versions 01.07.036+.
-Beyonwiz::SystemId: Added system ids for DP-Lite.
+Bugs Fixed:
+pack_wrp.pl: Fix code so that /linux/bin.gz doesn't get clobbered if gzip isn't available.
+
+New features/updates:
+bw_patcher.pl: Added Beyonwiz::Hack::Codeset to list of included hack modules in the documentation.
+pack_wrp.pl: Fix code so that /linux/bin.gz doesn't get clobbered if gzip isn't available.
+checkModules.pl: New script to check that all modules needed for the scrips have been installed.
+checkModules.pl: New DOS batch script to check that all modules needed for the scrips have been installed.
+Makefile: Add 'check' target to check module dependencies.
+Beyonwiz::Hack::Codeset - hack to change the remote control codeset accepted by the firmware.
+Beyonwiz::Hack::Utils.pm Added support for in-line edits in hack modules (used by Beyonwiz::Hack::Codeset).
+
+Improved documentation of all hack modules.
 
 Bugs:
-pack_wrp cannot delete one of its temporary files on Windows sometimes. A warning is pinted, and the file can be deleted manually.
+pack_wrp cannot delete one of its temporary files on Windows sometimes. A warning is printed, and the file can be deleted manually.
 The decoding of the T1 and T2 fields in svcdat seems to be incorrect, and a correct decoding doesn't appear to be obvious.
+Changing the remote control codeset with Beyonwiz::Hack::Codeset doesn't change the POWER code for power on, the 1+2+3+4+POWER sequence to initiate firmware recovery, or the POWER watchdog timer, because these codes are interpreted by the front panel microcontroller.
 
 WARNING
 =======

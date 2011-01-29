@@ -12,6 +12,10 @@ SYNOPSIS
     The effect of this hack will be undone if you load unmodified firmware
     onto the Beyonwiz.
 
+USE IN BW_PATCHER
+
+        Beyonwiz::Hack::Dim
+
 FUNCTIONS
 
     "hack($flash_dir, $root_dir)"

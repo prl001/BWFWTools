@@ -5,7 +5,8 @@
 
 index=html/index.html
 
-podpath=--podpath=.:Beyonwiz:Beyonwiz/Hack
+#podpath=.:Beyonwiz:Beyonwiz/Hack
+podpath=.
 
 # Header for index.html
 
@@ -32,7 +33,9 @@ for i in "$@"; do
     d=`dirname $i`
     [ -d html/$d ] || mkdir -p html/$d
 
-    dots=`echo $d | sed 's,[^/.][^/]*,..,g'`
+    htmlroot=`echo $d | sed -e 's,[^/.][^/]*,..,g' \
+			    -e 's,^...*,../&/html,' \
+			    -e 's,^\.$,../html,'`
 
     # Extract the synopsis line for index.html
 
@@ -44,14 +47,17 @@ for i in "$@"; do
 	    $i`
 
     # Convert the Perl POD markup to HTML
-    pod2html --htmlroot=../$dots/html --podroot=. $podpath --htmldir=. \
+    pod2html --htmlroot=$htmlroot --podroot=. --podpath=$podpath \
+	     --htmldir=html \
              --header --title=$j \
-             --infile=$i --outfile=html/$d/$j.html
+             --infile=$i |
+    sed -e 's,/html/\./html/,/html/,' > html/$d/$j.html
+
     # Add a line to index.html
     echo "<li><a href=\"$d/$j.html\">$synopsis</li>" >> $index
 
     # Convert the Perl POD markup to plain text with DOS line separators
-    pod2text --loose $i | perl -ape 's/\n/\r\n/ if(!/\r\n$/)' > doc/$j.txt
+    pod2text --loose $i | perl -ape 's/\n$/\r\n/ if(!/\r\n$/)' > doc/$j.txt
 
 done
 

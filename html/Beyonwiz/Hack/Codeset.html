@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Dim</title>
+<title>Codeset</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rev="made" href="mailto:_postfix@neige.apple.com" />
 </head>
@@ -10,7 +10,7 @@
 <body style="background-color: white">
 <table border="0" width="100%" cellspacing="0" cellpadding="3">
 <tr><td class="block" style="background-color: #cccccc" valign="middle">
-<big><strong><span class="block">&nbsp;Dim</span></strong></big>
+<big><strong><span class="block">&nbsp;Codeset</span></strong></big>
 </td></tr>
 </table>
 
@@ -37,15 +37,17 @@
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
-<p>Beyonwiz::Hack::Dim - hack to dim the front display</p>
+<p>Beyonwiz::Hack::Codeset - hack to enable telnet access on the Beyonswz</p>
 <p>
 </p>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <pre>
-    Beyonwiz::Hack::Dim;</pre>
+    Beyonwiz::Hack::Codeset;</pre>
 <p>A module to use as an argument to use with <a href="../../../html/bw_patcher.html"> <code>bw_patcher</code></a>
-to patch Beyonwiz firmware to dim the front panel display at startup.</p>
+to patch Beyonwiz firmware to make the Beyonwiz select a non-default
+remote control codeset (so that multiple Beyonwizes in the same room
+won't all respond to the one remote control.</p>
 <p>The effect of this hack will be undone if you load
 unmodified firmware onto the Beyonwiz.</p>
 <p>
@@ -53,38 +55,55 @@ unmodified firmware onto the Beyonwiz.</p>
 <hr />
 <h1><a name="use_in_bw_patcher">USE IN BW_PATCHER</a></h1>
 <pre>
-    Beyonwiz::Hack::Dim</pre>
+    Beyonwiz::Hack::Codeset codeset</pre>
+<p>The <em>codeset</em> argument is an integer 0..7.</p>
+<p>An unmodified Beyonwiz DP-P2 uses codeset 1.
+Other Beyonwiz models use codeset 0.
+These two codesets are the most convenient to use
+if you have Beyonwiz BR-01 or BR-02 remote controls,
+or a programmable remote that is restricted to codes from those
+two remotes.</p>
 <p>
 </p>
 <hr />
 <h1><a name="functions">FUNCTIONS</a></h1>
 <dl>
-<dt><strong><a name="hack" class="item"><code>hack($flash_dir, $root_dir)</code></a></strong>
+<dt><strong><a name="hack" class="item"><code>hack($flash_dir, $root_dir, $codeset)</code></a></strong>
 
 <dd>
 <p>Called by <a href="../../../html/bw_patcher.html"> <code>bw_patcher</code></a> to perform the patch.</p>
 </dd>
 <dd>
-<p>Inserts the line:</p>
+<p>Add the argument <code>-rc $codeset</code> to all occurances of the <em>wizdvp</em>
+command in the file that will be <code>/etc/rc.sysinit</code>,
+the system startup script,
+on the Beyonwiz.</p>
 </dd>
 <dd>
-<pre>
-    micomparam -q -r 500101</pre>
+<p><code>$codeset</code> must be in the range 0-7.
+An unmodified Beyonwiz DP-P2 uses codeset 1.
+Other Beyonwiz models use codeset 0.
+These two codesets are the most convenient to use
+if you have Beyonwiz BR-01 or BR-02 remote controls,
+or a programmable remote that is restricted to codes from those
+two remotes.</p>
 </dd>
 <dd>
-<p>into the file that will be <code>/etc/rc.sysinit</code>, the system startup script,
-on the Beyonwiz.
-The line will be inserted just before the comment line:</p>
-</dd>
-<dd>
-<pre>
-    # rc.local</pre>
+<p>If you have a programmable remote that can accept hexcodes,
+then any codeset can be used.
+Beyonwiz codesets have the form <code>0xBE0cxxxx</code> where <code>BE0</code> is fixed,
+<code>c</code> is the codeset (0..7, not 0..F) and <code>xxxx</code> is the command code.
+For, example, with codeset 0 (all models except DP-P2),
+the OK command is 0xBE001FE0,
+with codeset 1 (DP-P2), it's 0xBE011FE0.
+With codeset 5, it would be 0xBE051FE0,
+but no Beyonwiz remote will operate that codeset.</p>
 </dd>
 </li>
 <dt><strong><a name="hacktag" class="item"><code>hackTag()</code></a></strong>
 
 <dd>
-<p>Returns <code>dim</code> as the default suffix tag for the patch.</p>
+<p>Returns <code>codeset</code> as the default suffix tag for the patch.</p>
 </dd>
 </li>
 </dl>
@@ -104,6 +123,14 @@ restart.</p>
 </p>
 <hr />
 <h1><a name="bugs">BUGS</a></h1>
+<p>This hack cannot change the codeset for POWERTOGGLE for startup
+(though the shut-down POWERTOGGLE will work) or the
+codes for the POWERTOGGLE 1+2+3+4, because these codes are interpreted
+in the front panel mictocontroller, not by the main frimware.</p>
+<p>If you set a codeset for which you do not have a remote, then no remote
+codes except POWERTOGGLE for startup (but not shutdown)
+and the POWERTOGGLE 1+2+3+4 firmware recovery remote sequence
+will work on the Beyonwiz.</p>
 <p><strong>Using user extensions or hacks may make your Beyonwiz unable to
 operate correctly, or even start.
 Some modifications are known to interfere with the correct
@@ -127,7 +154,7 @@ Forum contributers may be able to be more flexible, but they will
 need to know what modifications you have made.</p>
 <table border="0" width="100%" cellspacing="0" cellpadding="3">
 <tr><td class="block" style="background-color: #cccccc" valign="middle">
-<big><strong><span class="block">&nbsp;Dim</span></strong></big>
+<big><strong><span class="block">&nbsp;Codeset</span></strong></big>
 </td></tr>
 </table>
 

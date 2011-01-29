@@ -90,6 +90,10 @@ C</tmp/config/rc.local> is part of normal firmware startup.
 The effect of this hack will I<not> be undone if you load
 unmodified firmware onto the Beyonwiz.
 
+=head1 USE IN BW_PATCHER
+
+    Beyonwiz::Hack::USBHackSupport
+
 =head1 DISABLING THE HACK
 
 If the Beyonwiz is not running an unmodified firmware package,
@@ -148,7 +152,7 @@ The startup code searches all USB devices connected to the Beyonwiz,
 and runs scripts from any (and all) attached devices with the scripts in the
 appropriate location.
 
-The USB defices are searched in the following order:
+The USB devices are searched in the following order:
 
 =over 4
 
@@ -235,8 +239,8 @@ It can be run standalone as:
 
 Uses packages 
 L<C<Beyonwiz::Hack::Utils>|Beyonwiz::Hack::Utils>,
-C<File::Spec::Functions>
-C<File::Path>;
+C<File::Spec::Functions>,
+C<File::Path>.
 
 =head1 BUGS
 

@@ -119,6 +119,7 @@ and may add new files to, or overwrite files in, either firmware directory.
 
 The modules packaged with B<bw_patcher> are
 L<C<Beyonwiz::Hack::Telnet>|Beyonwiz::Hack::Telnet>,
+L<C<Beyonwiz::Hack::Codeset>|Beyonwiz::Hack::Codeset>,
 L<C<Beyonwiz::Hack::Dim>|Beyonwiz::Hack::Dim>,
 L<C<Beyonwiz::Hack::BackgroundChanger>|Beyonwiz::Hack::BackgroundChanger>,
 L<C<Beyonwiz::Hack::BwhackSupport>|Beyonwiz::Hack::BwhackSupport>

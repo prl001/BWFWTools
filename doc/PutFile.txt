@@ -10,6 +10,33 @@ SYNOPSIS
     into the required relative location in either the root or the flash file
     system..
 
+USE IN BW_PATCHER
+
+        Beyonwiz::Hack::PutFile filesystem src_file dest_file dest_exec
+
+    The *filesystem* argument is either "root" or "flash" for the root file
+    system ("/") or the flash filesystem ("/flash". *src_file* is the local
+    pathname of the file to be inserted in the firmware package, *dest_file*
+    is the pathname of the file within the Beyonwiz file system named in
+    *filesystem*. If *exec_file* is true, the file will be made executable
+    (execute permission set).
+
+    For example, to put local file "myetcfile" into "/etc" on the Beyonwiz
+    and make it non-executable, use:
+
+        Beyonwiz::Hack::PutFile root myetcfile etc/myetcfile 0
+
+    To put local file "myhack" into "/flash/bin" on the Beyonwiz and make it
+    executable, use:
+
+        Beyonwiz::Hack::PutFile flash myhack bin/myhack 1
+
+    The module will overwrite the firmware file if it already exists, or
+    create a new file if it doesn't.
+
+    This module is mainly intended for use by other "bw_patcher" modules,
+    but it can be useful if you really know what you're doing.
+
 DISABLING THE HACK
 
     Download unmodified firmware into the Beyonwiz and restart.
@@ -56,6 +83,6 @@ BUGS
     more flexible, but they will need to know what modifications you have
     made.
 
-    The destination directory for the path must alteady exist in the
+    The destination directory for the path must already exist in the
     firmware.
 

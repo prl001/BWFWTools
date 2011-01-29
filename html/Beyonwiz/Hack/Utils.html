@@ -113,6 +113,24 @@ to &quot;fit&quot; properly in the file; in particular it probably should end
 in a newline.</p>
 </dd>
 <dd>
+<p>Returns the number of times the patch was added to the file.</p>
+</dd>
+<dd>
+<p>Takes some care not to put DOS CRLF line endings in the file.</p>
+</dd>
+</li>
+<dt><strong><a name="substfile" class="item"><code>substFile($file, $linePattern, $subsPattern, $repl, $global)</code></a></strong>
+
+<dd>
+<p>Given a <code>$file</code>, a path to an existing file in the firmware
+(probably generated using <a href="#findmatchingpath"><code>findMatchingPath($fw_dir, $path)</code></a>,
+substitute the replacement <code>$repl</code> for the Perl regular expreddion
+<code>$subsPattern</code> in all lines the line matching the regular expression
+in <code>$linePattern</code>.
+Applies the substitution at all possible positions in the matched line
+if <code>$global</code> is true, otherwise at most once.</p>
+</dd>
+<dd>
 <p>Takes some care not to put DOS CRLF line endings in the file.</p>
 </dd>
 </li>

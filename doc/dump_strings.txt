@@ -50,11 +50,3 @@ BUGS
     The filtering is imperfect, and some strings may be included that should
     be excluded, and some excluded that should be included.
 
-POD ERRORS
-
-    Hey! The above document had some coding errors, which are explained
-    below:
-
-    Around line 51:
-        You forgot a '=back' before '=head1'
-

@@ -23,6 +23,7 @@
 
 	<li><a href="#name">NAME</a></li>
 	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#use_in_bw_patcher">USE IN BW_PATCHER</a></li>
 	<li><a href="#disabling_the_hack">DISABLING THE HACK</a></li>
 	<li><a href="#functions">FUNCTIONS</a></li>
 	<li><a href="#prerequsites">PREREQUSITES</a></li>
@@ -44,9 +45,31 @@
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <pre>
     Beyonwiz::Hack::RemFile;</pre>
-<p>A module to use as an argument to use with <a href="../../../html/./html/bw_patcher.html"> <code>bw_patcher</code></a>.
+<p>A module to use as an argument to use with <a href="../../../html/bw_patcher.html"> <code>bw_patcher</code></a>.
 Deletes a file at the given relative location in either the root or the
-flash file system..</p>
+flash file system.</p>
+<p>
+</p>
+<hr />
+<h1><a name="use_in_bw_patcher">USE IN BW_PATCHER</a></h1>
+<pre>
+    Beyonwiz::Hack::RemFile filesystem del_file</pre>
+<p>The <em>filesystem</em> argument is either <code>root</code> or <code>flash</code>
+for the root file system (<code>/</code>) or the flash filesystem (<code>/flash</code>.
+<em>del_file</em> is the pathname of the file within the Beyonwiz
+file system named in <em>filesystem</em>.</p>
+<p>For example, to delete file <code>rc.sysinit</code> in <code>/etc</code> on the Beyonwiz, use:</p>
+<pre>
+    Beyonwiz::Hack::RemFile root etc/rc.sysinit</pre>
+<p>To delete file <code>/flash/wizdvp/wizdvp</code> on the Beyonwiz, use:</p>
+<pre>
+    Beyonwiz::Hack::RemFile flash wizdvp/wizdvp</pre>
+<p>Don't actually download firmware patched with either of those examples.
+The Beyonwiz will not start up, and will need the firmware recovery process
+to get it working again.</p>
+<p>This module is mainly intended for use by other
+<a href="../../../html/bw_patcher.html"> <code>bw_patcher</code></a>
+modules, but it can be useful if you really know what you're doing.</p>
 <p>
 </p>
 <hr />

@@ -12,6 +12,36 @@ A module to use as an argument to use with L< C<bw_patcher>|bw_patcher/>.
 Copies a file into the required relative location in either the root or the
 flash file system..
 
+=head1 USE IN BW_PATCHER
+
+    Beyonwiz::Hack::PutFile filesystem src_file dest_file dest_exec
+
+The I<filesystem> argument is either C<root> or C<flash>
+for the root file system (C</>) or the flash filesystem (C</flash>.
+I<src_file> is the local pathname of the file to be inserted in the firmware
+package,
+I<dest_file> is the pathname of the file within the Beyonwiz
+file system named in I<filesystem>.
+If I<exec_file> is true, the file will be made executable
+(execute permission set).
+
+For example, to put local file C<myetcfile> into C</etc> on the Beyonwiz and
+make it non-executable, use:
+
+    Beyonwiz::Hack::PutFile root myetcfile etc/myetcfile 0
+
+To put local file C<myhack> into C</flash/bin> on the Beyonwiz
+and make it executable, use:
+
+    Beyonwiz::Hack::PutFile flash myhack bin/myhack 1
+
+The module will overwrite the firmware file if it already exists,
+or create a new file if it doesn't.
+
+This module is mainly intended for use by other
+L< C<bw_patcher>|bw_patcher/>
+modules, but it can be useful if you really know what you're doing.
+
 =head1 DISABLING THE HACK
 
 Download unmodified firmware into the Beyonwiz and
@@ -70,7 +100,7 @@ other than unmodified firmware from Beyonwiz.
 Forum contributers may be able to be more flexible, but they will
 need to know what modifications you have made.
 
-The destination directory for the path must alteady exist in the firmware.
+The destination directory for the path must already exist in the firmware.
 
 =cut
 

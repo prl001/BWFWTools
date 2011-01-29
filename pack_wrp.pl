@@ -307,6 +307,11 @@ use constant ROOTFS    => 'root.romfs';
 sub system_redirect(@) {
     my @cmd = @_;
     my $outfile = pop @cmd;
+    my $bakfile = $outfile . '.bak';
+
+    rename $outfile, $bakfile
+	or die "Can't back up $outfile to $bakfile: $!\n";
+
     if(my $pid = fork) {
 	# Parent - successful fork
 	# Forks aren't real in Windows.
@@ -326,6 +331,14 @@ sub system_redirect(@) {
 		or die "Can't restore STDOUT from dup\n"
 	    if($^O eq 'MSWin32');
 
+	if($status == 0) {
+	    unlink $bakfile
+		or die "Can't remove back up $bakfile: $!\n";
+	} else {
+	    rename $bakfile, $outfile
+		or die "Can't restore $bakfile from $outfile: $!\n";
+	}
+
 	return $status;
     } else {
 	# Child or fork failed in parent
@@ -334,8 +347,10 @@ sub system_redirect(@) {
 	# Child
 	open STDOUT, '>', $outfile
 	    or die "Can't open $outfile: $!\n";
+
 	exec { $cmd[0] } @cmd
 	    or die "Can't run $cmd[0]: $!\n";
+
 	# not reached
     }
 }

@@ -67,6 +67,20 @@ C<$patch> must have the newlines and any indenting in the correct position
 to "fit" properly in the file; in particular it probably should end
 in a newline.
 
+Returns the number of times the patch was added to the file.
+
+Takes some care not to put DOS CRLF line endings in the file.
+
+=item C<< substFile($file, $linePattern, $subsPattern, $repl, $global) >>
+
+Given a C<$file>, a path to an existing file in the firmware
+(probably generated using C<< findMatchingPath($fw_dir, $path) >>,
+substitute the replacement C<$repl> for the Perl regular expreddion
+C<$subsPattern> in all lines the line matching the regular expression
+in C<$linePattern>.
+Applies the substitution at all possible positions in the matched line
+if C<$global> is true, otherwise at most once.
+
 Takes some care not to put DOS CRLF line endings in the file.
 
 =item C<< addFile($file, $patch, $exec) >>
@@ -108,7 +122,7 @@ use Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(
         findMatchingPath makeMatchingDirectoryPath findNewFile
-        patchFile addFile copyFile
+        patchFile substFile addFile copyFile
 	insens
 	pathTildeExpand
     );
@@ -227,6 +241,38 @@ sub patchFile($$$$) {
 	} else {
 	    print NEWF $line;
 	}
+    }
+    close OLDF;
+    close NEWF;
+    chmod $perms, $file;
+    unlink $oldf;
+    return $patches;
+}
+
+sub substFile($$$$$) {
+    my ($file, $linePattern, $subsPattern, $repl, $global) = @_;
+    -f $file or die "Can't find file to patch: $file\n";
+    my $oldf = $file . '.bak';
+    rename $file, $oldf
+	or die "Can't rename $file to $oldf\n";
+    my $perms = (stat $oldf)[2] & ~S_IFMT;
+    open OLDF, '<', $oldf
+	or die "Can't open $oldf - $!\n";
+    binmode OLDF;
+    sysopen NEWF, $file, O_WRONLY|O_CREAT, $perms
+	or die "Can't create new copy of $file - $!\n";;
+    binmode NEWF;
+    $repl =~ s/\015\012/\012/g;
+    my $patches = 0;
+    while(my $line = <OLDF>) {
+	if($line =~ /$linePattern/) {
+	    if($global ? ($line =~ s/$subsPattern/$repl/eg)
+		       : ($line =~ s/$subsPattern/$repl/e)) {
+		warn "Patched line to: $line";
+		$patches++;
+	    }
+	}
+	print NEWF $line;
     }
     close OLDF;
     close NEWF;

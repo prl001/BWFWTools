@@ -15,16 +15,16 @@ EXE=wiz_genromfs.exe wiz_pack.exe wiz_unpack.exe
 BWMODULES=$(BWMODULEDIR)/Kernel.pm $(BWMODULEDIR)/SystemId.pm
 
 HACKMODULES=$(HACKMODULEDIR)/BwhackSupport.pm \
-	$(HACKMODULEDIR)/BackgroundChanger.pm $(HACKMODULEDIR)/Dim.pm \
-	$(HACKMODULEDIR)/PutFile.pm $(HACKMODULEDIR)/RemFile.pm \
-	$(HACKMODULEDIR)/Telnet.pm  $(HACKMODULEDIR)/USBHackSupport.pm \
-	$(HACKMODULEDIR)/Utils.pm
+	$(HACKMODULEDIR)/BackgroundChanger.pm $(HACKMODULEDIR)/Codeset.pm \
+	$(HACKMODULEDIR)/Dim.pm  $(HACKMODULEDIR)/PutFile.pm \
+	$(HACKMODULEDIR)/RemFile.pm $(HACKMODULEDIR)/Telnet.pm  \
+	$(HACKMODULEDIR)/USBHackSupport.pm $(HACKMODULEDIR)/Utils.pm
 
 MODULES=$(BWMODULES) $(HACKMODULES)
 
 all:
 
-install: all install_lib install_bin
+install: all check install_lib install_bin
 
 cygwin_install: install install_exe
 
@@ -75,3 +75,6 @@ uninstall_exe:
 
 doc::
 	./make_doc.sh $(SCRIPTS) $(MODULES)
+
+check:
+	./checkModules.pl $(SCRIPTS) $(MODULES)

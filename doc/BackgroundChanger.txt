@@ -10,6 +10,10 @@ SYNOPSIS
     firmware to display a different background image in the full-screen
     menus.
 
+USE IN BW_PATCHER
+
+        Beyonwiz::Hack::BackgroundChanger imageFile
+
     The image file must be a JPEG image, 1280x720 pixels for Beyonwiz
     firmware 01.05.247 and earlier.
 
@@ -38,8 +42,8 @@ FUNCTIONS
 
 PREREQUSITES
 
-    Uses packages "Image::Size", "Beyonwiz::Hack::PutFile"
-    "Beyonwiz::Hack::RemFile" .
+    Uses packages "Image::Size", "Beyonwiz::Hack::PutFile",
+    "Beyonwiz::Hack::RemFile".
 
 BUGS
 
